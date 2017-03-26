@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="800.0" prefWidth="1000.0" stylesheets="@tunecomposer.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tunecomposer.TuneComposer">
+   <top>
+      <MenuBar>
+        <menus>
+          <Menu text="File">
+            <items>
+              <MenuItem accelerator="Shortcut+Q" 
+                        onAction="#handleExitAction" 
+                        text="Exit" />
+            </items>
+          </Menu>
+            <Menu text="Edit">
+              <items>
+                <MenuItem accelerator="Shortcut+A" 
+                          onAction="#handleSelectAllAction" 
+                          text="Select All" />
+                  <MenuItem accelerator="Shift+Shortcut+A" 
+                            onAction="#handleSelectNoneAction" 
+                            text="Select None" />
+                  <MenuItem accelerator="backspace" 
+                            onAction="#handleDeleteAction" 
+                            text="Delete" />
+              </items>
+            </Menu>
+          <Menu text="Action">
+            <items>
+              <MenuItem accelerator="Shortcut+P" 
+                        onAction="#handlePlayAction" 
+                        text="Play" />
+              <MenuItem accelerator="Shortcut+S" 
+                        onAction="#handleStopAction" 
+                        text="Stop" />
+            </items>
+          </Menu>          
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <ScrollPane BorderPane.alignment="CENTER">
+        <content>
+          <AnchorPane fx:id="compositionpane" 
+                      onMouseClicked="#handleCompositionPaneMouseClick" 
+                      onMouseDragged="#handleCompositionPaneMouseDragged" 
+                      onMousePressed="#handleCompositionPaneMousePressed" 
+                      onMouseReleased="#handleCompositionPaneMouseReleased" />
+        </content>
+      </ScrollPane>
+   </center>
+   <left>
+      <VBox fx:id="instrumentpane" BorderPane.alignment="CENTER">
+          <fx:define>
+            <ToggleGroup fx:id="instrumentgroup" />
+          </fx:define>
+      </VBox>
+   </left>
+</BorderPane>
