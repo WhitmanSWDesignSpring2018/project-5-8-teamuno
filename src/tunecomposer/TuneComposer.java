@@ -5,6 +5,7 @@
 package tunecomposer;
 
 import java.io.IOException;
+import java.util.HashSet;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -40,6 +41,7 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+    static final HashSet<Playable> SELECTION = new HashSet<>();
     
     /**
      * Construct a new composition pane.
@@ -151,16 +153,30 @@ public class TuneComposer extends Application {
     
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
-        NoteBar.clearSelection();
+        TuneComposer.clearSelection();
     }
     
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
-        for (NoteBar bar : NoteBar.getSelection()) {
+        for (NoteBar bar : getSelectedNotes()) {
             compositionpane.getChildren().remove(bar);
             bar.delete();
         }
-        NoteBar.clearSelection();
+        TuneComposer.clearSelection();
+    }
+    
+    @FXML
+    protected void handleGroup(ActionEvent event){
+        // Pass the selection by value, not by reference
+        HashSet group = new HashSet<Playable>(SELECTION);
+
+        clearSelection();
+        addToSelection(new Gesture(group));
+    }
+    
+    @FXML
+    protected void handleUngroup(ActionEvent event){
+        // TODO
     }
     
     /**
@@ -190,7 +206,7 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMousePressed(MouseEvent event) {
         stopPlaying();
         if (!event.isControlDown()) {
-            NoteBar.clearSelection();
+            clearSelection();
         } 
         selectionRect.setX(event.getX());
         selectionRect.setY(event.getY());
@@ -225,7 +241,7 @@ public class TuneComposer extends Application {
                                  (int)event.getX(), 
                                  instrument);
             if (!event.isControlDown()) {
-                NoteBar.clearSelection();
+                clearSelection();
             }
             compositionpane.getChildren().add(new NoteBar(note)); 
         }
@@ -238,6 +254,36 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleExitAction(ActionEvent event) {
         System.exit(0);
+    }
+    
+    public static void addToSelection(Playable toAdd) {
+        if (toAdd.getParent() == null) {
+            SELECTION.add(toAdd);
+        }
+        toAdd.getStyleClass().add("selected");
+    }
+        
+    private void removeFromSelection(Playable p) {
+        TuneComposer.SELECTION.remove(this);
+        p.getStyleClass().remove("selected");
+    }
+    public static void clearSelection() {
+        for (Playable p : SELECTION) {
+            p.removeFromSelection();       
+        }
+        SELECTION.clear();
+    }    
+    
+    public static HashSet<Playable> getSelection() {
+        return SELECTION;
+    }
+    
+    public static HashSet<NoteBar> getSelectedNotes() {
+        HashSet notes = new HashSet<NoteBar>();
+        for (Playable p : SELECTION) {
+           notes.addAll(p.getChildLeaves());
+        } 
+        return notes;
     }
     
     /**

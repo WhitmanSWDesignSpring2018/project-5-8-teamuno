@@ -5,97 +5,48 @@
 package tunecomposer;
 
 import java.util.HashSet;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Represents a note.
  * @author janet
  */
-public class Note {
-
-    private static final int VOLUME = 127;
-    private static final int TRACK = 0;
+public abstract class Playable extends Rectangle {
+    Gesture parent;
     
-    private static final HashSet<Note> ALL_NOTES = new HashSet<>();
-   
-    private int pitch;
-    private int startTick;    
-    private int duration;
-    private final Instrument instrument;
+    abstract public void play();
+    
+    abstract public void update();
+    
+    abstract public void addToSelection();
+    
+    abstract public void removeFromSelection();
+
+    abstract public HashSet<NoteBar> getChildLeaves();
     
     /**
-     * Creates a new note.
      *
-     * @param pitch      an integer from 0 to 127 giving the pitch
-     * @param startTick  tells when the note is to start playing (in ticks)
-     * @param instrument the instrument to play the note with
+     * @param me
      */
-    public Note(int pitch, int startTick, Instrument instrument) {
-        ALL_NOTES.add(this);
-        this.pitch = pitch;
-        this.startTick = startTick;
-        this.duration = Constants.DURATION;
-        this.instrument = instrument;
-    }
+    abstract protected void onMouseDragged(MouseEvent me);
     
-    public void setPitch(int pitch) {
-        this.pitch = pitch;
-    }
-    
-    public int getPitch() {
-        return pitch;
-    }
-    
-    public void setStartTick(int startTick) {
-        this.startTick = startTick;
-    }
-    
-    public int getStartTick() {
-        return startTick;
-    }    
+    abstract public void move(MouseEvent me);
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    } 
-    
-    public int getDuration() {
-        return duration;
+    public void setParent(Gesture newParent){
+        this.parent = newParent;
     }
     
-    public int getEndTick() {
-        return startTick + duration;
+    public Gesture getParentGesture(){
+        return parent;
     }
     
-    public Instrument getInstrument() {
-        return instrument;
-    }
-
-    public static boolean isEmpty() {
-        return ALL_NOTES.isEmpty();
-    }
-
-    public static int getLastTick() {
-        Note last = null;
-        for (Note n : ALL_NOTES) {
-            if ((last == null) || (n.getEndTick() > last.getEndTick())) {
-                last = n;
-            }
+    public Playable getHighestParent(){
+        if (parent == null) {
+            return this;
+        } else {
+            return parent.getHighestParent();
         }
-        return last.getEndTick();
     }
-
-    public void addToPlayer(MidiPlayer player) {
-        player.addNote(pitch, VOLUME, startTick, duration, 
-                       instrument.getChannel(), TRACK);
-    }
-    
-    public void delete() {
-        ALL_NOTES.remove(this);
-    }
-    
-    public static void playAllNotes(MidiPlayer player) {
-        for (Note n : ALL_NOTES) {
-            n.addToPlayer(player);
-        }
-    }    
 }
     

@@ -5,97 +5,76 @@
 package tunecomposer;
 
 import java.util.HashSet;
+import javafx.scene.input.MouseEvent;
 
 /**
- * Represents a note.
- * @author janet
+ * Represents a Gesture.
+ * @author
  */
-public class Note {
-
-    private static final int VOLUME = 127;
-    private static final int TRACK = 0;
+public class Gesture extends Playable {
+    private final HashSet<Playable> children;
     
-    private static final HashSet<Note> ALL_NOTES = new HashSet<>();
-   
-    private int pitch;
-    private int startTick;    
-    private int duration;
-    private final Instrument instrument;
     
-    /**
-     * Creates a new note.
-     *
-     * @param pitch      an integer from 0 to 127 giving the pitch
-     * @param startTick  tells when the note is to start playing (in ticks)
-     * @param instrument the instrument to play the note with
-     */
-    public Note(int pitch, int startTick, Instrument instrument) {
-        ALL_NOTES.add(this);
-        this.pitch = pitch;
-        this.startTick = startTick;
-        this.duration = Constants.DURATION;
-        this.instrument = instrument;
-    }
-    
-    public void setPitch(int pitch) {
-        this.pitch = pitch;
-    }
-    
-    public int getPitch() {
-        return pitch;
-    }
-    
-    public void setStartTick(int startTick) {
-        this.startTick = startTick;
-    }
-    
-    public int getStartTick() {
-        return startTick;
-    }    
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    } 
-    
-    public int getDuration() {
-        return duration;
-    }
-    
-    public int getEndTick() {
-        return startTick + duration;
-    }
-    
-    public Instrument getInstrument() {
-        return instrument;
-    }
-
-    public static boolean isEmpty() {
-        return ALL_NOTES.isEmpty();
-    }
-
-    public static int getLastTick() {
-        Note last = null;
-        for (Note n : ALL_NOTES) {
-            if ((last == null) || (n.getEndTick() > last.getEndTick())) {
-                last = n;
-            }
+    public Gesture(HashSet<Playable> children) {
+        this.parent = null;
+        this.children = children;
+        for(Playable child : children){
+            child.setParent(this);
         }
-        return last.getEndTick();
+    }
+    
+    @Override
+    public void play(){
+        for (Playable child : children) {
+            child.play();
+        }
+    }
+    
+    @Override
+    public void update(){}
+    
+    @Override
+    public void addToSelection(){
+        for(Playable child: children) {
+            child.addToSelection();
+        }
+        
+        //TODO add this to SELECTED, change css
+    }
+    
+    @Override
+    public void removeFromSelection() {
+        for(Playable child: children){
+            child.removeFromSelection();
+        }
+        
+        //TODO remove from SELECTED, change css
+    }
+    
+    public HashSet<NoteBar> getChildLeaves() {
+        HashSet notes = new HashSet<NoteBar>();
+        for (Playable p : children) {
+            notes.addAll(p.getChildLeaves());
+        }
+        return notes;
     }
 
-    public void addToPlayer(MidiPlayer player) {
-        player.addNote(pitch, VOLUME, startTick, duration, 
-                       instrument.getChannel(), TRACK);
-    }
-    
-    public void delete() {
-        ALL_NOTES.remove(this);
-    }
-    
-    public static void playAllNotes(MidiPlayer player) {
-        for (Note n : ALL_NOTES) {
-            n.addToPlayer(player);
+    @Override
+    public void onMouseDragged(MouseEvent me) {
+        if (parent!= null) {
+            parent.onMouseDragged(me);
+        } else {
+            parent.move(me);
         }
-    }    
+    }
+
+    @Override
+    public void move(MouseEvent me){
+        for (Playable child : children) {
+            child.move(me);
+        }
+        //TODO move current gesture
+    }
+        
 }
     
