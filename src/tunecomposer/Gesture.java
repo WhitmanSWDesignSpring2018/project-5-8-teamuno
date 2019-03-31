@@ -20,7 +20,34 @@ public class Gesture extends Playable {
         this.children = children;
         for(Playable child : children){
             child.setParent(this);
+            child.removeFromTop();
         }
+        this.setMouseTransparent(true);
+        Double minX = null; //float?
+        Double maxX = null;
+        Double minY = null;
+        Double maxY = null;
+        for(Playable child : children){
+            if(minX == null ||child.getX() < minX){
+                minX = child.getX();
+            }
+            if(minY == null ||child.getY() < minY){
+                minY = child.getY();
+            }
+            if(maxX == null ||child.getX()+child.getWidth() > maxX){
+                maxX = child.getX()+child.getWidth();
+            }
+            if(maxY == null ||child.getY()+child.getHeight() > maxY){
+                maxY = child.getY()+child.getHeight();
+            }
+        }
+        this.setX(minX);
+        this.setY(minY);
+        this.setWidth(maxX-minX);
+        this.setHeight(maxY-minY);
+        getStyleClass().add("gesture");
+        TuneComposer.clearSelection();
+        addToSelection();
     }
     
     @Override
@@ -31,24 +58,19 @@ public class Gesture extends Playable {
     }
     
     @Override
-    public void update(){}
+    public void update(){
+        //for child in children update
+        //draw
+    }
     
     @Override
     public void addToSelection(){
         for(Playable child: children) {
             child.addToSelection();
         }
-        
-        //TODO add this to SELECTED, change css
-    }
-    
-    @Override
-    public void removeFromSelection() {
-        for(Playable child: children){
-            child.removeFromSelection();
+        if(parent == null){
+            TuneComposer.addToSelection(this);
         }
-        
-        //TODO remove from SELECTED, change css
     }
     
     public HashSet<NoteBar> getChildLeaves() {
@@ -57,6 +79,20 @@ public class Gesture extends Playable {
             notes.addAll(p.getChildLeaves());
         }
         return notes;
+    }
+    
+    public void delete(){
+        for(Playable child : children){
+            child.delete();
+        }
+        TuneComposer.ALLTOP.remove(this);
+    }
+    
+    public void freeChildren(){
+        this.removeSelectStyle();
+        for(Playable child : children){
+            child.parent = null;
+        }
     }
 
     @Override
@@ -74,6 +110,14 @@ public class Gesture extends Playable {
             child.move(me);
         }
         //TODO move current gesture
+    }
+
+    @Override
+    public void removeSelectStyle() {
+       for (Playable child : children){
+           child.removeSelectStyle();
+       }
+       this.getStyleClass().remove("selected");
     }
         
 }

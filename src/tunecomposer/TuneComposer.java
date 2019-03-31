@@ -42,6 +42,7 @@ public class TuneComposer extends Application {
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
     static final HashSet<Playable> SELECTION = new HashSet<>();
+    static final HashSet<Playable> ALLTOP = new HashSet<>();
     
     /**
      * Construct a new composition pane.
@@ -145,6 +146,10 @@ public class TuneComposer extends Application {
         selectionRect.setVisible(false);
         compositionpane.getChildren().add(selectionRect);
     }
+    
+    public void draw(Playable p){
+        compositionpane.getChildren().add(p);
+    }
 
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
@@ -158,9 +163,9 @@ public class TuneComposer extends Application {
     
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
-        for (NoteBar bar : getSelectedNotes()) {
-            compositionpane.getChildren().remove(bar);
-            bar.delete();
+        for (Playable p : SELECTION) {
+            compositionpane.getChildren().remove(p);
+            p.delete();
         }
         TuneComposer.clearSelection();
     }
@@ -169,14 +174,20 @@ public class TuneComposer extends Application {
     protected void handleGroup(ActionEvent event){
         // Pass the selection by value, not by reference
         HashSet group = new HashSet<Playable>(SELECTION);
-
+        if(SELECTION.isEmpty()){return;}
         clearSelection();
-        addToSelection(new Gesture(group));
+        compositionpane.getChildren().add(new Gesture(group)); 
     }
     
     @FXML
     protected void handleUngroup(ActionEvent event){
-        // TODO
+        for(Playable p : SELECTION){
+            if (p instanceof Gesture) {
+                SELECTION.remove(p);
+                ((Gesture) p).freeChildren();
+                compositionpane.getChildren().remove(p);
+            }
+        }
     }
     
     /**
@@ -257,19 +268,21 @@ public class TuneComposer extends Application {
     }
     
     public static void addToSelection(Playable toAdd) {
+        // TODO This check could be redundant
         if (toAdd.getParent() == null) {
             SELECTION.add(toAdd);
         }
         toAdd.getStyleClass().add("selected");
     }
         
-    private void removeFromSelection(Playable p) {
-        TuneComposer.SELECTION.remove(this);
-        p.getStyleClass().remove("selected");
+    public static void removeFromSelection(Playable toRemove) {
+        SELECTION.remove(toRemove);
+        toRemove.getStyleClass().remove("selected");
     }
+
     public static void clearSelection() {
-        for (Playable p : SELECTION) {
-            p.removeFromSelection();       
+        for(Playable p : SELECTION){
+            p.removeSelectStyle();
         }
         SELECTION.clear();
     }    

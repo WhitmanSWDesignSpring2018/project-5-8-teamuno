@@ -8,16 +8,16 @@ import java.util.HashSet;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
  * Represents a notebar on screen.
  * @author janet
  */
 public class NoteBar extends Playable {
-    // TODO Move these somewhere appropriate for Playable sets
-    private static final HashSet<NoteBar> ALL = new HashSet<>();    
     
     
+    static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     private final Note note; 
     
     private static boolean dragWidth;
@@ -40,13 +40,14 @@ public class NoteBar extends Playable {
         setOnMouseDragged((MouseEvent me) -> { onMouseDragged(me); });
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
         
-        ALL.add(this);        
+        TuneComposer.ALLTOP.add(this);        
         addToSelection();
     }
     
     public void delete() {
         note.delete();
-        ALL.remove(this);
+        ALLNOTEBARS.remove(this);
+        ALLTOP.remove(this);
     }    
     
     @Override
@@ -68,7 +69,7 @@ public class NoteBar extends Playable {
         if (me.isStillSincePress()) {
             if (me.isControlDown()) {
                 if (TuneComposer.getSelection().contains(this.getHighestParent())) {
-                    this.getHighestParent().removeFromSelection();
+                    this.getHighestParent().removeSelectStyle();
                 } else {
                     this.getHighestParent().addToSelection();
                 }
@@ -138,20 +139,20 @@ public class NoteBar extends Playable {
     }
         
     // TODO Rename to indicate that this is just a style change
-    public void removeFromSelection() {
+    public void removeSelectStyle() {
         getStyleClass().remove("selected");
     }
     
     
     public static void selectAll() {
-        for (NoteBar bar : ALL) {
-            bar.addToSelection();
+        for (Playable p : TuneComposer.ALLTOP) {
+            p.addToSelection();
         }
     }
     
     public static void selectArea(Node selectionArea) {
         Bounds selectionBounds = selectionArea.getBoundsInParent();
-        for (NoteBar bar : ALL) {
+        for (NoteBar bar : ALLNOTEBARS) {
             Bounds barBounds = bar.getBoundsInParent();
             if (selectionBounds.contains(barBounds)) {
                 bar.addToSelection();

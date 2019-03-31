@@ -21,7 +21,9 @@ public abstract class Playable extends Rectangle {
     
     abstract public void addToSelection();
     
-    abstract public void removeFromSelection();
+    abstract public void removeSelectStyle();
+    
+    abstract public void delete();
 
     abstract public HashSet<NoteBar> getChildLeaves();
     
@@ -32,6 +34,10 @@ public abstract class Playable extends Rectangle {
     abstract protected void onMouseDragged(MouseEvent me);
     
     abstract public void move(MouseEvent me);
+    
+    public void removeFromTop(){
+        TuneComposer.ALLTOP.remove(this);
+    }
 
     public void setParent(Gesture newParent){
         this.parent = newParent;
