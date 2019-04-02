@@ -3,7 +3,6 @@
  * DO NOT DISTRIBUTE.
  */
 package tunecomposer;
-
 import java.util.HashSet;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -11,19 +10,17 @@ import javafx.scene.input.MouseEvent;
 import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
- * Represents a notebar on screen.
+ * Represents a note bar on screen.
  * @author janet
  */
 public class NoteBar extends Playable {
-    
-    
+
+
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     private final Note note; 
-    
+
     private static boolean dragWidth;
-    private static double dragStartX;
-    private static double dragStartY;
-    
+
     /**
      * Create a new note bar.
      * @param note The note that this bar will display on screen.
@@ -54,6 +51,7 @@ public class NoteBar extends Playable {
     @Override
     public void update() {
         setX(note.getStartTick());
+        // TODO Do something like this for gestures
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
         setWidth(note.getDuration());
@@ -93,6 +91,11 @@ public class NoteBar extends Playable {
 
         dragStartX = me.getX();
         dragStartY = me.getY();
+
+        if (parent == null) {
+
+        }
+
         me.consume();
 
     }
@@ -175,6 +178,4 @@ public class NoteBar extends Playable {
         setX(getX() + deltaX);
         setY(getY() + deltaY);
     }
-
-
 }

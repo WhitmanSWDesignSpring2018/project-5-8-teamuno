@@ -14,6 +14,9 @@ import javafx.scene.shape.Rectangle;
  */
 public abstract class Playable extends Rectangle {
     Gesture parent;
+
+    protected static double dragStartX;
+    protected static double dragStartY;
     
     abstract public void play();
     
@@ -49,4 +52,3 @@ public abstract class Playable extends Rectangle {
         }
     }
 }
-    

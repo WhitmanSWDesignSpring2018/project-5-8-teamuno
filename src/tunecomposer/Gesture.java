@@ -13,8 +13,8 @@ import javafx.scene.input.MouseEvent;
  */
 public class Gesture extends Playable {
     private final HashSet<Playable> children;
-    
-    
+
+
     public Gesture(HashSet<Playable> children) {
         this.parent = null;
         this.children = children;
@@ -28,16 +28,16 @@ public class Gesture extends Playable {
         Double minY = null;
         Double maxY = null;
         for(Playable child : children){
-            if(minX == null ||child.getX() < minX){
+            if(minX == null || child.getX() < minX){
                 minX = child.getX();
             }
-            if(minY == null ||child.getY() < minY){
+            if(minY == null || child.getY() < minY){
                 minY = child.getY();
             }
-            if(maxX == null ||child.getX()+child.getWidth() > maxX){
+            if(maxX == null || child.getX()+child.getWidth() > maxX){
                 maxX = child.getX()+child.getWidth();
             }
-            if(maxY == null ||child.getY()+child.getHeight() > maxY){
+            if(maxY == null || child.getY()+child.getHeight() > maxY){
                 maxY = child.getY()+child.getHeight();
             }
         }
@@ -49,23 +49,23 @@ public class Gesture extends Playable {
         TuneComposer.clearSelection();
         addToSelection();
     }
-    
+
     @Override
     public void play(){
         for (Playable child : children) {
             child.play();
         }
     }
-    
+
     @Override
     public void update(){
-        // TODO
+        // TODO This method may not have a purpose.
         //for child in children update
         //draw
-        for (Playable child : children) {
-        }
+        //for (Playable child : children) {
+        //}
     }
-    
+
     @Override
     public void addToSelection() {
         for(Playable child : children) {
@@ -75,7 +75,7 @@ public class Gesture extends Playable {
             TuneComposer.addToSelection(this);
         }
     }
-    
+
     public HashSet<NoteBar> getChildLeaves() {
         HashSet notes = new HashSet<NoteBar>();
         for (Playable p : children) {
@@ -83,15 +83,15 @@ public class Gesture extends Playable {
         }
         return notes;
     }
-    
-    public void delete(){
+
+    public void delete() {
         for(Playable child : children){
             child.delete();
         }
         TuneComposer.ALLTOP.remove(this);
     }
-    
-    public void freeChildren(){
+
+    public void freeChildren() {
         this.removeSelectStyle();
         for(Playable child : children){
             child.parent = null;
@@ -119,9 +119,9 @@ public class Gesture extends Playable {
         for (Playable child : children) {
             child.move(deltaX, deltaY);
         }
-        update();
-        setX(getX() + deltaX);
-        setY(getY() + deltaY);
+        //update();
+        setX(dragStartX + deltaX);
+        setY(dragStartY + deltaY);
     }
 
     @Override
@@ -131,5 +131,4 @@ public class Gesture extends Playable {
        }
        this.getStyleClass().remove("selected");
     }
-        
 }
