@@ -51,6 +51,7 @@ public abstract class Playable extends Rectangle {
         if (parent == null) {
             return this;
         } else {
+            System.out.println("Non-null parent!");
             return parent.getHighestParent();
         }
     }

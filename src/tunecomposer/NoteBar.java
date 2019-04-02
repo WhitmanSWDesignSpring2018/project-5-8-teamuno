@@ -65,47 +65,61 @@ public class NoteBar extends Playable {
         return set;
     }
 
+    private boolean isSelected() {
+        return TuneComposer.getSelection().contains(getHighestParent());
+    }
+
     private void onMouseClicked(MouseEvent me) {
         if (me.isStillSincePress()) {
             if (me.isControlDown()) {
-                if (TuneComposer.getSelection().contains(this.getHighestParent())) {
-                    this.getHighestParent().removeSelectStyle();
+                if (isSelected()) {
+                    TuneComposer.removeFromSelection(getHighestParent());
                 } else {
-                    this.getHighestParent().addToSelection();
+                    getHighestParent().addToSelection();
                 }
             } else {
                 TuneComposer.clearSelection();
-                this.getHighestParent().addToSelection();
+                getHighestParent().addToSelection();
             }
+            me.consume(); // Do not pass this event to the composition pane
         }
-        me.consume(); // Do not pass this event to the composition pane
+        System.out.println("Click ended");
     }
     
     private void onMousePressed(MouseEvent me) {                
         // Drag the edge if it is within 5 pixels 
         double rightEdge = getX() + getWidth();
         dragWidth = (me.getX() >= rightEdge - 5);
+
+        // TODO This is for testing, remove it
+        if (dragWidth) {
+            System.out.println("Detected mouse down on right edge!");
+        }
+
         dragStartX = me.getX();
         dragStartY = me.getY();
         me.consume();
+
+        System.out.println("Mouse press");
     }
     
     protected void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
-        if (!TuneComposer.getSelection().contains(this.getHighestParent())) {
+        if (!isSelected()) {
             TuneComposer.clearSelection();
-            TuneComposer.addToSelection(this.getHighestParent());
+            TuneComposer.addToSelection(getHighestParent());
         }
         
         if (dragWidth) {
             //double dragDeltaWidth = me.getX() - dragStartX;
-            //for (Playable p :  TuneComposer.getSelection()) {
+            //for (Playable p : TuneComposer.getSelection()) {
                 //p.setWidth(
                     //Math.max(5.0, p.note.getDuration() + dragDeltaWidth));
             //}
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
+            // TODO This seems to update only top-level Playables.
             for (Playable p : TuneComposer.getSelection()) {
                 p.update();
                 p.setX(p.getX() + dragDeltaX);
@@ -113,6 +127,7 @@ public class NoteBar extends Playable {
             }
         }
         me.consume();
+        System.out.println(".");
     }
     
     private void onMouseReleased(MouseEvent me) { //TODO come back to this please, do it recursively
@@ -129,6 +144,7 @@ public class NoteBar extends Playable {
             }
         }  
         me.consume();
+        System.out.println("Mouse released");
     }
     
     public void addToSelection() {
@@ -138,7 +154,6 @@ public class NoteBar extends Playable {
         getStyleClass().add("selected");
     }
         
-    // TODO Rename to indicate that this is just a style change
     public void removeSelectStyle() {
         getStyleClass().remove("selected");
     }

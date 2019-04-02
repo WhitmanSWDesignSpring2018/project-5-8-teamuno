@@ -269,7 +269,7 @@ public class TuneComposer extends Application {
     
     public static void addToSelection(Playable toAdd) {
         // TODO This check could be redundant
-        if (toAdd.getParent() == null) {
+        if (toAdd.getParentGesture() == null) {
             SELECTION.add(toAdd);
         }
         toAdd.getStyleClass().add("selected");
@@ -277,7 +277,7 @@ public class TuneComposer extends Application {
         
     public static void removeFromSelection(Playable toRemove) {
         SELECTION.remove(toRemove);
-        toRemove.getStyleClass().remove("selected");
+        toRemove.removeSelectStyle();
     }
 
     public static void clearSelection() {
