@@ -27,13 +27,7 @@ public abstract class Playable extends Rectangle {
 
     abstract public HashSet<NoteBar> getChildLeaves();
     
-    /**
-     *
-     * @param me
-     */
-    abstract protected void onMouseDragged(MouseEvent me);
-    
-    abstract public void move(MouseEvent me);
+    abstract public void move(double deltaX, double deltaY);
     
     public void removeFromTop(){
         TuneComposer.ALLTOP.remove(this);

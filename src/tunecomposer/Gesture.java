@@ -23,7 +23,7 @@ public class Gesture extends Playable {
             child.removeFromTop();
         }
         this.setMouseTransparent(true);
-        Double minX = null; //float?
+        Double minX = null;
         Double maxX = null;
         Double minY = null;
         Double maxY = null;
@@ -59,13 +59,16 @@ public class Gesture extends Playable {
     
     @Override
     public void update(){
+        // TODO
         //for child in children update
         //draw
+        for (Playable child : children) {
+        }
     }
     
     @Override
-    public void addToSelection(){
-        for(Playable child: children) {
+    public void addToSelection() {
+        for(Playable child : children) {
             child.addToSelection();
         }
         if(parent == null){
@@ -95,21 +98,30 @@ public class Gesture extends Playable {
         }
     }
 
+    /*
+     * // I think this is unused.
     @Override
     public void onMouseDragged(MouseEvent me) {
-        if (parent!= null) {
+        // TODO Do we want Gesture to have a mouse drag handler?
+        // It's meant to be mouse-transparent.
+        // TODO I don't think this is called.
+        if (parent != null) {
             parent.onMouseDragged(me);
         } else {
-            parent.move(me);
+            // TODO Move 
+            move(me);
         }
     }
+    */
 
     @Override
-    public void move(MouseEvent me){
+    public void move(double deltaX, double deltaY){
         for (Playable child : children) {
-            child.move(me);
+            child.move(deltaX, deltaY);
         }
-        //TODO move current gesture
+        update();
+        setX(getX() + deltaX);
+        setY(getY() + deltaY);
     }
 
     @Override
@@ -121,4 +133,3 @@ public class Gesture extends Playable {
     }
         
 }
-    

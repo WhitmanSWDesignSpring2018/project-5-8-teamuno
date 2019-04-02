@@ -91,10 +91,6 @@ public class NoteBar extends Playable {
         double rightEdge = getX() + getWidth();
         dragWidth = (me.getX() >= rightEdge - 5);
 
-        // TODO This is for testing, remove it
-        if (dragWidth) {
-        }
-
         dragStartX = me.getX();
         dragStartY = me.getY();
         me.consume();
@@ -117,11 +113,8 @@ public class NoteBar extends Playable {
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
-            // TODO This seems to update only top-level Playables.
             for (Playable p : TuneComposer.getSelection()) {
-                p.update();
-                p.setX(p.getX() + dragDeltaX);
-                p.setY(p.getY() + dragDeltaY);
+                p.move(dragDeltaX, dragDeltaY);
             }
         }
         me.consume();
@@ -177,8 +170,10 @@ public class NoteBar extends Playable {
     }
 
     @Override
-    public void move(MouseEvent me) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void move(double deltaX, double deltaY) {
+        update();
+        setX(getX() + deltaX);
+        setY(getY() + deltaY);
     }
 
 
