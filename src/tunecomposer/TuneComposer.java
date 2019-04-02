@@ -66,7 +66,6 @@ public class TuneComposer extends Application {
             player.play();
 
             int end = Note.getLastTick();
-            System.out.println(end);
             playAnimation.setToX(end);
             playAnimation.setDuration(Constants.ticksToDuration(end));
             playAnimation.playFromStart();

@@ -41,6 +41,7 @@ public class NoteBar extends Playable {
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
         
         TuneComposer.ALLTOP.add(this);        
+        ALLNOTEBARS.add(this);
         addToSelection();
     }
     
@@ -83,7 +84,6 @@ public class NoteBar extends Playable {
             }
             me.consume(); // Do not pass this event to the composition pane
         }
-        System.out.println("Click ended");
     }
     
     private void onMousePressed(MouseEvent me) {                
@@ -93,14 +93,12 @@ public class NoteBar extends Playable {
 
         // TODO This is for testing, remove it
         if (dragWidth) {
-            System.out.println("Detected mouse down on right edge!");
         }
 
         dragStartX = me.getX();
         dragStartY = me.getY();
         me.consume();
 
-        System.out.println("Mouse press");
     }
     
     protected void onMouseDragged(MouseEvent me) {
@@ -127,7 +125,6 @@ public class NoteBar extends Playable {
             }
         }
         me.consume();
-        System.out.println(".");
     }
     
     private void onMouseReleased(MouseEvent me) { //TODO come back to this please, do it recursively
@@ -144,7 +141,6 @@ public class NoteBar extends Playable {
             }
         }  
         me.consume();
-        System.out.println("Mouse released");
     }
     
     public void addToSelection() {
