@@ -33,8 +33,23 @@
     -fx-stroke-width: 1;
 }
 
-.note.selected {
+.note.selected { /* can we apply this to gestures*/
+    -fx-stroke: mediumspringgreen;
+    -fx-stroke-dash-array: 4 2; 
+    -fx-stroke-dash-offset: 2;
+    -fx-stroke-line-cap: butt;
+}
+
+.gesture {
+    -fx-fill: transparent; 
     -fx-stroke: black;
+    -fx-stroke-dash-array: 4 2; 
+    -fx-stroke-dash-offset: 2;
+    -fx-stroke-line-cap: butt;
+}
+
+.gesture.selected {
+    -fx-stroke: mediumspringgreen;
     -fx-stroke-dash-array: 4 2; 
     -fx-stroke-dash-offset: 2;
     -fx-stroke-line-cap: butt;

@@ -96,6 +96,6 @@ public class Note {
         for (Note n : ALL_NOTES) {
             n.addToPlayer(player);
         }
-    }    
+    }  
 }
     

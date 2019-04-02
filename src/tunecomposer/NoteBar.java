@@ -8,16 +8,16 @@ import java.util.HashSet;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Rectangle;
+import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
  * Represents a notebar on screen.
  * @author janet
  */
-public class NoteBar extends Rectangle {
-    private static final HashSet<NoteBar> ALL = new HashSet<>();    
-    private static final HashSet<NoteBar> SELECTION = new HashSet<>();
+public class NoteBar extends Playable {
     
+    
+    static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     private final Note note; 
     
     private static boolean dragWidth;
@@ -40,16 +40,18 @@ public class NoteBar extends Rectangle {
         setOnMouseDragged((MouseEvent me) -> { onMouseDragged(me); });
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
         
-        ALL.add(this);        
+        TuneComposer.ALLTOP.add(this);        
         addToSelection();
     }
     
     public void delete() {
         note.delete();
-        ALL.remove(this);
+        ALLNOTEBARS.remove(this);
+        ALLTOP.remove(this);
     }    
     
-    private void update() {
+    @Override
+    public void update() {
         setX(note.getStartTick());
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
@@ -57,17 +59,23 @@ public class NoteBar extends Rectangle {
         setFill(note.getInstrument().getDisplayColor());
     } 
 
+    public HashSet<NoteBar> getChildLeaves() {
+        HashSet set =  new HashSet<NoteBar>();
+        set.add(this);
+        return set;
+    }
+
     private void onMouseClicked(MouseEvent me) {
         if (me.isStillSincePress()) {
             if (me.isControlDown()) {
-                if (SELECTION.contains(this)) {
-                    removeFromSelection();
+                if (TuneComposer.getSelection().contains(this.getHighestParent())) {
+                    this.getHighestParent().removeSelectStyle();
                 } else {
-                    addToSelection();
+                    this.getHighestParent().addToSelection();
                 }
             } else {
-                NoteBar.clearSelection();
-                addToSelection();
+                TuneComposer.clearSelection();
+                this.getHighestParent().addToSelection();
             }
         }
         me.consume(); // Do not pass this event to the composition pane
@@ -82,39 +90,39 @@ public class NoteBar extends Rectangle {
         me.consume();
     }
     
-    private void onMouseDragged(MouseEvent me) {
+    protected void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
-        if (!SELECTION.contains(this)) {
-            clearSelection();
-            addToSelection();
+        if (!TuneComposer.getSelection().contains(this.getHighestParent())) {
+            TuneComposer.clearSelection();
+            TuneComposer.addToSelection(this.getHighestParent());
         }
         
         if (dragWidth) {
-            double dragDeltaWidth = me.getX() - dragStartX;
-            for (NoteBar bar : SELECTION) {
-                bar.setWidth(
-                        Math.max(5.0, bar.note.getDuration() + dragDeltaWidth));
-            }
+            //double dragDeltaWidth = me.getX() - dragStartX;
+            //for (Playable p :  TuneComposer.getSelection()) {
+                //p.setWidth(
+                    //Math.max(5.0, p.note.getDuration() + dragDeltaWidth));
+            //}
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
-            for (NoteBar bar : SELECTION) {
-                bar.update();
-                bar.setX(bar.getX() + dragDeltaX);
-                bar.setY(bar.getY() + dragDeltaY);
+            for (Playable p : TuneComposer.getSelection()) {
+                p.update();
+                p.setX(p.getX() + dragDeltaX);
+                p.setY(p.getY() + dragDeltaY);
             }
         }
         me.consume();
     }
     
-    private void onMouseReleased(MouseEvent me) {
+    private void onMouseReleased(MouseEvent me) { //TODO come back to this please, do it recursively
         if (dragWidth) {
-            for (NoteBar bar : SELECTION) {
-                bar.note.setDuration((int)getWidth());
-                bar.update();
-            }
+           // for (NoteBar bar : TuneComposer.getSelection()) {
+             //   bar.note.setDuration((int)getWidth());
+               // bar.update();
+            //}
         } else {
-            for (NoteBar bar : SELECTION) {
+            for (NoteBar bar : TuneComposer.getSelectedNotes()) {
                 bar.note.setStartTick((int)bar.getX());
                 bar.note.setPitch(Constants.coordToPitch(bar.getY()));
                 bar.update();
@@ -123,42 +131,43 @@ public class NoteBar extends Rectangle {
         me.consume();
     }
     
-    private void addToSelection() {
-        SELECTION.add(this);
+    public void addToSelection() {
+        if (parent == null) {
+            TuneComposer.SELECTION.add(this);
+        }
         getStyleClass().add("selected");
     }
         
-    private void removeFromSelection() {
-        SELECTION.remove(this);
+    // TODO Rename to indicate that this is just a style change
+    public void removeSelectStyle() {
         getStyleClass().remove("selected");
     }
     
     
     public static void selectAll() {
-        for (NoteBar bar : ALL) {
-            bar.addToSelection();
+        for (Playable p : TuneComposer.ALLTOP) {
+            p.addToSelection();
         }
     }
     
     public static void selectArea(Node selectionArea) {
         Bounds selectionBounds = selectionArea.getBoundsInParent();
-        for (NoteBar bar : ALL) {
+        for (NoteBar bar : ALLNOTEBARS) {
             Bounds barBounds = bar.getBoundsInParent();
             if (selectionBounds.contains(barBounds)) {
                 bar.addToSelection();
             }
         }
     }
-    
-    public static void clearSelection() {
-        for (NoteBar bar : SELECTION) {
-            bar.getStyleClass().remove("selected");        
-        }
-        SELECTION.clear();
-    }    
-    
-    public static HashSet<NoteBar> getSelection() {
-        return SELECTION;
+
+    @Override
+    public void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void move(MouseEvent me) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

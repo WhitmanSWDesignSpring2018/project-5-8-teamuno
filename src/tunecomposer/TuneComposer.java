@@ -5,6 +5,7 @@
 package tunecomposer;
 
 import java.io.IOException;
+import java.util.HashSet;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -40,6 +41,8 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+    static final HashSet<Playable> SELECTION = new HashSet<>();
+    static final HashSet<Playable> ALLTOP = new HashSet<>();
     
     /**
      * Construct a new composition pane.
@@ -143,6 +146,10 @@ public class TuneComposer extends Application {
         selectionRect.setVisible(false);
         compositionpane.getChildren().add(selectionRect);
     }
+    
+    public void draw(Playable p){
+        compositionpane.getChildren().add(p);
+    }
 
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
@@ -151,16 +158,36 @@ public class TuneComposer extends Application {
     
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
-        NoteBar.clearSelection();
+        TuneComposer.clearSelection();
     }
     
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
-        for (NoteBar bar : NoteBar.getSelection()) {
-            compositionpane.getChildren().remove(bar);
-            bar.delete();
+        for (Playable p : SELECTION) {
+            compositionpane.getChildren().remove(p);
+            p.delete();
         }
-        NoteBar.clearSelection();
+        TuneComposer.clearSelection();
+    }
+    
+    @FXML
+    protected void handleGroup(ActionEvent event){
+        // Pass the selection by value, not by reference
+        HashSet group = new HashSet<Playable>(SELECTION);
+        if(SELECTION.isEmpty()){return;}
+        clearSelection();
+        compositionpane.getChildren().add(new Gesture(group)); 
+    }
+    
+    @FXML
+    protected void handleUngroup(ActionEvent event){
+        for(Playable p : SELECTION){
+            if (p instanceof Gesture) {
+                SELECTION.remove(p);
+                ((Gesture) p).freeChildren();
+                compositionpane.getChildren().remove(p);
+            }
+        }
     }
     
     /**
@@ -190,7 +217,7 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMousePressed(MouseEvent event) {
         stopPlaying();
         if (!event.isControlDown()) {
-            NoteBar.clearSelection();
+            clearSelection();
         } 
         selectionRect.setX(event.getX());
         selectionRect.setY(event.getY());
@@ -225,7 +252,7 @@ public class TuneComposer extends Application {
                                  (int)event.getX(), 
                                  instrument);
             if (!event.isControlDown()) {
-                NoteBar.clearSelection();
+                clearSelection();
             }
             compositionpane.getChildren().add(new NoteBar(note)); 
         }
@@ -238,6 +265,38 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleExitAction(ActionEvent event) {
         System.exit(0);
+    }
+    
+    public static void addToSelection(Playable toAdd) {
+        // TODO This check could be redundant
+        if (toAdd.getParent() == null) {
+            SELECTION.add(toAdd);
+        }
+        toAdd.getStyleClass().add("selected");
+    }
+        
+    public static void removeFromSelection(Playable toRemove) {
+        SELECTION.remove(toRemove);
+        toRemove.getStyleClass().remove("selected");
+    }
+
+    public static void clearSelection() {
+        for(Playable p : SELECTION){
+            p.removeSelectStyle();
+        }
+        SELECTION.clear();
+    }    
+    
+    public static HashSet<Playable> getSelection() {
+        return SELECTION;
+    }
+    
+    public static HashSet<NoteBar> getSelectedNotes() {
+        HashSet notes = new HashSet<NoteBar>();
+        for (Playable p : SELECTION) {
+           notes.addAll(p.getChildLeaves());
+        } 
+        return notes;
     }
     
     /**
