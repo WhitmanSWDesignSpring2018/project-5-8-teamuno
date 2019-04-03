@@ -4,9 +4,11 @@
  */
 package tunecomposer;
 import java.util.HashSet;
+import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
@@ -18,7 +20,6 @@ public class NoteBar extends Playable {
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     private final Note note; 
-
     private static boolean dragWidth;
 
     /**
@@ -42,8 +43,9 @@ public class NoteBar extends Playable {
         addToSelection();
     }
     
-    public void delete() {
+    public void delete(Pane compositionpane) {
         note.delete();
+        compositionpane.getChildren().remove(this);
         ALLNOTEBARS.remove(this);
         ALLTOP.remove(this);
     }    
@@ -91,10 +93,10 @@ public class NoteBar extends Playable {
 
         dragStartX = me.getX();
         dragStartY = me.getY();
-
-        if (parent == null) {
-
+        for (Playable p : TuneComposer.getSelection()){
+            if(p instanceof Gesture){((Gesture) p).setStart();}
         }
+        if(getHighestParent() instanceof Gesture){((Gesture) getHighestParent()).setStart();}
 
         me.consume();
 
@@ -108,16 +110,20 @@ public class NoteBar extends Playable {
         }
         
         if (dragWidth) {
-            //double dragDeltaWidth = me.getX() - dragStartX;
-            //for (Playable p : TuneComposer.getSelection()) {
-                //p.setWidth(
-                    //Math.max(5.0, p.note.getDuration() + dragDeltaWidth));
-            //}
+            if(parent == null){
+            double dragDeltaWidth = me.getX() - dragStartX;
+                for (Playable p : TuneComposer.getSelection()) {
+                    if(p instanceof NoteBar && p.parent==null){
+                    p.setWidth(
+                    Math.max(5.0, ((NoteBar) p).note.getDuration() + dragDeltaWidth));
+                    }
+                }
+            }
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
             for (Playable p : TuneComposer.getSelection()) {
-                p.move(dragDeltaX, dragDeltaY);
+                p.getHighestParent().move(dragDeltaX, dragDeltaY);
             }
         }
         me.consume();
@@ -125,15 +131,23 @@ public class NoteBar extends Playable {
     
     private void onMouseReleased(MouseEvent me) { //TODO come back to this please, do it recursively
         if (dragWidth) {
-           // for (NoteBar bar : TuneComposer.getSelection()) {
-             //   bar.note.setDuration((int)getWidth());
-               // bar.update();
-            //}
+            for (Playable p : TuneComposer.getSelection()) {
+                if(p instanceof NoteBar && p.parent==null){
+                    ((NoteBar) p).note.setDuration((int)getWidth());
+                    ((NoteBar) p).update();
+                }
+            }
         } else {
             for (NoteBar bar : TuneComposer.getSelectedNotes()) {
                 bar.note.setStartTick((int)bar.getX());
                 bar.note.setPitch(Constants.coordToPitch(bar.getY()));
                 bar.update();
+            }
+            for (Playable p : TuneComposer.getSelection()){
+                if (p instanceof Gesture){
+                    ((Gesture) p).snapY();
+                    p.addToSelection();
+                }
             }
         }  
         me.consume();

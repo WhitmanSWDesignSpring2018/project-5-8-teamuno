@@ -6,6 +6,7 @@ package tunecomposer;
 
 import java.util.HashSet;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -25,8 +26,6 @@ public abstract class Playable extends Rectangle {
     abstract public void addToSelection();
     
     abstract public void removeSelectStyle();
-    
-    abstract public void delete();
 
     abstract public HashSet<NoteBar> getChildLeaves();
     
@@ -50,5 +49,8 @@ public abstract class Playable extends Rectangle {
         } else {
             return parent.getHighestParent();
         }
+    }
+
+    void delete(Pane compositionpane) {
     }
 }

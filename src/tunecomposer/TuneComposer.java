@@ -152,7 +152,9 @@ public class TuneComposer extends Application {
 
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
-        NoteBar.selectAll();
+        for(Playable p : ALLTOP){
+            p.addToSelection();
+        }
     }
 
     @FXML
@@ -164,7 +166,7 @@ public class TuneComposer extends Application {
     protected void handleDeleteAction(ActionEvent event) {
         for (Playable p : SELECTION) {
             compositionpane.getChildren().remove(p);
-            p.delete();
+            p.delete(compositionpane);
         }
         TuneComposer.clearSelection();
     }
@@ -174,7 +176,6 @@ public class TuneComposer extends Application {
         // Pass the selection by value, not by reference
         HashSet group = new HashSet<Playable>(SELECTION);
         if(SELECTION.isEmpty()){return;}
-        clearSelection();
         compositionpane.getChildren().add(new Gesture(group));
     }
 
@@ -268,9 +269,7 @@ public class TuneComposer extends Application {
 
     public static void addToSelection(Playable toAdd) {
         // TODO This check could be redundant
-        if (toAdd.getParentGesture() == null) {
-            SELECTION.add(toAdd);
-        }
+        SELECTION.add(toAdd);
         toAdd.getStyleClass().add("selected");
     }
 

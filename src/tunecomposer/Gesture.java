@@ -5,7 +5,8 @@
 package tunecomposer;
 
 import java.util.HashSet;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import static tunecomposer.Constants.LINE_SPACING;
 
 /**
  * Represents a Gesture.
@@ -13,6 +14,8 @@ import javafx.scene.input.MouseEvent;
  */
 public class Gesture extends Playable {
     private final HashSet<Playable> children;
+    private double rectStartX;
+    private double rectStartY;
 
 
     public Gesture(HashSet<Playable> children) {
@@ -46,7 +49,6 @@ public class Gesture extends Playable {
         this.setWidth(maxX-minX);
         this.setHeight(maxY-minY);
         getStyleClass().add("gesture");
-        TuneComposer.clearSelection();
         addToSelection();
     }
 
@@ -84,9 +86,9 @@ public class Gesture extends Playable {
         return notes;
     }
 
-    public void delete() {
+    public void delete(Pane compositionpane) {
         for(Playable child : children){
-            child.delete();
+            child.delete(compositionpane);
         }
         TuneComposer.ALLTOP.remove(this);
     }
@@ -113,15 +115,25 @@ public class Gesture extends Playable {
         }
     }
     */
-
+    public void setStart(){
+        rectStartX = this.getX();
+        rectStartY = this.getY();
+        for (Playable child : children){
+            if(child instanceof Gesture){((Gesture) child).setStart();}
+        }
+    }
+    
     @Override
     public void move(double deltaX, double deltaY){
         for (Playable child : children) {
             child.move(deltaX, deltaY);
         }
-        //update();
-        setX(dragStartX + deltaX);
-        setY(dragStartY + deltaY);
+        setX(rectStartX + deltaX);
+        setY(rectStartY + deltaY);
+    }
+    
+    public void snapY(){
+        setY(getY() - (getY()) % LINE_SPACING);
     }
 
     @Override
