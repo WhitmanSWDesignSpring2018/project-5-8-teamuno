@@ -152,7 +152,9 @@ public class TuneComposer extends Application {
 
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
-        NoteBar.selectAll();
+        for(Playable p : ALLTOP){
+            p.addToSelection();
+        }
     }
 
     @FXML

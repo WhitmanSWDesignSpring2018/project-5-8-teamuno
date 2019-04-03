@@ -96,9 +96,7 @@ public class NoteBar extends Playable {
         for (Playable p : TuneComposer.getSelection()){
             if(p instanceof Gesture){((Gesture) p).setStart();}
         }
-        if (parent == null) {
-
-        }
+        if(getHighestParent() instanceof Gesture){((Gesture) getHighestParent()).setStart();}
 
         me.consume();
 
@@ -142,6 +140,7 @@ public class NoteBar extends Playable {
             for (Playable p : TuneComposer.getSelection()){
                 if (p instanceof Gesture){
                     ((Gesture) p).snapY();
+                    p.addToSelection();
                 }
             }
         }  
