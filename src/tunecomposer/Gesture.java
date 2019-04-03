@@ -49,9 +49,7 @@ public class Gesture extends Playable {
         this.setWidth(maxX-minX);
         this.setHeight(maxY-minY);
         getStyleClass().add("gesture");
-        TuneComposer.clearSelection();
         addToSelection();
-        isMoving = false;
     }
 
     @Override
@@ -117,18 +115,19 @@ public class Gesture extends Playable {
         }
     }
     */
-
+    public void setStart(){
+        rectStartX = this.getX();
+        rectStartY = this.getY();
+        for (Playable child : children){
+            if(child instanceof Gesture){((Gesture) child).setStart();}
+        }
+    }
+    
     @Override
     public void move(double deltaX, double deltaY){
-        if(!isMoving){
-            rectStartX = this.getX();
-            rectStartY = this.getY();
-        }
-        isMoving = true;
         for (Playable child : children) {
             child.move(deltaX, deltaY);
         }
-        //update();
         setX(rectStartX + deltaX);
         setY(rectStartY + deltaY);
     }

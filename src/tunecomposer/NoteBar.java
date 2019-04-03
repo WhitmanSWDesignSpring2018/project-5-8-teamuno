@@ -41,7 +41,6 @@ public class NoteBar extends Playable {
         TuneComposer.ALLTOP.add(this);        
         ALLNOTEBARS.add(this);
         addToSelection();
-        isMoving = false;
     }
     
     public void delete(Pane compositionpane) {
@@ -94,7 +93,9 @@ public class NoteBar extends Playable {
 
         dragStartX = me.getX();
         dragStartY = me.getY();
-
+        for (Playable p : TuneComposer.getSelection()){
+            if(p instanceof Gesture){((Gesture) p).setStart();}
+        }
         if (parent == null) {
 
         }
@@ -120,7 +121,7 @@ public class NoteBar extends Playable {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
             for (Playable p : TuneComposer.getSelection()) {
-                p.move(dragDeltaX, dragDeltaY);
+                p.getHighestParent().move(dragDeltaX, dragDeltaY);
             }
         }
         me.consume();
@@ -144,7 +145,6 @@ public class NoteBar extends Playable {
                 }
             }
         }  
-        isMoving = false;
         me.consume();
     }
     

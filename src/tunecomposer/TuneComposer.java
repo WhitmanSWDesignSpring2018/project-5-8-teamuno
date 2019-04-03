@@ -174,7 +174,6 @@ public class TuneComposer extends Application {
         // Pass the selection by value, not by reference
         HashSet group = new HashSet<Playable>(SELECTION);
         if(SELECTION.isEmpty()){return;}
-        clearSelection();
         compositionpane.getChildren().add(new Gesture(group));
     }
 
@@ -268,9 +267,7 @@ public class TuneComposer extends Application {
 
     public static void addToSelection(Playable toAdd) {
         // TODO This check could be redundant
-        if (toAdd.getParentGesture() == null) {
-            SELECTION.add(toAdd);
-        }
+        SELECTION.add(toAdd);
         toAdd.getStyleClass().add("selected");
     }
 
