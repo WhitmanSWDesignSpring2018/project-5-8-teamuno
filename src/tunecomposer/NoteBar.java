@@ -4,9 +4,11 @@
  */
 package tunecomposer;
 import java.util.HashSet;
+import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
@@ -18,7 +20,6 @@ public class NoteBar extends Playable {
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     private final Note note; 
-
     private static boolean dragWidth;
 
     /**
@@ -43,8 +44,9 @@ public class NoteBar extends Playable {
         isMoving = false;
     }
     
-    public void delete() {
+    public void delete(Pane compositionpane) {
         note.delete();
+        compositionpane.getChildren().remove(this);
         ALLNOTEBARS.remove(this);
         ALLTOP.remove(this);
     }    

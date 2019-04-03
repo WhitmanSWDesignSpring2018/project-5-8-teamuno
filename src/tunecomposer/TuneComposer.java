@@ -164,7 +164,7 @@ public class TuneComposer extends Application {
     protected void handleDeleteAction(ActionEvent event) {
         for (Playable p : SELECTION) {
             compositionpane.getChildren().remove(p);
-            p.delete();
+            p.delete(compositionpane);
         }
         TuneComposer.clearSelection();
     }

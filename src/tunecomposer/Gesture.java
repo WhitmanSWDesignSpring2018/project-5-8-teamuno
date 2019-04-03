@@ -5,6 +5,7 @@
 package tunecomposer;
 
 import java.util.HashSet;
+import javafx.scene.layout.Pane;
 import static tunecomposer.Constants.LINE_SPACING;
 
 /**
@@ -87,9 +88,9 @@ public class Gesture extends Playable {
         return notes;
     }
 
-    public void delete() {
+    public void delete(Pane compositionpane) {
         for(Playable child : children){
-            child.delete();
+            child.delete(compositionpane);
         }
         TuneComposer.ALLTOP.remove(this);
     }
