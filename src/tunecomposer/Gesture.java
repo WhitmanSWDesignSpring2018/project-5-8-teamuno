@@ -5,7 +5,7 @@
 package tunecomposer;
 
 import java.util.HashSet;
-import javafx.scene.input.MouseEvent;
+import static tunecomposer.Constants.LINE_SPACING;
 
 /**
  * Represents a Gesture.
@@ -13,6 +13,8 @@ import javafx.scene.input.MouseEvent;
  */
 public class Gesture extends Playable {
     private final HashSet<Playable> children;
+    private double rectStartX;
+    private double rectStartY;
 
 
     public Gesture(HashSet<Playable> children) {
@@ -48,6 +50,7 @@ public class Gesture extends Playable {
         getStyleClass().add("gesture");
         TuneComposer.clearSelection();
         addToSelection();
+        isMoving = false;
     }
 
     @Override
@@ -116,12 +119,21 @@ public class Gesture extends Playable {
 
     @Override
     public void move(double deltaX, double deltaY){
+        if(!isMoving){
+            rectStartX = this.getX();
+            rectStartY = this.getY();
+        }
+        isMoving = true;
         for (Playable child : children) {
             child.move(deltaX, deltaY);
         }
         //update();
-        setX(dragStartX + deltaX);
-        setY(dragStartY + deltaY);
+        setX(rectStartX + deltaX);
+        setY(rectStartY + deltaY);
+    }
+    
+    public void snapY(){
+        setY(getY() - (getY()) % LINE_SPACING);
     }
 
     @Override

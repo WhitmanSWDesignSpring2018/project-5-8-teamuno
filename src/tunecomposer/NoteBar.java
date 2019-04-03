@@ -40,6 +40,7 @@ public class NoteBar extends Playable {
         TuneComposer.ALLTOP.add(this);        
         ALLNOTEBARS.add(this);
         addToSelection();
+        isMoving = false;
     }
     
     public void delete() {
@@ -135,7 +136,13 @@ public class NoteBar extends Playable {
                 bar.note.setPitch(Constants.coordToPitch(bar.getY()));
                 bar.update();
             }
+            for (Playable p : TuneComposer.getSelection()){
+                if (p instanceof Gesture){
+                    ((Gesture) p).snapY();
+                }
+            }
         }  
+        isMoving = false;
         me.consume();
     }
     

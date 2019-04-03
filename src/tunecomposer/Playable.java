@@ -17,6 +17,7 @@ public abstract class Playable extends Rectangle {
 
     protected static double dragStartX;
     protected static double dragStartY;
+    protected static boolean isMoving;
     
     abstract public void play();
     
