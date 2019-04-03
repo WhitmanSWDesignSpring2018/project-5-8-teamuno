@@ -3,7 +3,6 @@
  * DO NOT DISTRIBUTE.
  */
 package tunecomposer;
-
 import java.util.HashSet;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -11,19 +10,17 @@ import javafx.scene.input.MouseEvent;
 import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
- * Represents a notebar on screen.
+ * Represents a note bar on screen.
  * @author janet
  */
 public class NoteBar extends Playable {
-    
-    
+
+
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     private final Note note; 
-    
+
     private static boolean dragWidth;
-    private static double dragStartX;
-    private static double dragStartY;
-    
+
     /**
      * Create a new note bar.
      * @param note The note that this bar will display on screen.
@@ -41,6 +38,7 @@ public class NoteBar extends Playable {
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
         
         TuneComposer.ALLTOP.add(this);        
+        ALLNOTEBARS.add(this);
         addToSelection();
     }
     
@@ -53,6 +51,7 @@ public class NoteBar extends Playable {
     @Override
     public void update() {
         setX(note.getStartTick());
+        // TODO Do something like this for gestures
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
         setWidth(note.getDuration());
@@ -65,41 +64,52 @@ public class NoteBar extends Playable {
         return set;
     }
 
+    private boolean isSelected() {
+        return TuneComposer.getSelection().contains(getHighestParent());
+    }
+
     private void onMouseClicked(MouseEvent me) {
         if (me.isStillSincePress()) {
             if (me.isControlDown()) {
-                if (TuneComposer.getSelection().contains(this.getHighestParent())) {
-                    this.getHighestParent().removeSelectStyle();
+                if (isSelected()) {
+                    TuneComposer.removeFromSelection(getHighestParent());
                 } else {
-                    this.getHighestParent().addToSelection();
+                    getHighestParent().addToSelection();
                 }
             } else {
                 TuneComposer.clearSelection();
-                this.getHighestParent().addToSelection();
+                getHighestParent().addToSelection();
             }
+            me.consume(); // Do not pass this event to the composition pane
         }
-        me.consume(); // Do not pass this event to the composition pane
     }
     
     private void onMousePressed(MouseEvent me) {                
         // Drag the edge if it is within 5 pixels 
         double rightEdge = getX() + getWidth();
         dragWidth = (me.getX() >= rightEdge - 5);
+
         dragStartX = me.getX();
         dragStartY = me.getY();
+
+        if (parent == null) {
+
+        }
+
         me.consume();
+
     }
     
     protected void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
-        if (!TuneComposer.getSelection().contains(this.getHighestParent())) {
+        if (!isSelected()) {
             TuneComposer.clearSelection();
-            TuneComposer.addToSelection(this.getHighestParent());
+            TuneComposer.addToSelection(getHighestParent());
         }
         
         if (dragWidth) {
             //double dragDeltaWidth = me.getX() - dragStartX;
-            //for (Playable p :  TuneComposer.getSelection()) {
+            //for (Playable p : TuneComposer.getSelection()) {
                 //p.setWidth(
                     //Math.max(5.0, p.note.getDuration() + dragDeltaWidth));
             //}
@@ -107,9 +117,7 @@ public class NoteBar extends Playable {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
             for (Playable p : TuneComposer.getSelection()) {
-                p.update();
-                p.setX(p.getX() + dragDeltaX);
-                p.setY(p.getY() + dragDeltaY);
+                p.move(dragDeltaX, dragDeltaY);
             }
         }
         me.consume();
@@ -138,7 +146,6 @@ public class NoteBar extends Playable {
         getStyleClass().add("selected");
     }
         
-    // TODO Rename to indicate that this is just a style change
     public void removeSelectStyle() {
         getStyleClass().remove("selected");
     }
@@ -166,9 +173,9 @@ public class NoteBar extends Playable {
     }
 
     @Override
-    public void move(MouseEvent me) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void move(double deltaX, double deltaY) {
+        update();
+        setX(getX() + deltaX);
+        setY(getY() + deltaY);
     }
-
-
 }

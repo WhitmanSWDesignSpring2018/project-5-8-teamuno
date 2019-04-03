@@ -13,8 +13,8 @@ import javafx.scene.input.MouseEvent;
  */
 public class Gesture extends Playable {
     private final HashSet<Playable> children;
-    
-    
+
+
     public Gesture(HashSet<Playable> children) {
         this.parent = null;
         this.children = children;
@@ -23,21 +23,21 @@ public class Gesture extends Playable {
             child.removeFromTop();
         }
         this.setMouseTransparent(true);
-        Double minX = null; //float?
+        Double minX = null;
         Double maxX = null;
         Double minY = null;
         Double maxY = null;
         for(Playable child : children){
-            if(minX == null ||child.getX() < minX){
+            if(minX == null || child.getX() < minX){
                 minX = child.getX();
             }
-            if(minY == null ||child.getY() < minY){
+            if(minY == null || child.getY() < minY){
                 minY = child.getY();
             }
-            if(maxX == null ||child.getX()+child.getWidth() > maxX){
+            if(maxX == null || child.getX()+child.getWidth() > maxX){
                 maxX = child.getX()+child.getWidth();
             }
-            if(maxY == null ||child.getY()+child.getHeight() > maxY){
+            if(maxY == null || child.getY()+child.getHeight() > maxY){
                 maxY = child.getY()+child.getHeight();
             }
         }
@@ -49,30 +49,33 @@ public class Gesture extends Playable {
         TuneComposer.clearSelection();
         addToSelection();
     }
-    
+
     @Override
     public void play(){
         for (Playable child : children) {
             child.play();
         }
     }
-    
+
     @Override
     public void update(){
+        // TODO This method may not have a purpose.
         //for child in children update
         //draw
+        //for (Playable child : children) {
+        //}
     }
-    
+
     @Override
-    public void addToSelection(){
-        for(Playable child: children) {
+    public void addToSelection() {
+        for(Playable child : children) {
             child.addToSelection();
         }
         if(parent == null){
             TuneComposer.addToSelection(this);
         }
     }
-    
+
     public HashSet<NoteBar> getChildLeaves() {
         HashSet notes = new HashSet<NoteBar>();
         for (Playable p : children) {
@@ -80,36 +83,45 @@ public class Gesture extends Playable {
         }
         return notes;
     }
-    
-    public void delete(){
+
+    public void delete() {
         for(Playable child : children){
             child.delete();
         }
         TuneComposer.ALLTOP.remove(this);
     }
-    
-    public void freeChildren(){
+
+    public void freeChildren() {
         this.removeSelectStyle();
         for(Playable child : children){
             child.parent = null;
         }
     }
 
+    /*
+     * // I think this is unused.
     @Override
     public void onMouseDragged(MouseEvent me) {
-        if (parent!= null) {
+        // TODO Do we want Gesture to have a mouse drag handler?
+        // It's meant to be mouse-transparent.
+        // TODO I don't think this is called.
+        if (parent != null) {
             parent.onMouseDragged(me);
         } else {
-            parent.move(me);
+            // TODO Move 
+            move(me);
         }
     }
+    */
 
     @Override
-    public void move(MouseEvent me){
+    public void move(double deltaX, double deltaY){
         for (Playable child : children) {
-            child.move(me);
+            child.move(deltaX, deltaY);
         }
-        //TODO move current gesture
+        //update();
+        setX(dragStartX + deltaX);
+        setY(dragStartY + deltaY);
     }
 
     @Override
@@ -119,6 +131,4 @@ public class Gesture extends Playable {
        }
        this.getStyleClass().remove("selected");
     }
-        
 }
-    

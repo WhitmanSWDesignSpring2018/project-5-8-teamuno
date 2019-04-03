@@ -26,38 +26,38 @@ import javafx.util.Duration;
 
 /**
  * This JavaFX app lets the user compose music.
- * @author Janet Davis 
+ * @author Janet Davis
  * @author SOLUTION - PROJECT 4
  * @since March 26, 2017
  */
 public class TuneComposer extends Application {
-    
+
     private final MidiPlayer player;
-    
+
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
     @FXML private ToggleGroup instrumentgroup;
-    
+
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
     static final HashSet<Playable> SELECTION = new HashSet<>();
     static final HashSet<Playable> ALLTOP = new HashSet<>();
-    
+
     /**
      * Construct a new composition pane.
      */
     public TuneComposer() {
-        player = new MidiPlayer(Constants.TICKS_PER_BEAT, 
+        player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
-    } 
-           
+    }
+
     /**
      * Play the sounds and the animation from the beginning.
      */
     private void play() {
         stopPlaying();
-        
+
         if (!Note.isEmpty()) {
             player.stop();
             player.clear();
@@ -66,25 +66,24 @@ public class TuneComposer extends Application {
             player.play();
 
             int end = Note.getLastTick();
-            System.out.println(end);
             playAnimation.setToX(end);
             playAnimation.setDuration(Constants.ticksToDuration(end));
             playAnimation.playFromStart();
         }
     }
-    
+
     /**
-     * Stop the sounds and the animation. Reset the animation line to 
+     * Stop the sounds and the animation. Reset the animation line to
      * offscreen left.
      */
     private void stopPlaying() {
         player.stop();
         player.clear();
-        
+
         playAnimation.stop();
         resetPlayLine();
     }
-    
+
     private void setupInstruments() {
         boolean first = true;
         for (Instrument inst : Instrument.values()) {
@@ -100,9 +99,9 @@ public class TuneComposer extends Application {
             }
         }
     }
-    
+
     /**
-     * Draws horizontal lines in the background.  The lines are spaced 
+     * Draws horizontal lines in the background.  The lines are spaced
      * vertically by LINE_SPACING and have CSS class pitchline.
      */
     private void drawLines() {
@@ -117,7 +116,7 @@ public class TuneComposer extends Application {
             compositionpane.getChildren().add(line);
         }
     }
-    
+
     /**
      * Create the moving play line.
      */
@@ -126,27 +125,27 @@ public class TuneComposer extends Application {
         playLine.setTranslateX(-1);     // just offscreen
         playLine.getStyleClass().add("playline");
         compositionpane.getChildren().add(playLine);
-                
+
         playAnimation = new TranslateTransition(Duration.seconds(0), playLine);
-        playAnimation.setInterpolator(Interpolator.LINEAR);   
+        playAnimation.setInterpolator(Interpolator.LINEAR);
         playAnimation.setOnFinished((ActionEvent e) -> { resetPlayLine(); });
     }
-    
+
     /**
      * Reset the position of the play line to offscreen left.
      */
     private void resetPlayLine() {
-         playLine.setTranslateX(-1);       
-    }    
-    
-    
+         playLine.setTranslateX(-1);
+    }
+
+
     private void setupSelectionRect() {
         selectionRect = new Rectangle();
         selectionRect.setId("selectionarea");
         selectionRect.setVisible(false);
         compositionpane.getChildren().add(selectionRect);
     }
-    
+
     public void draw(Playable p){
         compositionpane.getChildren().add(p);
     }
@@ -155,12 +154,12 @@ public class TuneComposer extends Application {
     protected void handleSelectAllAction(ActionEvent event) {
         NoteBar.selectAll();
     }
-    
+
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         TuneComposer.clearSelection();
     }
-    
+
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
         for (Playable p : SELECTION) {
@@ -169,16 +168,16 @@ public class TuneComposer extends Application {
         }
         TuneComposer.clearSelection();
     }
-    
+
     @FXML
     protected void handleGroup(ActionEvent event){
         // Pass the selection by value, not by reference
         HashSet group = new HashSet<Playable>(SELECTION);
         if(SELECTION.isEmpty()){return;}
         clearSelection();
-        compositionpane.getChildren().add(new Gesture(group)); 
+        compositionpane.getChildren().add(new Gesture(group));
     }
-    
+
     @FXML
     protected void handleUngroup(ActionEvent event){
         for(Playable p : SELECTION){
@@ -189,21 +188,21 @@ public class TuneComposer extends Application {
             }
         }
     }
-    
+
     /**
      * When the user selects the "Play" menu item, play the composition.
      * @param event the menu selection event
      */
-    @FXML 
+    @FXML
     protected void handlePlayAction(ActionEvent event) {
         play();
-    }    
-    
+    }
+
     /**
      * When the user selects the "Stop" menu item, stop playing.
      * @param event the menu selection event
      */
-    @FXML 
+    @FXML
     protected void handleStopAction(ActionEvent event) {
         stopPlaying();
     }
@@ -218,46 +217,46 @@ public class TuneComposer extends Application {
         stopPlaying();
         if (!event.isControlDown()) {
             clearSelection();
-        } 
+        }
         selectionRect.setX(event.getX());
         selectionRect.setY(event.getY());
         selectionRect.setWidth(0);
         selectionRect.setHeight(0);
-        selectionRect.setVisible(true); 
+        selectionRect.setVisible(true);
     }
-        
+
     @FXML
     protected void handleCompositionPaneMouseDragged(MouseEvent event) {
         selectionRect.setWidth(event.getX() - selectionRect.getX());
         selectionRect.setHeight(event.getY() - selectionRect.getY());
     }
-    
+
     @FXML
     protected void handleCompositionPaneMouseReleased(MouseEvent event) {
         NoteBar.selectArea(selectionRect);
-        selectionRect.setVisible(false);             
+        selectionRect.setVisible(false);
     }
-    
+
     /**
      * When the user clicks in the composition pane, add a note.
      * @param event the mouse click event
      */
     @FXML
     protected void handleCompositionPaneMouseClick(MouseEvent event) {
-        if (event.isStillSincePress()) { 
+        if (event.isStillSincePress()) {
             // Ignore click at the conclusion of a drag
             RadioButton instButton = (RadioButton)instrumentgroup.getSelectedToggle();
             Instrument instrument = (Instrument)instButton.getUserData();
-            Note note = new Note(Constants.coordToPitch(event.getY()), 
-                                 (int)event.getX(), 
+            Note note = new Note(Constants.coordToPitch(event.getY()),
+                                 (int)event.getX(),
                                  instrument);
             if (!event.isControlDown()) {
                 clearSelection();
             }
-            compositionpane.getChildren().add(new NoteBar(note)); 
+            compositionpane.getChildren().add(new NoteBar(note));
         }
     }
-    
+
     /**
      * When the user clicks the "Exit" menu item, exit the program.
      * @param event the menu selection event
@@ -266,18 +265,18 @@ public class TuneComposer extends Application {
     protected void handleExitAction(ActionEvent event) {
         System.exit(0);
     }
-    
+
     public static void addToSelection(Playable toAdd) {
         // TODO This check could be redundant
-        if (toAdd.getParent() == null) {
+        if (toAdd.getParentGesture() == null) {
             SELECTION.add(toAdd);
         }
         toAdd.getStyleClass().add("selected");
     }
-        
+
     public static void removeFromSelection(Playable toRemove) {
         SELECTION.remove(toRemove);
-        toRemove.getStyleClass().remove("selected");
+        toRemove.removeSelectStyle();
     }
 
     public static void clearSelection() {
@@ -285,45 +284,45 @@ public class TuneComposer extends Application {
             p.removeSelectStyle();
         }
         SELECTION.clear();
-    }    
-    
+    }
+
     public static HashSet<Playable> getSelection() {
         return SELECTION;
     }
-    
+
     public static HashSet<NoteBar> getSelectedNotes() {
         HashSet notes = new HashSet<NoteBar>();
         for (Playable p : SELECTION) {
            notes.addAll(p.getChildLeaves());
-        } 
+        }
         return notes;
     }
-    
+
     /**
      * Construct the scene and start the application.
      * @param primaryStage the stage for the main window
      * @throws java.io.IOException
      */
     @Override
-    public void start(Stage primaryStage) throws IOException {                
+    public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("TuneComposer.fxml"));
         Scene scene = new Scene(root);
-        
+
         primaryStage.setTitle("Tune Composer");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((WindowEvent we) -> {
             System.exit(0);
-        });        
+        });
         primaryStage.show();
     }
-    
+
     /**
-     * Initialize the composition pane. 
+     * Initialize the composition pane.
      */
     @FXML
     protected void initialize() {
         compositionpane.setPrefHeight(Constants.HEIGHT);
-        compositionpane.setPrefWidth(Constants.WIDTH);    
+        compositionpane.setPrefWidth(Constants.WIDTH);
         drawLines();
         setupAnimation();
         setupSelectionRect();
@@ -336,5 +335,5 @@ public class TuneComposer extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-    }    
+    }
 }
