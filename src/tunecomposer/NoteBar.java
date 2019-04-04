@@ -167,11 +167,11 @@ public class NoteBar extends Playable {
     }
     
     
-    public static void selectAll() {
-        for (Playable p : TuneComposer.ALLTOP) {
-            p.addToSelection();
-        }
-    }
+//    public static void selectAll() { //proabaly isn't necessary
+//        for (Playable p : TuneComposer.ALLTOP) {
+//            p.addToSelection();
+//        }
+//    }
     
     public static void selectArea(Node selectionArea) {
         Bounds selectionBounds = selectionArea.getBoundsInParent();

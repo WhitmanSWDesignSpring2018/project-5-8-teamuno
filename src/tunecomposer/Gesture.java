@@ -25,6 +25,7 @@ public class Gesture extends Playable {
             child.setParent(this);
             child.removeFromTop();
         }
+        this.addToTop();
         this.setMouseTransparent(true);
         Double minX = null;
         Double maxX = null;
@@ -147,7 +148,6 @@ public class Gesture extends Playable {
 
     @Override
     public void removeSelectStyle() {
-       System.out.println(getStyleClass());
        this.getStyleClass().remove("selected"); //css not being removed
        System.out.println(getStyleClass());
        for (Playable child : children){

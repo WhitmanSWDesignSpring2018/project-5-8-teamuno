@@ -34,6 +34,10 @@ public abstract class Playable extends Rectangle {
     public void removeFromTop(){
         TuneComposer.ALLTOP.remove(this);
     }
+    
+    public void addToTop(){
+        TuneComposer.ALLTOP.add(this);
+    }
 
     public void setParent(Gesture newParent){
         this.parent = newParent;
