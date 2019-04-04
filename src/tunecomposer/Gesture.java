@@ -48,6 +48,7 @@ public class Gesture extends Playable {
         this.setY(minY);
         this.setWidth(maxX-minX);
         this.setHeight(maxY-minY);
+        TuneComposer.clearSelection();
         getStyleClass().add("gesture");
         addToSelection();
     }
@@ -70,6 +71,7 @@ public class Gesture extends Playable {
 
     @Override
     public void addToSelection() {
+        getStyleClass().add("selected");
         for(Playable child : children) {
             child.addToSelection();
         }
@@ -134,6 +136,11 @@ public class Gesture extends Playable {
     
     public void snapY(){
         setY(getY() - (getY()) % LINE_SPACING);
+        for(Playable child : children){
+            if (child instanceof Gesture){
+                ((Gesture) child).snapY();
+            }
+        }
     }
 
     @Override
