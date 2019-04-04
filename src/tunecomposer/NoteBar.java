@@ -157,7 +157,9 @@ public class NoteBar extends Playable {
         if (parent == null) {
             TuneComposer.SELECTION.add(this);
         }
-        getStyleClass().add("selected");
+        if(!getStyleClass().contains("selected")){ //this works, change it if we have time
+            getStyleClass().add("selected");
+        }
     }
         
     public void removeSelectStyle() {

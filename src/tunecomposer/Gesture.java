@@ -71,7 +71,9 @@ public class Gesture extends Playable {
 
     @Override
     public void addToSelection() {
-        getStyleClass().add("selected");
+        if(!getStyleClass().contains("selected")){ //this works, change it if we have time
+            getStyleClass().add("selected");
+        }
         for(Playable child : children) {
             child.addToSelection();
         }
@@ -145,9 +147,12 @@ public class Gesture extends Playable {
 
     @Override
     public void removeSelectStyle() {
+       System.out.println(getStyleClass());
+       this.getStyleClass().remove("selected"); //css not being removed
+       System.out.println(getStyleClass());
        for (Playable child : children){
            child.removeSelectStyle();
        }
-       this.getStyleClass().remove("selected");
+       
     }
 }

@@ -270,7 +270,6 @@ public class TuneComposer extends Application {
     public static void addToSelection(Playable toAdd) {
         // TODO This check could be redundant
         SELECTION.add(toAdd);
-        toAdd.getStyleClass().add("selected");
     }
 
     public static void removeFromSelection(Playable toRemove) {
