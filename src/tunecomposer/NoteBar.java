@@ -15,7 +15,7 @@ import static tunecomposer.TuneComposer.ALLTOP;
  * Represents a note bar on screen.
  * @author janet
  */
-public class NoteBar extends Playable {
+public class NoteBar extends TuneRectangle {
 
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
@@ -50,10 +50,8 @@ public class NoteBar extends Playable {
         ALLTOP.remove(this);
     }    
     
-    @Override
     public void update() {
         setX(note.getStartTick());
-        // TODO Do something like this for gestures
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
         setWidth(note.getDuration());
@@ -93,7 +91,7 @@ public class NoteBar extends Playable {
 
         dragStartX = me.getX();
         dragStartY = me.getY();
-        for (Playable p : TuneComposer.getSelection()){
+        for (TuneRectangle p : TuneComposer.getSelection()){
             if(p instanceof Gesture){((Gesture) p).setStart();}
         }
         if(getHighestParent() instanceof Gesture){((Gesture) getHighestParent()).setStart();}
@@ -112,7 +110,7 @@ public class NoteBar extends Playable {
         if (dragWidth) {
             if(parent == null){
             double dragDeltaWidth = me.getX() - dragStartX;
-                for (Playable p : TuneComposer.getSelection()) {
+                for (TuneRectangle p : TuneComposer.getSelection()) {
                     if(p instanceof NoteBar && p.parent==null){
                     p.setWidth(
                     Math.max(5.0, ((NoteBar) p).note.getDuration() + dragDeltaWidth));
@@ -122,7 +120,7 @@ public class NoteBar extends Playable {
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
-            for (Playable p : TuneComposer.getSelection()) {
+            for (TuneRectangle p : TuneComposer.getSelection()) {
                 p.getHighestParent().move(dragDeltaX, dragDeltaY);
             }
         }
@@ -131,7 +129,7 @@ public class NoteBar extends Playable {
     
     private void onMouseReleased(MouseEvent me) { //TODO come back to this please, do it recursively
         if (dragWidth) {
-            for (Playable p : TuneComposer.getSelection()) {
+            for (TuneRectangle p : TuneComposer.getSelection()) {
                 if(p instanceof NoteBar && p.parent==null){
                     ((NoteBar) p).note.setDuration((int)getWidth());
                     ((NoteBar) p).update();
@@ -143,7 +141,7 @@ public class NoteBar extends Playable {
                 bar.note.setPitch(Constants.coordToPitch(bar.getY()));
                 bar.update();
             }
-            for (Playable p : TuneComposer.getSelection()){
+            for (TuneRectangle p : TuneComposer.getSelection()){
                 if (p instanceof Gesture){
                     ((Gesture) p).snapY();
                     p.addToSelection();
@@ -157,7 +155,9 @@ public class NoteBar extends Playable {
         if (parent == null) {
             TuneComposer.SELECTION.add(this);
         }
-        getStyleClass().add("selected");
+        if(!getStyleClass().contains("selected")){ //this works, change it if we have time
+            getStyleClass().add("selected");
+        }
     }
         
     public void removeSelectStyle() {
@@ -165,11 +165,11 @@ public class NoteBar extends Playable {
     }
     
     
-    public static void selectAll() {
-        for (Playable p : TuneComposer.ALLTOP) {
-            p.addToSelection();
-        }
-    }
+//    public static void selectAll() { //proabaly isn't necessary
+//        for (TuneRectangle p : TuneComposer.ALLTOP) {
+//            p.addToSelection();
+//        }
+//    }
     
     public static void selectArea(Node selectionArea) {
         Bounds selectionBounds = selectionArea.getBoundsInParent();
@@ -181,10 +181,6 @@ public class NoteBar extends Playable {
         }
     }
 
-    @Override
-    public void play() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void move(double deltaX, double deltaY) {

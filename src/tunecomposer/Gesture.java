@@ -10,27 +10,31 @@ import static tunecomposer.Constants.LINE_SPACING;
 
 /**
  * Represents a Gesture.
- * @author
+ * @author ian, ben, spencer, taka
  */
-public class Gesture extends Playable {
-    private final HashSet<Playable> children;
+public class Gesture extends TuneRectangle {
+    private final HashSet<TuneRectangle> children;
     private double rectStartX;
     private double rectStartY;
 
-
-    public Gesture(HashSet<Playable> children) {
+    /**
+     * Creates a gesture
+     * @param children, the TuneRectangles that will be inside the gesture
+     */
+    public Gesture(HashSet<TuneRectangle> children) {
         this.parent = null;
         this.children = children;
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             child.setParent(this);
             child.removeFromTop();
         }
+        this.addToTop();
         this.setMouseTransparent(true);
         Double minX = null;
         Double maxX = null;
         Double minY = null;
         Double maxY = null;
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             if(minX == null || child.getX() < minX){
                 minX = child.getX();
             }
@@ -48,29 +52,21 @@ public class Gesture extends Playable {
         this.setY(minY);
         this.setWidth(maxX-minX);
         this.setHeight(maxY-minY);
+        TuneComposer.clearSelection();
         getStyleClass().add("gesture");
         addToSelection();
     }
 
-    @Override
-    public void play(){
-        for (Playable child : children) {
-            child.play();
-        }
-    }
 
-    @Override
-    public void update(){
-        // TODO This method may not have a purpose.
-        //for child in children update
-        //draw
-        //for (Playable child : children) {
-        //}
-    }
-
+    /**
+     * Selects a gesture and all TuneRectangles contained by it
+     */
     @Override
     public void addToSelection() {
-        for(Playable child : children) {
+        if(!getStyleClass().contains("selected")){ //this works, change it if we have time
+            getStyleClass().add("selected");
+        }
+        for(TuneRectangle child : children) {
             child.addToSelection();
         }
         if(parent == null){
@@ -78,69 +74,94 @@ public class Gesture extends Playable {
         }
     }
 
+    /**
+     * Gets all NoteBars contained in a given gesture
+     * @return notes, the notes that belong to this gesture
+     */
     public HashSet<NoteBar> getChildLeaves() {
         HashSet notes = new HashSet<NoteBar>();
-        for (Playable p : children) {
+        for (TuneRectangle p : children) {
             notes.addAll(p.getChildLeaves());
         }
         return notes;
     }
+    
+    /**
+     * gets the hashset of child TuneRectangles
+     * @return children, a hashset of child TuneRectangles
+     */
+    public HashSet<TuneRectangle> getChildren() {
+        return children;
+    }
 
+    /**
+     * undraws and removes this gesture and all of its children
+     * @param compositionpane, the current pane
+     */
     public void delete(Pane compositionpane) {
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             child.delete(compositionpane);
         }
         TuneComposer.ALLTOP.remove(this);
+        compositionpane.getChildren().remove(this);
     }
 
+    /**
+     * sets the parent references of children to null
+     */
     public void freeChildren() {
         this.removeSelectStyle();
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             child.parent = null;
         }
     }
 
-    /*
-     * // I think this is unused.
-    @Override
-    public void onMouseDragged(MouseEvent me) {
-        // TODO Do we want Gesture to have a mouse drag handler?
-        // It's meant to be mouse-transparent.
-        // TODO I don't think this is called.
-        if (parent != null) {
-            parent.onMouseDragged(me);
-        } else {
-            // TODO Move 
-            move(me);
-        }
-    }
-    */
+    /**
+     * Records where the gesture is
+     */
     public void setStart(){
         rectStartX = this.getX();
         rectStartY = this.getY();
-        for (Playable child : children){
+        for (TuneRectangle child : children){
             if(child instanceof Gesture){((Gesture) child).setStart();}
         }
     }
     
+    /**
+     * Gesture is drawn in a new location along with everything in it
+     * @param deltaX, the change in x
+     * @param deltaY, the change in y
+     */
     @Override
     public void move(double deltaX, double deltaY){
-        for (Playable child : children) {
+        for (TuneRectangle child : children) {
             child.move(deltaX, deltaY);
         }
         setX(rectStartX + deltaX);
         setY(rectStartY + deltaY);
     }
     
+    /**
+     * adjusts the gesture and its child gestures to be in line with the background lines
+     */
     public void snapY(){
         setY(getY() - (getY()) % LINE_SPACING);
+        for(TuneRectangle child : children){
+            if (child instanceof Gesture){
+                ((Gesture) child).snapY();
+            }
+        }
     }
 
+    /**
+     * makes the gesture and all of its children look unselected
+     */
     @Override
     public void removeSelectStyle() {
-       for (Playable child : children){
+       this.getStyleClass().remove("selected"); 
+       for (TuneRectangle child : children){
            child.removeSelectStyle();
        }
-       this.getStyleClass().remove("selected");
+       
     }
 }
