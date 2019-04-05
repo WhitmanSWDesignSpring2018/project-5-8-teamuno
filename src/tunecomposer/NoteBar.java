@@ -42,33 +42,47 @@ public class NoteBar extends Playable {
         ALLNOTEBARS.add(this);
         addToSelection();
     }
-    
+    /**
+     * Delete a note from the composition pane if there is one.
+     * @param compositionpane deleted the children from the composition pane
+     */
     public void delete(Pane compositionpane) {
         note.delete();
         compositionpane.getChildren().remove(this);
         ALLNOTEBARS.remove(this);
         ALLTOP.remove(this);
     }    
-    
+    /**
+     * Updates the rectangle to match the note data. 
+     */
     @Override
     public void update() {
         setX(note.getStartTick());
-        // TODO Do something like this for gestures
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
         setWidth(note.getDuration());
         setFill(note.getInstrument().getDisplayColor());
     } 
-
+    /**
+    * Create a hash set out of children.  
+    * @return the set of note bars within the pane
+    */
     public HashSet<NoteBar> getChildLeaves() {
         HashSet set =  new HashSet<NoteBar>();
         set.add(this);
         return set;
     }
-
+    /**
+     * Determines what, when clicked on, is selected.
+     * @return true or false depending on what 
+     */
     private boolean isSelected() {
         return TuneComposer.getSelection().contains(getHighestParent());
     }
+    /**
+     * Deals with a mouse click by selecting and creating notes. 
+     * @param me 
+     */
 
     private void onMouseClicked(MouseEvent me) {
         if (me.isStillSincePress()) {
@@ -82,15 +96,16 @@ public class NoteBar extends Playable {
                 TuneComposer.clearSelection();
                 getHighestParent().addToSelection();
             }
-            me.consume(); // Do not pass this event to the composition pane
+            me.consume(); 
         }
     }
-    
+    /**
+     * Handles a mouse press, and records where notes are, prepares for drag event or mouse up. 
+     * @param me 
+     */
     private void onMousePressed(MouseEvent me) {                
-        // Drag the edge if it is within 5 pixels 
         double rightEdge = getX() + getWidth();
         dragWidth = (me.getX() >= rightEdge - 5);
-
         dragStartX = me.getX();
         dragStartY = me.getY();
         for (Playable p : TuneComposer.getSelection()){
@@ -101,7 +116,12 @@ public class NoteBar extends Playable {
         me.consume();
 
     }
-    
+    /**
+     * Handles a mouse drag event, whether that be a drag note bar width
+     * or drag individual note bars, will also make select note if mouse is
+     * dragged while on a note, while none are selected.
+     * @param me 
+     */
     protected void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
         if (!isSelected()) {
@@ -128,8 +148,12 @@ public class NoteBar extends Playable {
         }
         me.consume();
     }
-    
-    private void onMouseReleased(MouseEvent me) { //TODO come back to this please, do it recursively
+    /**
+     * Handles a mouse release whether that be a note bar width drag, or 
+     * a note bar movement.
+     * @param me 
+     */
+    private void onMouseReleased(MouseEvent me) { 
         if (dragWidth) {
             for (Playable p : TuneComposer.getSelection()) {
                 if(p instanceof NoteBar && p.parent==null){
@@ -152,7 +176,9 @@ public class NoteBar extends Playable {
         }  
         me.consume();
     }
-    
+    /**
+     * Adds a child to the selection if it is not within a gesture.
+     */
     public void addToSelection() {
         if (parent == null) {
             TuneComposer.SELECTION.add(this);
@@ -161,18 +187,18 @@ public class NoteBar extends Playable {
             getStyleClass().add("selected");
         }
     }
-        
+    /**
+     * Removes the style when a note is no longer selected.
+     */    
     public void removeSelectStyle() {
         getStyleClass().remove("selected");
     }
     
-    
-//    public static void selectAll() { //proabaly isn't necessary
-//        for (Playable p : TuneComposer.ALLTOP) {
-//            p.addToSelection();
-//        }
-//    }
-    
+    /**
+     * Grabs the selection coordinates and handles selecting the note bars
+     * inside the x and y.
+     * @param selectionArea 
+     */
     public static void selectArea(Node selectionArea) {
         Bounds selectionBounds = selectionArea.getBoundsInParent();
         for (NoteBar bar : ALLNOTEBARS) {
@@ -182,7 +208,9 @@ public class NoteBar extends Playable {
             }
         }
     }
-
+    /**
+     * Plays game ^_^. 
+     */
     @Override
     public void play() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
