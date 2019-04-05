@@ -15,7 +15,7 @@ import static tunecomposer.TuneComposer.ALLTOP;
  * Represents a note bar on screen.
  * @author janet
  */
-public class NoteBar extends Playable {
+public class NoteBar extends TuneRectangle {
 
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
@@ -52,10 +52,10 @@ public class NoteBar extends Playable {
         ALLNOTEBARS.remove(this);
         ALLTOP.remove(this);
     }    
+  
     /**
      * Updates the rectangle to match the note data. 
      */
-    @Override
     public void update() {
         setX(note.getStartTick());
         setY(Constants.LINE_SPACING
@@ -108,7 +108,7 @@ public class NoteBar extends Playable {
         dragWidth = (me.getX() >= rightEdge - 5);
         dragStartX = me.getX();
         dragStartY = me.getY();
-        for (Playable p : TuneComposer.getSelection()){
+        for (TuneRectangle p : TuneComposer.getSelection()){
             if(p instanceof Gesture){((Gesture) p).setStart();}
         }
         if(getHighestParent() instanceof Gesture){((Gesture) getHighestParent()).setStart();}
@@ -132,7 +132,7 @@ public class NoteBar extends Playable {
         if (dragWidth) {
             if(parent == null){
             double dragDeltaWidth = me.getX() - dragStartX;
-                for (Playable p : TuneComposer.getSelection()) {
+                for (TuneRectangle p : TuneComposer.getSelection()) {
                     if(p instanceof NoteBar && p.parent==null){
                     p.setWidth(
                     Math.max(5.0, ((NoteBar) p).note.getDuration() + dragDeltaWidth));
@@ -142,7 +142,7 @@ public class NoteBar extends Playable {
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
-            for (Playable p : TuneComposer.getSelection()) {
+            for (TuneRectangle p : TuneComposer.getSelection()) {
                 p.getHighestParent().move(dragDeltaX, dragDeltaY);
             }
         }
@@ -155,7 +155,7 @@ public class NoteBar extends Playable {
      */
     private void onMouseReleased(MouseEvent me) { 
         if (dragWidth) {
-            for (Playable p : TuneComposer.getSelection()) {
+            for (TuneRectangle p : TuneComposer.getSelection()) {
                 if(p instanceof NoteBar && p.parent==null){
                     ((NoteBar) p).note.setDuration((int)getWidth());
                     ((NoteBar) p).update();
@@ -167,7 +167,7 @@ public class NoteBar extends Playable {
                 bar.note.setPitch(Constants.coordToPitch(bar.getY()));
                 bar.update();
             }
-            for (Playable p : TuneComposer.getSelection()){
+            for (TuneRectangle p : TuneComposer.getSelection()){
                 if (p instanceof Gesture){
                     ((Gesture) p).snapY();
                     p.addToSelection();
@@ -194,11 +194,7 @@ public class NoteBar extends Playable {
         getStyleClass().remove("selected");
     }
     
-    /**
-     * Grabs the selection coordinates and handles selecting the note bars
-     * inside the x and y.
-     * @param selectionArea 
-     */
+  
     public static void selectArea(Node selectionArea) {
         Bounds selectionBounds = selectionArea.getBoundsInParent();
         for (NoteBar bar : ALLNOTEBARS) {
@@ -208,13 +204,7 @@ public class NoteBar extends Playable {
             }
         }
     }
-    /**
-     * Plays game ^_^. 
-     */
-    @Override
-    public void play() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
 
     @Override
     public void move(double deltaX, double deltaY) {

@@ -31,8 +31,13 @@ class Constants {
         return Constants.NUM_PITCHES 
                 - (int)Math.floor(y/Constants.LINE_SPACING)
                 - 1;
-    }           
+    }   
     
+    /**
+     * Convert a ticks to midi duration.
+     * @param ticks, how long the midiplayer plays the note
+     * @return a duration in minutes
+     */
     public static Duration ticksToDuration(int ticks) {
         return Duration.minutes(((float)ticks) / 
                                 (TICKS_PER_BEAT * BEATS_PER_MINUTE));
