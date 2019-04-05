@@ -61,7 +61,7 @@
       </ScrollPane>
    </center>
    <left>
-      <VBox fx:id="instrumentpane" BorderPane.alignment="CENTER">
+      <VBox prefHeight="471.0" prefWidth="136.0" spacing="20.0" fx:id="instrumentpane" BorderPane.alignment="CENTER">
           <fx:define>
             <ToggleGroup fx:id="instrumentgroup" />
           </fx:define>
