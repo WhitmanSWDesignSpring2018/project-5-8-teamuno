@@ -186,6 +186,10 @@ public class TuneComposer extends Application {
                 SELECTION.remove(p);
                 ((Gesture) p).freeChildren();
                 compositionpane.getChildren().remove(p);
+                HashSet<Playable> children = ((Gesture) p).getChildren();
+                children.forEach((child) -> {
+                    child.addToSelection();
+                });
             }
         }
     }

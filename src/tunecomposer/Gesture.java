@@ -90,12 +90,17 @@ public class Gesture extends Playable {
         }
         return notes;
     }
+    
+    public HashSet<Playable> getChildren() {
+        return children;
+    }
 
     public void delete(Pane compositionpane) {
         for(Playable child : children){
             child.delete(compositionpane);
         }
         TuneComposer.ALLTOP.remove(this);
+        compositionpane.getChildren().remove(this);
     }
 
     public void freeChildren() {
@@ -105,21 +110,6 @@ public class Gesture extends Playable {
         }
     }
 
-    /*
-     * // I think this is unused.
-    @Override
-    public void onMouseDragged(MouseEvent me) {
-        // TODO Do we want Gesture to have a mouse drag handler?
-        // It's meant to be mouse-transparent.
-        // TODO I don't think this is called.
-        if (parent != null) {
-            parent.onMouseDragged(me);
-        } else {
-            // TODO Move 
-            move(me);
-        }
-    }
-    */
     public void setStart(){
         rectStartX = this.getX();
         rectStartY = this.getY();
@@ -148,8 +138,7 @@ public class Gesture extends Playable {
 
     @Override
     public void removeSelectStyle() {
-       this.getStyleClass().remove("selected"); //css not being removed
-       System.out.println(getStyleClass());
+       this.getStyleClass().remove("selected"); 
        for (Playable child : children){
            child.removeSelectStyle();
        }
