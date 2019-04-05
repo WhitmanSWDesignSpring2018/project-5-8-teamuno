@@ -13,15 +13,13 @@ import javafx.scene.shape.Rectangle;
  * Represents a note.
  * @author janet
  */
-public abstract class Playable extends Rectangle {
+public abstract class TuneRectangle extends Rectangle {
     Gesture parent;
 
     protected static double dragStartX;
     protected static double dragStartY;
     
     abstract public void play();
-    
-    abstract public void update();
     
     abstract public void addToSelection();
     
@@ -47,7 +45,7 @@ public abstract class Playable extends Rectangle {
         return parent;
     }
     
-    public Playable getHighestParent(){
+    public TuneRectangle getHighestParent(){
         if (parent == null) {
             return this;
         } else {

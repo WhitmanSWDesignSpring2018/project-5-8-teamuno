@@ -12,16 +12,16 @@ import static tunecomposer.Constants.LINE_SPACING;
  * Represents a Gesture.
  * @author
  */
-public class Gesture extends Playable {
-    private final HashSet<Playable> children;
+public class Gesture extends TuneRectangle {
+    private final HashSet<TuneRectangle> children;
     private double rectStartX;
     private double rectStartY;
 
 
-    public Gesture(HashSet<Playable> children) {
+    public Gesture(HashSet<TuneRectangle> children) {
         this.parent = null;
         this.children = children;
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             child.setParent(this);
             child.removeFromTop();
         }
@@ -31,7 +31,7 @@ public class Gesture extends Playable {
         Double maxX = null;
         Double minY = null;
         Double maxY = null;
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             if(minX == null || child.getX() < minX){
                 minX = child.getX();
             }
@@ -56,26 +56,18 @@ public class Gesture extends Playable {
 
     @Override
     public void play(){
-        for (Playable child : children) {
+        for (TuneRectangle child : children) {
             child.play();
         }
     }
 
-    @Override
-    public void update(){
-        // TODO This method may not have a purpose.
-        //for child in children update
-        //draw
-        //for (Playable child : children) {
-        //}
-    }
 
     @Override
     public void addToSelection() {
         if(!getStyleClass().contains("selected")){ //this works, change it if we have time
             getStyleClass().add("selected");
         }
-        for(Playable child : children) {
+        for(TuneRectangle child : children) {
             child.addToSelection();
         }
         if(parent == null){
@@ -85,18 +77,18 @@ public class Gesture extends Playable {
 
     public HashSet<NoteBar> getChildLeaves() {
         HashSet notes = new HashSet<NoteBar>();
-        for (Playable p : children) {
+        for (TuneRectangle p : children) {
             notes.addAll(p.getChildLeaves());
         }
         return notes;
     }
     
-    public HashSet<Playable> getChildren() {
+    public HashSet<TuneRectangle> getChildren() {
         return children;
     }
 
     public void delete(Pane compositionpane) {
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             child.delete(compositionpane);
         }
         TuneComposer.ALLTOP.remove(this);
@@ -105,7 +97,7 @@ public class Gesture extends Playable {
 
     public void freeChildren() {
         this.removeSelectStyle();
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             child.parent = null;
         }
     }
@@ -113,14 +105,14 @@ public class Gesture extends Playable {
     public void setStart(){
         rectStartX = this.getX();
         rectStartY = this.getY();
-        for (Playable child : children){
+        for (TuneRectangle child : children){
             if(child instanceof Gesture){((Gesture) child).setStart();}
         }
     }
     
     @Override
     public void move(double deltaX, double deltaY){
-        for (Playable child : children) {
+        for (TuneRectangle child : children) {
             child.move(deltaX, deltaY);
         }
         setX(rectStartX + deltaX);
@@ -129,7 +121,7 @@ public class Gesture extends Playable {
     
     public void snapY(){
         setY(getY() - (getY()) % LINE_SPACING);
-        for(Playable child : children){
+        for(TuneRectangle child : children){
             if (child instanceof Gesture){
                 ((Gesture) child).snapY();
             }
@@ -139,7 +131,7 @@ public class Gesture extends Playable {
     @Override
     public void removeSelectStyle() {
        this.getStyleClass().remove("selected"); 
-       for (Playable child : children){
+       for (TuneRectangle child : children){
            child.removeSelectStyle();
        }
        
