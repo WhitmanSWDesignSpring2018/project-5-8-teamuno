@@ -5,13 +5,12 @@
 package tunecomposer;
 
 import java.util.HashSet;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Represents a note.
- * @author janet
+ * Class abstracted from NoteBar and Gesture.
+ * @author ben, taka, spencer, ian
  */
 public abstract class TuneRectangle extends Rectangle {
     Gesture parent;
@@ -19,7 +18,6 @@ public abstract class TuneRectangle extends Rectangle {
     protected static double dragStartX;
     protected static double dragStartY;
     
-    abstract public void play();
     
     abstract public void addToSelection();
     
@@ -29,10 +27,16 @@ public abstract class TuneRectangle extends Rectangle {
     
     abstract public void move(double deltaX, double deltaY);
     
+    /**
+     * removes current TuneRectangle from ALLTOP
+     */
     public void removeFromTop(){
         TuneComposer.ALLTOP.remove(this);
     }
     
+    /**
+     * adds current TuneRectangle to ALLTOP
+     */
     public void addToTop(){
         TuneComposer.ALLTOP.add(this);
     }
@@ -41,10 +45,16 @@ public abstract class TuneRectangle extends Rectangle {
         this.parent = newParent;
     }
     
+    /**
+     * returns the parent of the current TuneRectangle
+     */
     public Gesture getParentGesture(){
         return parent;
     }
     
+    /**
+     * returns the top level contained that this TuneRectnalge is in
+     */
     public TuneRectangle getHighestParent(){
         if (parent == null) {
             return this;

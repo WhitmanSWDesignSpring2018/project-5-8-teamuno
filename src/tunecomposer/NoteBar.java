@@ -181,10 +181,6 @@ public class NoteBar extends TuneRectangle {
         }
     }
 
-    @Override
-    public void play() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void move(double deltaX, double deltaY) {

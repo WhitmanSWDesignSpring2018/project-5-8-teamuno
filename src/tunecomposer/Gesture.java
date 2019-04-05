@@ -10,14 +10,17 @@ import static tunecomposer.Constants.LINE_SPACING;
 
 /**
  * Represents a Gesture.
- * @author
+ * @author ian, ben, spencer, taka
  */
 public class Gesture extends TuneRectangle {
     private final HashSet<TuneRectangle> children;
     private double rectStartX;
     private double rectStartY;
 
-
+    /**
+     * Creates a gesture
+     * @param children, the TuneRectangles that will be inside the gesture
+     */
     public Gesture(HashSet<TuneRectangle> children) {
         this.parent = null;
         this.children = children;
@@ -54,14 +57,10 @@ public class Gesture extends TuneRectangle {
         addToSelection();
     }
 
-    @Override
-    public void play(){
-        for (TuneRectangle child : children) {
-            child.play();
-        }
-    }
 
-
+    /**
+     * Selects a gesture and all TuneRectangles contained by it
+     */
     @Override
     public void addToSelection() {
         if(!getStyleClass().contains("selected")){ //this works, change it if we have time
@@ -75,6 +74,10 @@ public class Gesture extends TuneRectangle {
         }
     }
 
+    /**
+     * Gets all NoteBars contained in a given gesture
+     * @return notes, the notes that belong to this gesture
+     */
     public HashSet<NoteBar> getChildLeaves() {
         HashSet notes = new HashSet<NoteBar>();
         for (TuneRectangle p : children) {
@@ -83,10 +86,18 @@ public class Gesture extends TuneRectangle {
         return notes;
     }
     
+    /**
+     * gets the hashset of child TuneRectangles
+     * @return children, a hashset of child TuneRectangles
+     */
     public HashSet<TuneRectangle> getChildren() {
         return children;
     }
 
+    /**
+     * undraws and removes this gesture and all of its children
+     * @param compositionpane, the current pane
+     */
     public void delete(Pane compositionpane) {
         for(TuneRectangle child : children){
             child.delete(compositionpane);
@@ -95,6 +106,9 @@ public class Gesture extends TuneRectangle {
         compositionpane.getChildren().remove(this);
     }
 
+    /**
+     * sets the parent references of children to null
+     */
     public void freeChildren() {
         this.removeSelectStyle();
         for(TuneRectangle child : children){
@@ -102,6 +116,9 @@ public class Gesture extends TuneRectangle {
         }
     }
 
+    /**
+     * Records where the gesture is
+     */
     public void setStart(){
         rectStartX = this.getX();
         rectStartY = this.getY();
@@ -110,6 +127,11 @@ public class Gesture extends TuneRectangle {
         }
     }
     
+    /**
+     * Gesture is drawn in a new location along with everything in it
+     * @param deltaX, the change in x
+     * @param deltaY, the change in y
+     */
     @Override
     public void move(double deltaX, double deltaY){
         for (TuneRectangle child : children) {
@@ -119,6 +141,9 @@ public class Gesture extends TuneRectangle {
         setY(rectStartY + deltaY);
     }
     
+    /**
+     * adjusts the gesture and its child gestures to be in line with the background lines
+     */
     public void snapY(){
         setY(getY() - (getY()) % LINE_SPACING);
         for(TuneRectangle child : children){
@@ -128,6 +153,9 @@ public class Gesture extends TuneRectangle {
         }
     }
 
+    /**
+     * makes the gesture and all of its children look unselected
+     */
     @Override
     public void removeSelectStyle() {
        this.getStyleClass().remove("selected"); 

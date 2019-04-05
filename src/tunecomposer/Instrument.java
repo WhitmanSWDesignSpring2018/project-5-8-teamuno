@@ -27,6 +27,13 @@ public enum Instrument {
     private final String displayName;
     private final Color displayColor;
 
+    /**
+     * Creates an instrument
+     * @param midiProgram, the program to be modified
+     * @param channel, the sound that will be used
+     * @param displayName, the name of the instrument
+     * @param displayColor, the color associated with the instrument
+     */
     Instrument(int midiProgram, int channel, 
                String displayName, Color displayColor) {
         this.midiProgram = midiProgram;
@@ -35,6 +42,10 @@ public enum Instrument {
         this.displayColor = displayColor;
     }
     
+    /**
+     * gets the program that is being modified
+     * @return midiprogram, the program that is modified
+     */
     public int getMidiProgram() {
         return midiProgram;
     }
