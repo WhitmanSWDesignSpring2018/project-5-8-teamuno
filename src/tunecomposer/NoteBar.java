@@ -166,6 +166,7 @@ public class NoteBar extends TuneRectangle {
                 bar.note.setStartTick((int)bar.getX());
                 bar.note.setPitch(Constants.coordToPitch(bar.getY()));
                 bar.update();
+                bar.addToSelection();
             }
             for (TuneRectangle p : TuneComposer.getSelection()){
                 if (p instanceof Gesture){
