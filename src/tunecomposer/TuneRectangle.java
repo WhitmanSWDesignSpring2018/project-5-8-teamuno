@@ -64,5 +64,5 @@ public abstract class TuneRectangle extends Rectangle {
     }
 
     void delete(Pane compositionpane) {
-    }
+}
 }

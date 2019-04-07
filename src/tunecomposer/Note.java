@@ -131,6 +131,8 @@ public class Note {
         ALL_NOTES.remove(this);
     }
     
+    //TODO undelete for undoing deletes
+    
     /**
      * adds all note to the midiplayer
      */
