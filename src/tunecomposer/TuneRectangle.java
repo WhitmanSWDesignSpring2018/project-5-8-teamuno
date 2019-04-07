@@ -15,47 +15,72 @@ import javafx.scene.shape.Rectangle;
 public abstract class TuneRectangle extends Rectangle {
     Gesture parent;
 
+    /**
+     * Location at the start of a mouse drag.
+     * Used for calculating the distance this is dragged.
+     */
     protected static double dragStartX;
     protected static double dragStartY;
-    
-    
+
+    /**
+     * Adds this to the selection.
+     */
     abstract public void addToSelection();
-    
+
+    /**
+     * Makes this no longer appear selected.
+     */
     abstract public void removeSelectStyle();
 
-    abstract public HashSet<NoteBar> getChildLeaves();
-    
-    abstract public void move(double deltaX, double deltaY);
-    
     /**
-     * removes current TuneRectangle from ALLTOP
+     * Gets the NoteBars in this tree, possibly including this.
+     * @return the note bars in this tree
      */
-    public void removeFromTop(){
+    abstract public HashSet<NoteBar> getChildLeaves();
+
+    /**
+     * Move this rectangle.
+     * @param deltaX distance to move horizontally
+     * @param deltaY distance to move vertically
+     */
+    abstract public void move(double deltaX, double deltaY);
+
+    /**
+     * Removes this TuneRectangle from ALLTOP.
+     */
+    public void removeFromTop() {
         TuneComposer.ALLTOP.remove(this);
     }
-    
+
     /**
-     * adds current TuneRectangle to ALLTOP
+     * Adds this TuneRectangle to ALLTOP.
      */
-    public void addToTop(){
+    public void addToTop() {
         TuneComposer.ALLTOP.add(this);
     }
 
-    public void setParent(Gesture newParent){
+    /**
+     * Set the parent gesture of this TuneRectangle.
+     * Note that this method doesn't add this rectangle to the parent's
+     * children.
+     * @param newParent the gesture that this is put into
+     */
+    public void setParent(Gesture newParent) {
         this.parent = newParent;
     }
-    
+
     /**
-     * returns the parent of the current TuneRectangle
+     * Gets the gesture encompassing this TuneRectangle.
      */
-    public Gesture getParentGesture(){
+    public Gesture getParentGesture() {
         return parent;
     }
-    
+
     /**
-     * returns the top level contained that this TuneRectnalge is in
+     * Gets the root of this rectangle's gesture tree.
+     * @return the highest ancestor gesture, possibly this
      */
-    public TuneRectangle getHighestParent(){
+    public TuneRectangle getHighestParent() {
         if (parent == null) {
             return this;
         } else {
@@ -63,6 +88,9 @@ public abstract class TuneRectangle extends Rectangle {
         }
     }
 
-    void delete(Pane compositionpane) {
-    }
+    /**
+     * Hides this rectangle from the composition pane.
+     * @param compositionpane the pane from which this should be deleted
+     */
+    public abstract void delete(Pane compositionpane);
 }
