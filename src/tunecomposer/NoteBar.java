@@ -4,7 +4,6 @@
  */
 package tunecomposer;
 import java.util.HashSet;
-import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
