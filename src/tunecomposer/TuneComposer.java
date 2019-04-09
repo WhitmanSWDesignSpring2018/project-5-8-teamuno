@@ -26,11 +26,12 @@ import javafx.util.Duration;
 
 /**
  * This JavaFX app lets the user compose music.
- * @author Janet Davis
- * @author SOLUTION - PROJECT 4
- * @since March 26, 2017
+ * @author Ian, Spencer, Ben, Taka, Janet
  */
 public class TuneComposer extends Application {
+
+    static final HashSet<TuneRectangle> SELECTION = new HashSet<>();
+    static final HashSet<TuneRectangle> ALLTOP = new HashSet<>();
 
     private final MidiPlayer player;
 
@@ -41,8 +42,6 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
-    static final HashSet<TuneRectangle> SELECTION = new HashSet<>();
-    static final HashSet<TuneRectangle> ALLTOP = new HashSet<>();
 
     /**
      * Construct a new composition pane.
@@ -143,7 +142,7 @@ public class TuneComposer extends Application {
 
 
     /**
-     * Creates the rectangle used for selection so that it may be use later
+     * Creates the rectangle used for selection so that it may be used later.
      */
     private void setupSelectionRect() {
         selectionRect = new Rectangle();
@@ -153,19 +152,19 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * selects all top level things
-     * @param event, the click on the menu item
+     * Selects all top-level items drawn in the composition pane.
+     * @param event the click on the menu item
      */
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
-        for(TuneRectangle p : ALLTOP){
+        for(TuneRectangle p : ALLTOP) {
             p.addToSelection();
         }
     }
 
     /**
-     * Deselects all currently selected TuneRectangles
-     * @param event, the click on the menu item 
+     * Deselects all currently selected items.
+     * @param event the click on the menu item
      */
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
@@ -173,8 +172,8 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * Deletes all currently selected TuneRectangles
-     * @param event, the click on the menu item
+     * Deletes all currently selected items.
+     * @param event the click on the menu item
      */
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
@@ -184,27 +183,28 @@ public class TuneComposer extends Application {
         }
         TuneComposer.clearSelection();
     }
-    
+
     /**
-     * Groups selected TuneRectangles into a gesture
-     * The gesture behaves like a note and things inside of it cannot be modified
-     * @param event 
+     * Groups selected items into a gesture.
+     * The gesture behaves like a complex note and things inside of it cannot
+     * be modified individually.
+     * @param event
      */
     @FXML
-    protected void handleGroup(ActionEvent event){
+    protected void handleGroup(ActionEvent event) {
         // Pass the selection by value, not by reference
         HashSet group = new HashSet<TuneRectangle>(SELECTION);
-        if(SELECTION.isEmpty()){return;}
+        if(SELECTION.isEmpty()) {return;}
         compositionpane.getChildren().add(new Gesture(group));
     }
     /**
-     * Removes selected top level gestures
-     * The gesture is removed and its children are selected afterward
-     * @param event 
+     * Removes selected top-level gestures.
+     * The gesture is removed and its children are freed and selected.
+     * @param event
      */
     @FXML
-    protected void handleUngroup(ActionEvent event){
-        for(TuneRectangle p : SELECTION){
+    protected void handleUngroup(ActionEvent event) {
+        for(TuneRectangle p : SELECTION) {
             if (p instanceof Gesture) {
                 SELECTION.remove(p);
                 ((Gesture) p).freeChildren();
@@ -236,8 +236,18 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * When he user presses the mouse button in the composition pane,
-     * stop playing the notes.
+     * When the user clicks the "Exit" menu item, exit the program.
+     * @param event the menu selection event
+     */
+    @FXML
+    protected void handleExitAction(ActionEvent event) {
+        System.exit(0);
+    }
+
+    /**
+     * When he user presses the mouse button in the composition pane, stop
+     * playing the notes. This will perform another action (as usual) in
+     * addition to stopping the tune.
      * @param event the mouse click event
      */
     @FXML
@@ -254,8 +264,9 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * Changes the selection rectangle as the mouse is dragged across the composition pane
-     * @param event, the mouse drag
+     * Changes the selection rectangle as the mouse is dragged across the
+     * composition pane.
+     * @param event the mouse drag
      */
     @FXML
     protected void handleCompositionPaneMouseDragged(MouseEvent event) {
@@ -264,7 +275,7 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * selects notes inside of the selection rectangle and makes it invisible 
+     * Selects notes inside of the selection rectangle and hides the rectangle.
      * @param event, the mouse released
      */
     @FXML
@@ -294,51 +305,48 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * When the user clicks the "Exit" menu item, exit the program.
-     * @param event the menu selection event
-     */
-    @FXML
-    protected void handleExitAction(ActionEvent event) {
-        System.exit(0);
-    }
-
-    /**
-     * puts current TuneRectangle in SELECTION
-     * @param toAdd, the TuneRectangle to add
+     * Add an item to the selection.
+     * The selection is a static set.
+     * Note that the style of the target TuneRectangle is not affected.
+     * @param toAdd the TuneRectangle to add
      */
     public static void addToSelection(TuneRectangle toAdd) {
         SELECTION.add(toAdd);
     }
     /**
-     * removes current TuneRectangle from SELECTION
-     * @param toRemove, the TuneRectangle to remove
+     * Remove an item from the selection.
+     * The selection is a static set.
+     * @param toRemove the TuneRectangle to remove
      */
     public static void removeFromSelection(TuneRectangle toRemove) {
         SELECTION.remove(toRemove);
         toRemove.removeSelectStyle();
     }
-    
+
     /**
-     * removes all TuneRectangles from SELECTION
+     * Clear the selection.
+     * Note that the style of the selection contents have been changed to show
+     * that those TuneRectangles are no longer selected.
      */
     public static void clearSelection() {
-        for(TuneRectangle p : SELECTION){
+        for(TuneRectangle p : SELECTION) {
             p.removeSelectStyle();
         }
         SELECTION.clear();
     }
 
     /**
-     * gets the selection set
-     * @return SELECTION, the hashset of selected top level TuneRectangles
+     * Gets the selected objects.
+     * @return the hashset of selected top level TuneRectangles
      */
     public static HashSet<TuneRectangle> getSelection() {
         return SELECTION;
     }
-    
+
     /**
-     * gets all notes that are selected
-     * @return notes, a hashset of notebars
+     * Gets all selected notes.
+     * This includes notes that are in gestures.
+     * @return a hashset of notebars
      */
     public static HashSet<NoteBar> getSelectedNotes() {
         HashSet notes = new HashSet<NoteBar>();
