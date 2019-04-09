@@ -14,14 +14,14 @@ public class Note {
 
     private static final int VOLUME = 127;
     private static final int TRACK = 0;
-    
+
     private static final HashSet<Note> ALL_NOTES = new HashSet<>();
-   
+
     private int pitch;
-    private int startTick;    
+    private int startTick;
     private int duration;
     private final Instrument instrument;
-    
+
     /**
      * Creates a new note.
      *
@@ -36,75 +36,75 @@ public class Note {
         this.duration = Constants.DURATION;
         this.instrument = instrument;
     }
-    
+
     /**
-     * changes the pitch of the current note
-     * @param pitch, the pitch to change to 
+     * Changes the pitch of this note.
+     * @param pitch the pitch to change to
      */
     public void setPitch(int pitch) {
         this.pitch = pitch;
     }
-    
+
     /**
-     * returns the pitch of the current note
+     * Gets the pitch of this note.
      */
     public int getPitch() {
         return pitch;
     }
-    
+
     /**
-     * changes the start tick of the current note
-     * @param startTick, the starTick to change to 
+     * Changes the start tick of this note.
+     * @param startTick the startTick to change to
      */
     public void setStartTick(int startTick) {
         this.startTick = startTick;
     }
-    
+
     /**
-     * returns the startTick of the current note
+     * Get the start tick of this note.
      */
     public int getStartTick() {
         return startTick;
-    }    
-    
+    }
+
     /**
-     * changes the duration of the current note
-     * @param duration, the duration to change to 
+     * Changes the duration of this note.
+     * @param duration the duration to change to
      */
     public void setDuration(int duration) {
         this.duration = duration;
-    } 
-    
+    }
+
     /**
-     * returns the Duration of the current note
+     * Gets the duration of this note.
      */
     public int getDuration() {
         return duration;
     }
-    
+
     /**
-     * returns the endTick of the current note
+     * Gets the endTick of this note.
      */
     public int getEndTick() {
         return startTick + duration;
     }
-    
+
     /**
-     * returns the instrument of the current note
+     * Returns the instrument of this note
      */
     public Instrument getInstrument() {
         return instrument;
     }
 
     /**
-     * checks if any notes exist
+     * Checks if any notes exist
      */
     public static boolean isEmpty() {
         return ALL_NOTES.isEmpty();
     }
 
     /**
-     * returns the lastTick of the current note
+     * Returns the last tick of the last note.
      */
     public static int getLastTick() {
         Note last = null;
@@ -117,15 +117,15 @@ public class Note {
     }
 
     /**
-     * adds note to the midiplayer so that it may be played
+     * Adds note to the midiplayer so that it may be played.
      */
     public void addToPlayer(MidiPlayer player) {
-        player.addNote(pitch, VOLUME, startTick, duration, 
+        player.addNote(pitch, VOLUME, startTick, duration,
                        instrument.getChannel(), TRACK);
     }
-    
+
     /**
-     * removes current note from allnotes
+     * Deletes this note.
      */
     public void delete() {
         ALL_NOTES.remove(this);
@@ -134,12 +134,12 @@ public class Note {
     //TODO undelete for undoing deletes
     
     /**
-     * adds all note to the midiplayer
+     * Adds all notes to the midiplayer.
      */
     public static void playAllNotes(MidiPlayer player) {
         for (Note n : ALL_NOTES) {
             n.addToPlayer(player);
         }
-    }  
+    }
 }
-    
+
