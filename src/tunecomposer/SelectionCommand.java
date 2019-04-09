@@ -30,11 +30,11 @@ public class SelectionCommand implements Command{
     
     private void toggle(){
         for(TuneRectangle rect : changedRects){
-            if(/*rect selected*/){
-                TuneComposer.composition.remove(rect);
+            if(TuneComposer.composition.isSelectedTop(rect)){
+                TuneComposer.composition.removeFromSelection(rect);
             }
             else{
-                TuneComposer.composition.add(rect);
+                TuneComposer.composition.addToSelection(rect);
             }
         }
     }

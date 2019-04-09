@@ -26,6 +26,7 @@ public class CommandHistory {
      */
     public void addNewCommand(Command toAdd){
         undoableCommands.push(toAdd);
+        undoneCommands.clear();
     }
     
     /**
@@ -46,10 +47,11 @@ public class CommandHistory {
         undoableCommands.push(redoing);
     }
     
-    /**
-     * Clear the redoable commands
-     */
-    public void clearRedo(){
-        undoneCommands.clear();
+    public boolean canUndo(){
+        return !undoableCommands.isEmpty();
+    }
+    
+    public boolean canRedo(){
+        return !undoneCommands.isEmpty();
     }
 }
