@@ -42,7 +42,7 @@ public class Composition {
 
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectionTop);
-        pane.getChildren().add(new Gesture(group));
+        new Gesture(group);
     }
 
     public void ungroupSelected() {
@@ -128,10 +128,7 @@ public class Composition {
 
     public void updateMoved() {
         for (TuneRectangle rect : selectionTop) {
-            if (rect instanceof NoteBar) {
-                NoteBar bar = (NoteBar) rect;
-                bar.updateNoteMoved();
-            }
+            rect.updateNoteMoved();
         }
     }
 

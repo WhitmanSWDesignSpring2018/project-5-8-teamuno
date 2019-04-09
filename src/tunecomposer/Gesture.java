@@ -35,7 +35,7 @@ public class Gesture extends TuneRectangle {
         this.children = children;
         for(TuneRectangle child : children) {
             child.setParent(this);
-            TuneComposer.composition.remove(child);
+            TuneComposer.composition.removeFromSelection(child);
         }
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
@@ -119,6 +119,12 @@ public class Gesture extends TuneRectangle {
         this.removeSelectStyle();
         for(TuneRectangle child : children) {
             child.parentGesture = null;
+        }
+    }
+    
+    public void updateNoteMoved(){
+        for(TuneRectangle child : children){
+            child.updateNoteMoved();
         }
     }
 

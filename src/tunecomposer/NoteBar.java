@@ -48,6 +48,7 @@ public class NoteBar extends TuneRectangle {
     public void delete(Pane compositionpane) {
         note.delete();
         ALLNOTEBARS.remove(this);
+        TuneComposer.composition.remove(this); //TODO probably should handle this elsewhere
     }
 
     /**

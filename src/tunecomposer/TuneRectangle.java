@@ -45,6 +45,9 @@ public abstract class TuneRectangle extends Rectangle {
      * @param deltaY distance to move vertically
      */
     abstract public void move(double deltaX, double deltaY);
+    
+    
+    abstract public void updateNoteMoved();
 
     /**
      * Set the parent gesture of this TuneRectangle.
