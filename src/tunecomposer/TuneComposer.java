@@ -30,10 +30,9 @@ import javafx.util.Duration;
  */
 public class TuneComposer extends Application {
 
-    static final HashSet<TuneRectangle> SELECTION = new HashSet<>();
-    static final HashSet<TuneRectangle> ALLTOP = new HashSet<>();
-
     private final MidiPlayer player;
+
+    public static Composition composition;
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -133,13 +132,16 @@ public class TuneComposer extends Application {
         playAnimation.setOnFinished((ActionEvent e) -> { resetPlayLine(); });
     }
 
+    private void setupComposition() {
+        composition = new Composition(compositionpane);
+    }
+
     /**
      * Reset the position of the play line to offscreen left.
      */
     private void resetPlayLine() {
          playLine.setTranslateX(-1);
     }
-
 
     /**
      * Creates the rectangle used for selection so that it may be used later.
@@ -157,9 +159,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
-        for(TuneRectangle p : ALLTOP) {
-            p.addToSelection();
-        }
+        composition.selectAll();
     }
 
     /**
@@ -168,7 +168,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
-        TuneComposer.clearSelection();
+        composition.clearSelection();
     }
 
     /**
@@ -177,11 +177,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
-        for (TuneRectangle p : SELECTION) {
-            compositionpane.getChildren().remove(p);
-            p.delete(compositionpane);
-        }
-        TuneComposer.clearSelection();
+        composition.deleteSelection();
     }
 
     /**
@@ -192,11 +188,9 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleGroup(ActionEvent event) {
-        // Pass the selection by value, not by reference
-        HashSet group = new HashSet<TuneRectangle>(SELECTION);
-        if(SELECTION.isEmpty()) {return;}
-        compositionpane.getChildren().add(new Gesture(group));
+        composition.groupSelection();
     }
+
     /**
      * Removes selected top-level gestures.
      * The gesture is removed and its children are freed and selected.
@@ -204,17 +198,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleUngroup(ActionEvent event) {
-        for(TuneRectangle p : SELECTION) {
-            if (p instanceof Gesture) {
-                SELECTION.remove(p);
-                ((Gesture) p).freeChildren();
-                compositionpane.getChildren().remove(p);
-                HashSet<TuneRectangle> children = ((Gesture) p).getChildren();
-                children.forEach((child) -> {
-                    child.addToSelection();
-                });
-            }
-        }
+        composition.ungroupSelected();
     }
 
     /**
@@ -254,7 +238,7 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMousePressed(MouseEvent event) {
         stopPlaying();
         if (!event.isControlDown()) {
-            clearSelection();
+            composition.clearSelection();
         }
         selectionRect.setX(event.getX());
         selectionRect.setY(event.getY());
@@ -298,62 +282,10 @@ public class TuneComposer extends Application {
                                  (int)event.getX(),
                                  instrument);
             if (!event.isControlDown()) {
-                clearSelection();
+                composition.clearSelection();
             }
-            compositionpane.getChildren().add(new NoteBar(note));
+            new NoteBar(note);
         }
-    }
-
-    /**
-     * Add an item to the selection.
-     * The selection is a static set.
-     * Note that the style of the target TuneRectangle is not affected.
-     * @param toAdd the TuneRectangle to add
-     */
-    public static void addToSelection(TuneRectangle toAdd) {
-        SELECTION.add(toAdd);
-    }
-    /**
-     * Remove an item from the selection.
-     * The selection is a static set.
-     * @param toRemove the TuneRectangle to remove
-     */
-    public static void removeFromSelection(TuneRectangle toRemove) {
-        SELECTION.remove(toRemove);
-        toRemove.removeSelectStyle();
-    }
-
-    /**
-     * Clear the selection.
-     * Note that the style of the selection contents have been changed to show
-     * that those TuneRectangles are no longer selected.
-     */
-    public static void clearSelection() {
-        for(TuneRectangle p : SELECTION) {
-            p.removeSelectStyle();
-        }
-        SELECTION.clear();
-    }
-
-    /**
-     * Gets the selected objects.
-     * @return the hashset of selected top level TuneRectangles
-     */
-    public static HashSet<TuneRectangle> getSelection() {
-        return SELECTION;
-    }
-
-    /**
-     * Gets all selected notes.
-     * This includes notes that are in gestures.
-     * @return a hashset of notebars
-     */
-    public static HashSet<NoteBar> getSelectedNotes() {
-        HashSet notes = new HashSet<NoteBar>();
-        for (TuneRectangle p : SELECTION) {
-           notes.addAll(p.getChildLeaves());
-        }
-        return notes;
     }
 
     /**
@@ -385,6 +317,7 @@ public class TuneComposer extends Application {
         setupAnimation();
         setupSelectionRect();
         setupInstruments();
+        setupComposition();
     }
 
     /**
