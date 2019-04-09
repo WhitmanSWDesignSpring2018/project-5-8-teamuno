@@ -4,12 +4,10 @@
  */
 package tunecomposer;
 import java.util.HashSet;
-import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import static tunecomposer.TuneComposer.ALLTOP;
 
 /**
  * Represents a note bar on screen.
@@ -38,7 +36,7 @@ public class NoteBar extends TuneRectangle {
         setOnMouseDragged((MouseEvent me) -> { onMouseDragged(me); });
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
 
-        TuneComposer.ALLTOP.add(this);
+        TuneComposer.composition.add(this);
         ALLNOTEBARS.add(this);
         addToSelection();
     }
@@ -49,9 +47,7 @@ public class NoteBar extends TuneRectangle {
      */
     public void delete(Pane compositionpane) {
         note.delete();
-        compositionpane.getChildren().remove(this);
         ALLNOTEBARS.remove(this);
-        ALLTOP.remove(this);
     }
 
     /**
@@ -81,7 +77,8 @@ public class NoteBar extends TuneRectangle {
      * @return true or false depending on what
      */
     private boolean isSelected() {
-        return TuneComposer.getSelection().contains(getHighestParent());
+        TuneRectangle root = getHighestParent();
+        return TuneComposer.composition.isSelectedTop(root);
     }
 
     /**
@@ -92,12 +89,12 @@ public class NoteBar extends TuneRectangle {
         if (me.isStillSincePress()) {
             if (me.isControlDown()) {
                 if (isSelected()) {
-                    TuneComposer.removeFromSelection(getHighestParent());
+                    TuneComposer.composition.removeFromSelection(getHighestParent());
                 } else {
                     getHighestParent().addToSelection();
                 }
             } else {
-                TuneComposer.clearSelection();
+                TuneComposer.composition.clearSelection();
                 getHighestParent().addToSelection();
             }
             me.consume();
@@ -112,9 +109,9 @@ public class NoteBar extends TuneRectangle {
         dragWidth = (me.getX() >= rightEdge - 5);
         dragStartX = me.getX();
         dragStartY = me.getY();
-        for (TuneRectangle p : TuneComposer.getSelection()) {
-            if(p instanceof Gesture) {((Gesture) p).setStart();}
-        }
+        TuneComposer.composition.setSelectionStart();
+
+        // Maybe this NoteBar isn't selected yet
         if(getHighestParent() instanceof Gesture) {((Gesture) getHighestParent()).setStart();}
 
         me.consume();
@@ -129,26 +126,19 @@ public class NoteBar extends TuneRectangle {
     protected void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
         if (!isSelected()) {
-            TuneComposer.clearSelection();
-            TuneComposer.addToSelection(getHighestParent());
+            TuneComposer.composition.clearSelection();
+            TuneComposer.composition.addToSelection(getHighestParent());
         }
 
         if (dragWidth) {
-            if(parent == null) {
-            double dragDeltaWidth = me.getX() - dragStartX;
-                for (TuneRectangle p : TuneComposer.getSelection()) {
-                    if(p instanceof NoteBar && p.parent==null) {
-                    p.setWidth(
-                    Math.max(5.0, ((NoteBar) p).note.getDuration() + dragDeltaWidth));
-                    }
-                }
+            if(parentGesture == null) {
+                double dragDeltaWidth = me.getX() - dragStartX;
+                TuneComposer.composition.resizeSelected(dragDeltaWidth);
             }
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
-            for (TuneRectangle p : TuneComposer.getSelection()) {
-                p.getHighestParent().move(dragDeltaX, dragDeltaY);
-            }
+            TuneComposer.composition.moveSelected(dragDeltaX, dragDeltaY);
         }
         me.consume();
     }
@@ -159,25 +149,10 @@ public class NoteBar extends TuneRectangle {
      */
     private void onMouseReleased(MouseEvent me) {
         if (dragWidth) {
-            for (TuneRectangle p : TuneComposer.getSelection()) {
-                if(p instanceof NoteBar && p.parent==null) {
-                    ((NoteBar) p).note.setDuration((int)getWidth());
-                    ((NoteBar) p).update();
-                }
-            }
+            TuneComposer.composition.updateResized();
         } else {
-            for (NoteBar bar : TuneComposer.getSelectedNotes()) {
-                bar.note.setStartTick((int)bar.getX());
-                bar.note.setPitch(Constants.coordToPitch(bar.getY()));
-                bar.update();
-                bar.addToSelection();
-            }
-            for (TuneRectangle p : TuneComposer.getSelection()) {
-                if (p instanceof Gesture) {
-                    ((Gesture) p).snapY();
-                    p.addToSelection();
-                }
-            }
+            TuneComposer.composition.updateMoved();
+            TuneComposer.composition.snapSelectionY();
         }
         me.consume();
     }
@@ -185,8 +160,8 @@ public class NoteBar extends TuneRectangle {
      * Adds a child to the selection if it is not within a gesture.
      */
     public void addToSelection() {
-        if (parent == null) {
-            TuneComposer.SELECTION.add(this);
+        if (parentGesture == null) {
+            TuneComposer.composition.addToSelection(this);
         }
         if(!getStyleClass().contains("selected")) { //this works, change it if we have time
             getStyleClass().add("selected");
@@ -224,5 +199,30 @@ public class NoteBar extends TuneRectangle {
         update();
         setX(getX() + deltaX);
         setY(getY() + deltaY);
+    }
+
+    /**
+     * Set the duration of the note to the width of this note bar.
+     */
+    public void updateNoteDuration() {
+        note.setDuration((int)getWidth());
+    }
+
+    /**
+     * Set the pitch and start tick of the note based on the position of this
+     * note bar.
+     */
+    public void updateNoteMoved() {
+        note.setStartTick((int)getX());
+        note.setPitch(Constants.coordToPitch(getY()));
+        update();
+    }
+
+    /**
+     * Change the width of the note. Can't be less than 5 pixels.
+     * @param deltaX the new width of the NoteBar
+     */
+    public void resize(double deltaX) {
+        setWidth(Math.max(5.0, note.getDuration() + deltaX));
     }
 }

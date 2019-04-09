@@ -31,13 +31,13 @@ public class Gesture extends TuneRectangle {
      * @param children, the TuneRectangles that will be inside the gesture
      */
     public Gesture(HashSet<TuneRectangle> children) {
-        this.parent = null;
+        this.parentGesture = null;
         this.children = children;
         for(TuneRectangle child : children) {
             child.setParent(this);
-            child.removeFromTop();
+            TuneComposer.composition.remove(child);
         }
-        this.addToTop();
+        TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
         Double minX = null;
         Double maxX = null;
@@ -61,7 +61,7 @@ public class Gesture extends TuneRectangle {
         this.setY(minY);
         this.setWidth(maxX-minX);
         this.setHeight(maxY-minY);
-        TuneComposer.clearSelection();
+        TuneComposer.composition.clearSelection();
         getStyleClass().add("gesture");
         addToSelection();
     }
@@ -77,8 +77,8 @@ public class Gesture extends TuneRectangle {
         for(TuneRectangle child : children) {
             child.addToSelection();
         }
-        if(parent == null) {
-            TuneComposer.addToSelection(this);
+        if(parentGesture == null) {
+            TuneComposer.composition.addToSelection(this);
         }
     }
 
@@ -110,8 +110,6 @@ public class Gesture extends TuneRectangle {
         for(TuneRectangle child : children) {
             child.delete(compositionpane);
         }
-        TuneComposer.ALLTOP.remove(this);
-        compositionpane.getChildren().remove(this);
     }
 
     /**
@@ -120,7 +118,7 @@ public class Gesture extends TuneRectangle {
     public void freeChildren() {
         this.removeSelectStyle();
         for(TuneRectangle child : children) {
-            child.parent = null;
+            child.parentGesture = null;
         }
     }
 

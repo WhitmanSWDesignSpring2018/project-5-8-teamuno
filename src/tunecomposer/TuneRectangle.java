@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
  * @author ben, taka, spencer, ian
  */
 public abstract class TuneRectangle extends Rectangle {
-    Gesture parent;
+    Gesture parentGesture;
 
     /**
      * Location at the start of a mouse drag.
@@ -24,6 +24,7 @@ public abstract class TuneRectangle extends Rectangle {
 
     /**
      * Adds this to the selection.
+     * TODO Change name to `select`
      */
     abstract public void addToSelection();
 
@@ -46,34 +47,20 @@ public abstract class TuneRectangle extends Rectangle {
     abstract public void move(double deltaX, double deltaY);
 
     /**
-     * Removes this TuneRectangle from ALLTOP.
-     */
-    public void removeFromTop() {
-        TuneComposer.ALLTOP.remove(this);
-    }
-
-    /**
-     * Adds this TuneRectangle to ALLTOP.
-     */
-    public void addToTop() {
-        TuneComposer.ALLTOP.add(this);
-    }
-
-    /**
      * Set the parent gesture of this TuneRectangle.
      * Note that this method doesn't add this rectangle to the parent's
      * children.
      * @param newParent the gesture that this is put into
      */
     public void setParent(Gesture newParent) {
-        this.parent = newParent;
+        this.parentGesture = newParent;
     }
 
     /**
      * Gets the gesture encompassing this TuneRectangle.
      */
     public Gesture getParentGesture() {
-        return parent;
+        return parentGesture;
     }
 
     /**
@@ -81,10 +68,10 @@ public abstract class TuneRectangle extends Rectangle {
      * @return the highest ancestor gesture, possibly this
      */
     public TuneRectangle getHighestParent() {
-        if (parent == null) {
+        if (parentGesture == null) {
             return this;
         } else {
-            return parent.getHighestParent();
+            return parentGesture.getHighestParent();
         }
     }
 
