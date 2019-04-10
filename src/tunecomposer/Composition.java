@@ -149,4 +149,12 @@ public class Composition {
             }
         }
     }
+
+    public boolean isEmpty() {
+        return allTop.isEmpty();
+    }
+    
+    public boolean isSelectionEmpty() {
+        return selectionTop.isEmpty();
+    }
 }
