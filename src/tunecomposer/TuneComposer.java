@@ -23,6 +23,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * This JavaFX app lets the user compose music.
@@ -37,7 +41,9 @@ public class TuneComposer extends Application {
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
     @FXML private ToggleGroup instrumentgroup;
-
+    @FXML private MenuItem stopButton;
+    @FXML private MenuItem playButton;
+    @FXML private MenuItem deleteButton;
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
@@ -55,7 +61,7 @@ public class TuneComposer extends Application {
      */
     private void play() {
         stopPlaying();
-
+        stopButton.setDisable(false);
         if (!Note.isEmpty()) {
             player.stop();
             player.clear();
@@ -77,8 +83,8 @@ public class TuneComposer extends Application {
     private void stopPlaying() {
         player.stop();
         player.clear();
-
         playAnimation.stop();
+        stopButton.setDisable(true);
         resetPlayLine();
     }
 
@@ -140,6 +146,7 @@ public class TuneComposer extends Application {
      * Reset the position of the play line to offscreen left.
      */
     private void resetPlayLine() {
+         stopButton.setDisable(true);
          playLine.setTranslateX(-1);
     }
 
@@ -152,7 +159,8 @@ public class TuneComposer extends Application {
         selectionRect.setVisible(false);
         compositionpane.getChildren().add(selectionRect);
     }
-
+    
+    
     /**
      * Selects all top-level items drawn in the composition pane.
      * @param event the click on the menu item
@@ -318,6 +326,7 @@ public class TuneComposer extends Application {
         setupSelectionRect();
         setupInstruments();
         setupComposition();
+        stopButton.setDisable(true);
     }
 
     /**
