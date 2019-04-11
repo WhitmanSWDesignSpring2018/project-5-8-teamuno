@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -14,7 +13,7 @@
    <top>
       <MenuBar>
         <menus>
-          <Menu text="File">
+          <Menu text="File" fx:id="File">
             <items>
               <MenuItem accelerator="Shortcut+Q" 
                         onAction="#handleExitAction" 
@@ -25,14 +24,17 @@
               <items>
                 <MenuItem accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 
-                          text="Select All" />
+                          text="Select All"
+                          fx:id="selectAllButton"/>
                   <MenuItem accelerator="Shift+Shortcut+A" 
                             onAction="#handleSelectNoneAction" 
-                            text="Select None" />
+                            text="Select None"
+                            fx:id="selectNoneButton"/>
                   <MenuItem accelerator="backspace" 
                             onAction="#handleDeleteAction" 
-                            text="Delete" />
-                  <MenuItem onAction="#handleGroup" text="Group" />
+                            text="Delete" 
+                            fx:id="deleteButton"/>
+                  <MenuItem onAction="#handleGroup" text="Group"/>
                   <MenuItem onAction="#handleUngroup" text="Ungroup" />
               </items>
             </Menu>
@@ -40,10 +42,12 @@
             <items>
               <MenuItem accelerator="Shortcut+P" 
                         onAction="#handlePlayAction" 
-                        text="Play" />
+                        text="Play"
+                        fx:id="playButton"/>
               <MenuItem accelerator="Shortcut+S" 
                         onAction="#handleStopAction" 
-                        text="Stop" />
+                        text="Stop"
+                        fx:id="stopButton"/>
             </items>
           </Menu>          
         </menus>
