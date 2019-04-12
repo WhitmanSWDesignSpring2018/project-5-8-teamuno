@@ -30,6 +30,8 @@ public class Composition {
     }
 
     public void deleteSelection() {
+        HashSet forCommand = new HashSet(selectionTop);
+        TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
         for(TuneRectangle rect : selectionTop) {
             remove(rect);
             rect.delete(pane);
@@ -91,9 +93,12 @@ public class Composition {
      * Should be called on a newly created or un-deleted note.
      * @param newRect the TuneRectangle to be added
      */
-    public void add(TuneRectangle newRect) {
-        pane.getChildren().add(newRect);
-        allTop.add(newRect);
+    public void add(TuneRectangle rect) {
+        pane.getChildren().add(rect);
+        for(NoteBar child : rect.getChildLeaves()){
+            child.note.addToAllNotes();
+        }
+        allTop.add(rect);
     }
 
     /**
@@ -103,6 +108,9 @@ public class Composition {
     public void remove(TuneRectangle rect) {
         // TODO Remove redundant compositionpane removals elsewhere
         pane.getChildren().remove(rect);
+        for(NoteBar child : rect.getChildLeaves()){
+            child.note.removeFromAllNotes();
+        }
         allTop.remove(rect);
     }
 

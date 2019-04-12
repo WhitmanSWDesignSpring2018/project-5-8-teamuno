@@ -34,6 +34,8 @@
                             text="Delete" />
                   <MenuItem onAction="#handleGroup" text="Group" />
                   <MenuItem onAction="#handleUngroup" text="Ungroup" />
+                  <MenuItem onAction="#handleUndo" text="Undo" accelerator="Shortcut+Z"/>
+                  <MenuItem onAction="#handleRedo" text="Redo" accelerator="Shortcut+Y"/>
               </items>
             </Menu>
           <Menu text="Action">

@@ -17,7 +17,7 @@ public class NoteBar extends TuneRectangle {
 
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
-    private final Note note;
+    final Note note;
     private static boolean dragWidth;
 
     /**

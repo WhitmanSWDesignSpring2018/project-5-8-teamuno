@@ -18,6 +18,7 @@ public class EditCommand implements Command {
 
     public EditCommand(HashSet<TuneRectangle> edits /*length change and 2 of, start, end and movement */) {
         editedRects = edits;
+        lengthChange = 0; //CHANGE THIS LATER, this is just so it can run
     }
     
     @Override

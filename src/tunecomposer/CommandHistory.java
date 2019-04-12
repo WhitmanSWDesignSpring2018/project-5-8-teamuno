@@ -42,6 +42,7 @@ public class CommandHistory {
      * Redoes the top command and makes it available for undo
      */
     public void redo(){
+        if(undoneCommands.isEmpty()){return;}
         Command redoing = undoneCommands.pop();
         redoing.execute();
         undoableCommands.push(redoing);

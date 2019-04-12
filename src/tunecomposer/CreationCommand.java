@@ -5,8 +5,6 @@
  */
 package tunecomposer;
 
-import javafx.scene.layout.Pane;
-
 /**
  *
  * @author vankoesd
@@ -14,25 +12,23 @@ import javafx.scene.layout.Pane;
 public class CreationCommand implements Command {
 
     private final NoteBar newNote;
-    private final SelectionCommand selection;
-    private final Pane compositionPane;
+    //private final SelectionCommand selection;
     
-    public CreationCommand(NoteBar created, SelectionCommand selectionChange, Pane pane) {
+    public CreationCommand(NoteBar created/*, SelectionCommand selectionChange*/) {
         newNote = created;
-        selection = selectionChange;
-        compositionPane = pane;
+        //selection = selectionChange;
     }
     
     @Override
     public void execute() {
-        TuneComposer.composition.add(rect);
-        selection.execute();
+        TuneComposer.composition.add(newNote);
+        //selection.execute();
     }
 
     @Override
     public void unexecute() {
-        TuneComposer.composition.remove(rect);
-        selection.unexecute();
+        TuneComposer.composition.remove(newNote);
+        //selection.unexecute();
     }
     
 }

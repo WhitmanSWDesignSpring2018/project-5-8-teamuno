@@ -44,6 +44,14 @@ public class Note {
     public void setPitch(int pitch) {
         this.pitch = pitch;
     }
+    
+    public void addToAllNotes(){
+        ALL_NOTES.add(this);
+    }
+    
+    public void removeFromAllNotes(){
+        ALL_NOTES.remove(this);
+    }
 
     /**
      * Gets the pitch of this note.

@@ -6,7 +6,6 @@
 package tunecomposer;
 
 import java.util.HashSet;
-import javafx.scene.layout.Pane;
 
 /**
  *
@@ -14,13 +13,9 @@ import javafx.scene.layout.Pane;
  */
 public class DeletionCommand implements Command {
     private final HashSet<TuneRectangle> deletedRects;
-    private final SelectionCommand selection;
-    private final Pane compositionPane;
     
-    public DeletionCommand(HashSet<TuneRectangle> rects, SelectionCommand selectionChange, Pane pane) {
+    public DeletionCommand(HashSet<TuneRectangle> rects) {
         deletedRects = rects;
-        selection = selectionChange;
-        compositionPane = pane;
     }
     
     @Override
@@ -28,15 +23,15 @@ public class DeletionCommand implements Command {
         for(TuneRectangle rect : deletedRects){
             TuneComposer.composition.remove(rect);
         }
-        selection.execute();
     }
 
     @Override
     public void unexecute() {
+        TuneComposer.composition.clearSelection();
         for (TuneRectangle rect : deletedRects){
             TuneComposer.composition.add(rect);
+            rect.addToSelection();
         }
-        selection.unexecute();
     }
     
 }

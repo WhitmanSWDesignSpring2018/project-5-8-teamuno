@@ -65,6 +65,8 @@ public abstract class TuneRectangle extends Rectangle {
     public Gesture getParentGesture() {
         return parentGesture;
     }
+    
+    
 
     /**
      * Gets the root of this rectangle's gesture tree.

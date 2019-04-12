@@ -5,7 +5,6 @@
 package tunecomposer;
 
 import java.io.IOException;
-import java.util.HashSet;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -49,6 +48,7 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
+        history = new CommandHistory();
     }
 
     /**
@@ -181,7 +181,6 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
         composition.deleteSelection();
-        //TODO start selection
     }
 
     /**
@@ -203,6 +202,21 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleUngroup(ActionEvent event) {
         composition.ungroupSelected();
+    }
+    
+    @FXML
+    protected void handleRedo(ActionEvent event) {
+        history.redo();
+    }
+
+    /**
+     * Removes selected top-level gestures.
+     * The gesture is removed and its children are freed and selected.
+     * @param event
+     */
+    @FXML
+    protected void handleUndo(ActionEvent event) {
+        history.undo();
     }
 
     /**
@@ -291,7 +305,8 @@ public class TuneComposer extends Application {
             if (!event.isControlDown()) {
                 composition.clearSelection();
             }
-            new NoteBar(note);
+            NoteBar forCommand = new NoteBar(note);
+            history.addNewCommand(new CreationCommand(forCommand));
         }
     }
 
