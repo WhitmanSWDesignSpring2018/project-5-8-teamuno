@@ -5,6 +5,7 @@
  */
 package tunecomposer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -13,17 +14,30 @@ import java.util.HashSet;
  */
 public class GroupCommand implements Command{
     
-    private Gesture toUngroup;
-    private HashSet<TuneRectangle> toGroup;
+    private HashSet<Gesture> toUngroup;
+    private HashSet<HashSet<TuneRectangle>> toGroup;
 
-    public GroupCommand(Gesture grouped) {
-        toUngroup = grouped;
-        toGroup = null;
+    
+    
+    
+    
+    
+    public GroupCommand(HashSet stuff, boolean wasGrouped){
+        if(wasGrouped){groupedConstructor(stuff);}
+        else{ungroupedConstructor(stuff);}
+    }
+    /**
+     *
+     * @param grouped
+     */
+    private void groupedConstructor(HashSet<Gesture> grouped) {
+        toUngroup = new HashSet(grouped);
+        toGroup = new HashSet<HashSet<TuneRectangle>>();
     }
     
-    public GroupCommand(HashSet<TuneRectangle> ungrouped) {
-        toGroup = ungrouped;
-        toUngroup = null;
+    private void ungroupedConstructor(HashSet<HashSet<TuneRectangle>> ungrouped) {
+        toGroup = new HashSet(ungrouped);
+        toUngroup = new HashSet<Gesture>();
     }
     
     @Override
@@ -37,12 +51,17 @@ public class GroupCommand implements Command{
     }
     
     private void toggle(){
-        if(toGroup == null){
-            toGroup = toUngroup.getChildren();
-            //toUngroup.ungroup();
+        if(toUngroup.isEmpty()){
+            for(HashSet<TuneRectangle> rectGroup : toGroup){
+                toUngroup.add(TuneComposer.composition.groupTuneRectangles(rectGroup));
+            }
+            toGroup.clear();
         }
         else{
-            toUngroup = new Gesture(toGroup);
+            for(Gesture gest : toUngroup){
+                toGroup.add(new HashSet<TuneRectangle>(TuneComposer.composition.ungroupGesture(gest)));
+            }
+            toUngroup.clear();
         }
     }
 }

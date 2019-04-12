@@ -41,6 +41,7 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+    public static CommandHistory history;
 
     /**
      * Construct a new composition pane.
@@ -160,6 +161,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
+        //TODO start selection
     }
 
     /**
@@ -169,6 +171,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
+        //TODO start selection
     }
 
     /**
@@ -178,6 +181,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
         composition.deleteSelection();
+        //TODO start selection
     }
 
     /**
@@ -236,6 +240,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleCompositionPaneMousePressed(MouseEvent event) {
+        //TODO start selection
         stopPlaying();
         if (!event.isControlDown()) {
             composition.clearSelection();
@@ -245,6 +250,7 @@ public class TuneComposer extends Application {
         selectionRect.setWidth(0);
         selectionRect.setHeight(0);
         selectionRect.setVisible(true);
+        
     }
 
     /**
@@ -256,6 +262,7 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMouseDragged(MouseEvent event) {
         selectionRect.setWidth(event.getX() - selectionRect.getX());
         selectionRect.setHeight(event.getY() - selectionRect.getY());
+        //TODO maintain hashset
     }
 
     /**

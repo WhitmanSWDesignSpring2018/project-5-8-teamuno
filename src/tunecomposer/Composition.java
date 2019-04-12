@@ -42,10 +42,15 @@ public class Composition {
 
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectionTop);
-        new Gesture(group);
+        Gesture newGesture = new Gesture(group);
+        HashSet<Gesture> forCommand = new HashSet();
+        forCommand.add(newGesture);
+        TuneComposer.history.addNewCommand(new GroupCommand(forCommand, true));
+        
     }
 
     public void ungroupSelected() {
+        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet();
         for(TuneRectangle p : selectionTop) {
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
@@ -56,8 +61,29 @@ public class Composition {
                 children.forEach((child) -> {
                     child.addToSelection();
                 });
+                forCommand.add(children);
             }
         }
+        TuneComposer.history.addNewCommand(new GroupCommand(forCommand, false));
+    }
+    
+    public Gesture groupTuneRectangles(HashSet<TuneRectangle> toGroup) {
+        if(toGroup.isEmpty()) {return null;}
+
+        // Pass the selection by value, not by reference
+        HashSet<TuneRectangle> group = new HashSet<>(toGroup);
+        return new Gesture(group);
+    }
+
+    public HashSet<TuneRectangle> ungroupGesture(Gesture Ungroup) {
+        if(selectionTop.contains(Ungroup)){selectionTop.remove(Ungroup);}
+        Ungroup.freeChildren();
+        pane.getChildren().remove(Ungroup);
+        HashSet<TuneRectangle> children = Ungroup.getChildren();
+        children.forEach((child) -> {
+            child.addToSelection();
+        });
+        return children;
     }
 
     /**
