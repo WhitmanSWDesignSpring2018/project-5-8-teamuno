@@ -88,17 +88,32 @@ public class Composition {
         return children;
     }
 
+    public void add(TuneRectangle rect) {
+        if(pane.getChildren().contains(rect)){
+            return;
+        }
+        else if(rect instanceof NoteBar){
+            add((NoteBar) rect);
+        }
+        else{
+            add((Gesture) rect);
+        }
+    }
     /**
      * Adds something to the composition.
      * Should be called on a newly created or un-deleted note.
      * @param newRect the TuneRectangle to be added
      */
-    public void add(TuneRectangle rect) {
+    public void add(NoteBar rect) {
         pane.getChildren().add(rect);
-        for(NoteBar child : rect.getChildLeaves()){
-            child.note.addToAllNotes();
-        }
-        allTop.add(rect);
+        rect.note.addToAllNotes();
+        if(rect.getParentGesture() == null) allTop.add(rect);
+    }
+    
+    public void add(Gesture rect) {
+        pane.getChildren().add(rect);
+        rect.addChildrenToComposition();
+        if(rect.getParentGesture() == null) allTop.add(rect);
     }
 
     /**

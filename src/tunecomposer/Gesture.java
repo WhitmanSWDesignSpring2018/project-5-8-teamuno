@@ -101,6 +101,12 @@ public class Gesture extends TuneRectangle {
     public HashSet<TuneRectangle> getChildren() {
         return children;
     }
+    
+    public void addChildrenToComposition(){
+        for(TuneRectangle child: children){
+            TuneComposer.composition.add(child);
+        }
+    }
 
     /**
      * Undraws and removes this gesture and all of its children.
