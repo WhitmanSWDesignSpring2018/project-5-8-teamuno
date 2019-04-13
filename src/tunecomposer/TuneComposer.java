@@ -1,7 +1,7 @@
 /*
  * Provided for use only in CS 370 at Whitman College.
  * DO NOT DISTRIBUTE.
- */
+ */ 
 package tunecomposer;
 
 import java.io.IOException;
@@ -161,7 +161,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
-        //TODO start selection
+        history.addNewCommand(new SelectionCommand());
     }
 
     /**
@@ -171,7 +171,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
-        //TODO start selection
+        history.addNewCommand(new SelectionCommand());
     }
 
     /**
@@ -276,7 +276,6 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMouseDragged(MouseEvent event) {
         selectionRect.setWidth(event.getX() - selectionRect.getX());
         selectionRect.setHeight(event.getY() - selectionRect.getY());
-        //TODO maintain hashset
     }
 
     /**
@@ -287,6 +286,7 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMouseReleased(MouseEvent event) {
         NoteBar.selectArea(selectionRect);
         selectionRect.setVisible(false);
+        history.addNewCommand(new SelectionCommand());
     }
 
     /**

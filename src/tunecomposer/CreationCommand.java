@@ -12,11 +12,11 @@ package tunecomposer;
 public class CreationCommand implements Command {
 
     private final NoteBar newNote;
-    //private final SelectionCommand selection;
+    private final SelectionCommand selection;
     
-    public CreationCommand(NoteBar created/*, SelectionCommand selectionChange*/) {
+    public CreationCommand(NoteBar created) {
         newNote = created;
-        //selection = selectionChange;
+        selection = new SelectionCommand();
     }
     
     @Override

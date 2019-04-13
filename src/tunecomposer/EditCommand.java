@@ -6,6 +6,7 @@
 package tunecomposer;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -13,12 +14,14 @@ import java.util.HashSet;
  */
 public class EditCommand implements Command {
     
-    private final HashSet<TuneRectangle> editedRects;
+    private final Set<TuneRectangle> editedRects;
     private final int lengthChange;
+    private final Command selection;
 
     public EditCommand(HashSet<TuneRectangle> edits /*length change and 2 of, start, end and movement */) {
         editedRects = edits;
         lengthChange = 0; //CHANGE THIS LATER, this is just so it can run
+        selection = new SelectionCommand();
     }
     
     @Override

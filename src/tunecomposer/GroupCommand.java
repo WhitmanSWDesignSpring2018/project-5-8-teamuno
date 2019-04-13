@@ -25,6 +25,7 @@ public class GroupCommand implements Command{
     public GroupCommand(HashSet stuff, boolean wasGrouped){
         if(wasGrouped){groupedConstructor(stuff);}
         else{ungroupedConstructor(stuff);}
+        new SelectionCommand();
     }
     /**
      *

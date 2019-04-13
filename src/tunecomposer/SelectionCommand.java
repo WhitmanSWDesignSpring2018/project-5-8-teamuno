@@ -6,6 +6,7 @@
 package tunecomposer;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -13,10 +14,11 @@ import java.util.HashSet;
  */
 public class SelectionCommand implements Command{
     
-    private final HashSet<TuneRectangle> changedRects;
+    private final Set<TuneRectangle> changedRects;
 
-    public SelectionCommand(HashSet<TuneRectangle> rects) {
-        changedRects = rects;
+    public SelectionCommand() {
+        changedRects = new HashSet<>(TuneComposer.composition.getSelectionTracker());
+        TuneComposer.composition.clearSelectionTracker();
     }
     @Override
     public void execute() {
@@ -29,12 +31,16 @@ public class SelectionCommand implements Command{
     }
     
     private void toggle(){
+        System.out.println("Toggle selection");
+        System.out.println(changedRects.isEmpty());
         for(TuneRectangle rect : changedRects){
             if(TuneComposer.composition.isSelectedTop(rect)){
                 TuneComposer.composition.removeFromSelection(rect);
+                System.out.println("1");
             }
             else{
-                TuneComposer.composition.addToSelection(rect);
+                rect.addToSelection();
+                System.out.println("2");
             }
         }
     }

@@ -2,19 +2,30 @@
 package tunecomposer;
 
 import java.util.HashSet;
+import java.util.Set;
 import javafx.scene.layout.Pane;
 
 public class Composition {
-    private HashSet<TuneRectangle> allTop;
-    private HashSet<TuneRectangle> selectionTop;
+    private Set<TuneRectangle> allTop;
+    private Set<TuneRectangle> selectionTop;
+    private Set<TuneRectangle> selectionTopChanges; //TODO rename?
     private Pane pane;
 
     public Composition(Pane compositionpane) {
         pane = compositionpane;
         allTop = new HashSet<>();
         selectionTop = new HashSet<>();
+        selectionTopChanges = new HashSet<>();
     }
 
+    public Set<TuneRectangle> getSelectionTracker(){
+        return new HashSet<>(selectionTopChanges);
+    }
+    
+    public void clearSelectionTracker(){
+        selectionTopChanges.clear();
+    }
+    
     public void selectAll() {
         clearSelection();
         for(TuneRectangle rect : allTop) {
@@ -25,6 +36,7 @@ public class Composition {
     public void clearSelection() {
         for(TuneRectangle rect : selectionTop) {
             rect.removeSelectStyle();
+            trackRectSelect(rect);
         }
         selectionTop.clear();
     }
@@ -128,6 +140,16 @@ public class Composition {
         }
         allTop.remove(rect);
     }
+    
+    
+    public void trackRectSelect(TuneRectangle rect){
+        if(selectionTopChanges.contains(rect)){
+            selectionTopChanges.remove(rect);
+        }
+        else{
+            selectionTopChanges.add(rect);
+        }
+    }
 
     /**
      * Add an item to the selection.
@@ -136,6 +158,7 @@ public class Composition {
      */
     public void addToSelection(TuneRectangle root) {
         selectionTop.add(root);
+        trackRectSelect(root);
     }
 
     /**
@@ -145,6 +168,7 @@ public class Composition {
     public void removeFromSelection(TuneRectangle root) {
         selectionTop.remove(root);
         root.removeSelectStyle();
+        trackRectSelect(root);
     }
 
     public boolean isSelectedTop(TuneRectangle root) {

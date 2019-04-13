@@ -36,6 +36,7 @@ public class CommandHistory {
         Command undoing = undoableCommands.pop();
         undoing.unexecute();
         undoneCommands.push(undoing);
+        TuneComposer.composition.clearSelectionTracker();
     }
     
     /**
@@ -46,6 +47,7 @@ public class CommandHistory {
         Command redoing = undoneCommands.pop();
         redoing.execute();
         undoableCommands.push(redoing);
+        TuneComposer.composition.clearSelectionTracker();
     }
     
     public boolean canUndo(){

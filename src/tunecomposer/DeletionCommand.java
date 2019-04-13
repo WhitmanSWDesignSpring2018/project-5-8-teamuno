@@ -16,6 +16,7 @@ public class DeletionCommand implements Command {
     
     public DeletionCommand(HashSet<TuneRectangle> rects) {
         deletedRects = rects;
+        new SelectionCommand();
     }
     
     @Override
