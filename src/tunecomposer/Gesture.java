@@ -158,6 +158,7 @@ public class Gesture extends TuneRectangle {
         setX(rectStartX + deltaX);
         setY(rectStartY + deltaY);
     }
+    
 
     /**
      * Adjusts the gesture and its child gestures to be in line with the

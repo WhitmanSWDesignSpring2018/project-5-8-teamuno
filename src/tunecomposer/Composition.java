@@ -26,6 +26,10 @@ public class Composition {
         selectionTopChanges.clear();
     }
     
+    public Set getSelectionTop(){
+        return new HashSet<>(selectionTop);
+    }
+    
     public void selectAll() {
         clearSelection();
         for(TuneRectangle rect : allTop) {

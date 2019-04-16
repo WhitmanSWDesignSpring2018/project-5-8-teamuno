@@ -21,26 +21,30 @@ public class ResizeCommand implements Command {
     public ResizeCommand(Set<TuneRectangle> edits, double dragLength) {
         editedRects = edits;
         lengthChange = dragLength;
+        System.out.println(dragLength);
+        System.out.println(edits);
         selection = new SelectionCommand();
     }
     
     @Override
     public void execute() {
         for(TuneRectangle rect : editedRects){
-            if(rect instanceof NoteBar && rect.getParent() == null){
+            if(rect instanceof NoteBar && rect.getParentGesture() == null){
                 ((NoteBar) rect).resize(lengthChange);
             }
         }
+        TuneComposer.composition.updateResized();
         selection.execute();
     }
 
     @Override
     public void unexecute() {
         for(TuneRectangle rect : editedRects){
-            if(rect instanceof NoteBar && rect.getParent() == null){
+            if(rect instanceof NoteBar && rect.getParentGesture() == null){
                 ((NoteBar) rect).resize(-lengthChange);
             }
         }
+        TuneComposer.composition.updateResized();
         selection.unexecute();
     }
 }

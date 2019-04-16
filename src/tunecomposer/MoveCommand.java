@@ -12,6 +12,10 @@ import java.util.Set;
  *
  * @author vankoesd
  */
+
+//does not work because the Gesture.move method is wierd and different from Note.move
+
+//TODO fix that
 public class MoveCommand implements Command {
     
     private final Set<TuneRectangle> editedRects;
@@ -19,18 +23,19 @@ public class MoveCommand implements Command {
     private final double yChange;
     private final Command selection;
 
-    public MoveCommand(HashSet<TuneRectangle> edits, double dX, double dY) {
+    public MoveCommand(Set edits, double dX, double dY) {
         editedRects = edits;
         xChange = dX;
         yChange = dY;
+        System.out.println(editedRects);
         selection = new SelectionCommand();
     }
     
     @Override
     public void execute() {
         for(TuneRectangle rect : editedRects){
-            rect.setX(rect.getX()+xChange);
-            rect.setY(rect.getY()+yChange);
+            rect.move(xChange, yChange);
+            rect.updateNoteMoved();
         }
         selection.execute();
     }
@@ -38,8 +43,8 @@ public class MoveCommand implements Command {
     @Override
     public void unexecute() {
         for(TuneRectangle rect : editedRects){
-            rect.setX(rect.getX()-xChange);
-            rect.setY(rect.getY()-yChange);
+            rect.move(-xChange, -yChange);
+            rect.updateNoteMoved();
         }
         selection.unexecute();
     }

@@ -8,7 +8,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import static tunecomposer.TuneComposer.history;
 
 /**
  * Represents a note bar on screen.
@@ -153,9 +152,11 @@ public class NoteBar extends TuneRectangle {
     private void onMouseReleased(MouseEvent me) {
         if (dragWidth) {
             TuneComposer.composition.updateResized();
+            TuneComposer.history.addNewCommand(new ResizeCommand(TuneComposer.composition.getSelectionTop() , me.getX()-dragStartX));
         } else {
             TuneComposer.composition.updateMoved();
             TuneComposer.composition.snapSelectionY();
+            TuneComposer.history.addNewCommand(new MoveCommand(TuneComposer.composition.getSelectionTop(), me.getX()-dragStartX, me.getY()-dragStartY));
         }
         //TODO edit command, not selection, this is for testing
         new SelectionCommand();

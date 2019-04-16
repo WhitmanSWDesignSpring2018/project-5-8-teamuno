@@ -31,16 +31,12 @@ public class SelectionCommand implements Command{
     }
     
     private void toggle(){
-        System.out.println("Toggle selection");
-        System.out.println(changedRects.isEmpty());
         for(TuneRectangle rect : changedRects){
             if(TuneComposer.composition.isSelectedTop(rect)){
                 TuneComposer.composition.removeFromSelection(rect);
-                System.out.println("1");
             }
             else{
                 rect.addToSelection();
-                System.out.println("2");
             }
         }
     }
