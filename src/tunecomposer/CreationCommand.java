@@ -22,13 +22,13 @@ public class CreationCommand implements Command {
     @Override
     public void execute() {
         TuneComposer.composition.add(newNote);
-        //selection.execute();
+        selection.execute();
     }
 
     @Override
     public void unexecute() {
         TuneComposer.composition.remove(newNote);
-        //selection.unexecute();
+        selection.unexecute();
     }
     
 }

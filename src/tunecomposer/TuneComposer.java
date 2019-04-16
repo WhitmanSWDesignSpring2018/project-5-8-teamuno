@@ -286,7 +286,9 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMouseReleased(MouseEvent event) {
         NoteBar.selectArea(selectionRect);
         selectionRect.setVisible(false);
-        history.addNewCommand(new SelectionCommand());
+        if (!event.isStillSincePress()) {
+            history.addNewCommand(new SelectionCommand());
+        }
     }
 
     /**
@@ -308,6 +310,7 @@ public class TuneComposer extends Application {
             NoteBar forCommand = new NoteBar(note);
             history.addNewCommand(new CreationCommand(forCommand));
         }
+        event.consume();
     }
 
     /**
