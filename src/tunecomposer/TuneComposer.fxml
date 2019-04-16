@@ -41,7 +41,8 @@
               <MenuItem accelerator="Shortcut+P" 
                         onAction="#handlePlayAction" 
                         text="Play" />
-              <MenuItem accelerator="Shortcut+S" 
+              <MenuItem fx:id="stopButton"
+                        accelerator="Shortcut+S" 
                         onAction="#handleStopAction" 
                         text="Stop" />
             </items>
