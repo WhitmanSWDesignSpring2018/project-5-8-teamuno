@@ -67,7 +67,7 @@ public class NoteBar extends TuneRectangle {
     * @return the set of note bars within the pane
     */
     public HashSet<NoteBar> getChildLeaves() {
-        HashSet set =  new HashSet<NoteBar>();
+        HashSet<NoteBar> set = new HashSet<>();
         set.add(this);
         return set;
     }
