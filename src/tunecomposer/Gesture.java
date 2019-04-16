@@ -31,38 +31,18 @@ public class Gesture extends TuneRectangle {
      * @param children, the TuneRectangles that will be inside the gesture
      */
     public Gesture(HashSet<TuneRectangle> children) {
-        this.parentGesture = null;
         this.children = children;
+
         for(TuneRectangle child : children) {
             child.setParent(this);
-            TuneComposer.composition.removeFromSelection(child);
         }
+
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
-        Double minX = null;
-        Double maxX = null;
-        Double minY = null;
-        Double maxY = null;
-        for(TuneRectangle child : children) {
-            if(minX == null || child.getX() < minX) {
-                minX = child.getX();
-            }
-            if(minY == null || child.getY() < minY) {
-                minY = child.getY();
-            }
-            if(maxX == null || child.getX()+child.getWidth() > maxX) {
-                maxX = child.getX()+child.getWidth();
-            }
-            if(maxY == null || child.getY()+child.getHeight() > maxY) {
-                maxY = child.getY()+child.getHeight();
-            }
-        }
-        this.setX(minX);
-        this.setY(minY);
-        this.setWidth(maxX-minX);
-        this.setHeight(maxY-minY);
-        TuneComposer.composition.clearSelection();
+        setBounds();
         getStyleClass().add("gesture");
+        
+        TuneComposer.composition.clearSelection();
         addToSelection();
     }
 
@@ -175,5 +155,30 @@ public class Gesture extends TuneRectangle {
        for (TuneRectangle child : children) {
            child.removeSelectStyle();
        }
+    }
+    
+    private void setBounds(){
+        Double minX = null;
+        Double maxX = null;
+        Double minY = null;
+        Double maxY = null;
+        for(TuneRectangle child : children) {
+            if(minX == null || child.getX() < minX) {
+                minX = child.getX();
+            }
+            if(minY == null || child.getY() < minY) {
+                minY = child.getY();
+            }
+            if(maxX == null || child.getX()+child.getWidth() > maxX) {
+                maxX = child.getX()+child.getWidth();
+            }
+            if(maxY == null || child.getY()+child.getHeight() > maxY) {
+                maxY = child.getY()+child.getHeight();
+            }
+        }
+        this.setX(minX);
+        this.setY(minY);
+        this.setWidth(maxX-minX);
+        this.setHeight(maxY-minY);
     }
 }
