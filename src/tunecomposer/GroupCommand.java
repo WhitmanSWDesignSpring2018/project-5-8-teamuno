@@ -5,7 +5,6 @@
  */
 package tunecomposer;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**

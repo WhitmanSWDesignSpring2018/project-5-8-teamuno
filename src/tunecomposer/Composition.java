@@ -84,7 +84,7 @@ public class Composition {
      */
     public void ungroupSelected() {
         HashSet<HashSet<TuneRectangle>> forCommand = new HashSet();
-        for(TuneRectangle p : selectionTop) {
+        for(TuneRectangle p : new HashSet<TuneRectangle>(selectionTop)) {
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
                 selectionTop.remove(g);
