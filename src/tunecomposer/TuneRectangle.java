@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
  * @author ben, taka, spencer, ian
  */
 public abstract class TuneRectangle extends Rectangle {
-    Gesture parentGesture;
+    protected Gesture parentGesture;
 
     /**
      * Location at the start of a mouse drag.

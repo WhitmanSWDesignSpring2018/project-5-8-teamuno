@@ -30,6 +30,9 @@ public class Composition {
         return new HashSet<>(selectionTop);
     }
     
+    /**
+     * Select all the items in the composition.
+     */
     public void selectAll() {
         clearSelection();
         for(TuneRectangle rect : allTop) {
@@ -37,6 +40,9 @@ public class Composition {
         }
     }
 
+    /**
+     * Clear the selection.
+     */
     public void clearSelection() {
         for(TuneRectangle rect : selectionTop) {
             rect.removeSelectStyle();
@@ -45,6 +51,9 @@ public class Composition {
         selectionTop.clear();
     }
 
+    /**
+     * Delete the contents of the selection.
+     */
     public void deleteSelection() {
         HashSet forCommand = new HashSet(selectionTop);
         TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
@@ -55,6 +64,9 @@ public class Composition {
         selectionTop.clear();
     }
 
+    /**
+     * Group the contents of the selection into a gesture.
+     */
     public void groupSelection() {
         if(selectionTop.isEmpty()) {return;}
 
@@ -67,6 +79,9 @@ public class Composition {
         
     }
 
+    /**
+     * Ungroup selected gestures. NoteBars are not affected.
+     */
     public void ungroupSelected() {
         HashSet<HashSet<TuneRectangle>> forCommand = new HashSet();
         for(TuneRectangle p : selectionTop) {
@@ -175,10 +190,18 @@ public class Composition {
         trackRectSelect(root);
     }
 
+    /**
+     * Tells whether the given TuneRectangle is selected.
+     * @param root the TuneRectangle in question
+     */
     public boolean isSelectedTop(TuneRectangle root) {
         return selectionTop.contains(root);
     }
 
+    /**
+     * Resize the selected items.
+     * @param deltaX the number of pixels to resize by
+     */
     public void resizeSelected(double deltaX) {
         for (TuneRectangle rect : selectionTop) {
             if(rect instanceof NoteBar) {
@@ -188,12 +211,21 @@ public class Composition {
         }
     }
 
+    /**
+     * Move the selected items.
+     * @param deltaX the horizontal distance to move the selected items
+     * @param deltaY the vertical distance to move the selected items
+     */
     public void moveSelected(double deltaX, double deltaY) {
         for (TuneRectangle rect : selectionTop) {
             rect.move(deltaX, deltaY);
         }
     }
 
+    /**
+     * Update the duration of selected notes.
+     * This needs to be called after any number of NoteBars are resized.
+     */
     public void updateResized() {
         for (TuneRectangle rect : selectionTop) {
             if (rect instanceof NoteBar) {
@@ -203,12 +235,20 @@ public class Composition {
         }
     }
 
+    /**
+     * Update the start tick of selected notes.
+     * This needs to be called after any number of NoteBars are moved.
+     */
     public void updateMoved() {
         for (TuneRectangle rect : selectionTop) {
             rect.updateNoteMoved();
         }
     }
 
+    /**
+     * Instructs each gesture to store its current location as a drag start.
+     * This gets called when the mouse button is pressed.
+     */
     public void setSelectionStart() {
         for (TuneRectangle rect : selectionTop) {
             if(rect instanceof Gesture) {
@@ -218,6 +258,10 @@ public class Composition {
         }
     }
 
+    /**
+     * Snap selected gestures to the horizontal lines after moving.
+     * This only snaps gestures because notes snap themselves.
+     */
     public void snapSelectionY() {
         for (TuneRectangle rect : selectionTop) {
             if(rect instanceof Gesture) {
@@ -225,5 +269,20 @@ public class Composition {
                 g.snapY();
             }
         }
+    }
+
+    /**
+     * Checks if this composition contains nothing.
+     * @return true if this composition contains nothing, otherwise false
+     */
+    public boolean isEmpty() {
+        return allTop.isEmpty();
+    }
+    
+    /**
+     * Checks if the selection is empty.
+     */
+    public boolean isSelectionEmpty() {
+        return selectionTop.isEmpty();
     }
 }
