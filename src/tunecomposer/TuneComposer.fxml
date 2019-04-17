@@ -26,16 +26,31 @@
                 <MenuItem accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 
                           text="Select All" />
-                  <MenuItem accelerator="Shift+Shortcut+A" 
-                            onAction="#handleSelectNoneAction" 
-                            text="Select None" />
-                  <MenuItem accelerator="backspace" 
-                            onAction="#handleDeleteAction" 
-                            text="Delete" />
-                  <MenuItem onAction="#handleGroup" text="Group" />
-                  <MenuItem onAction="#handleUngroup" text="Ungroup" />
-                  <MenuItem onAction="#handleUndo" text="Undo" accelerator="Shortcut+Z"/>
-                  <MenuItem onAction="#handleRedo" text="Redo" accelerator="Shortcut+Y"/>
+                
+                <MenuItem accelerator="Shift+Shortcut+A" 
+                          onAction="#handleSelectNoneAction" 
+                          text="Select None" />
+                
+                <MenuItem accelerator="backspace" 
+                          onAction="#handleDeleteAction" 
+                          text="Delete" />
+                
+                <MenuItem accelerator="Shortcut+G" 
+                          onAction="#handleGroup" 
+                          text="Group" />
+                
+                <MenuItem accelerator="Shortcut+U" 
+                          onAction="#handleUngroup" 
+                          text="Ungroup" />
+                
+                <MenuItem accelerator="Shortcut+Z" 
+                          onAction="#handleUndo" 
+                          text="Undo"/>
+                
+                <MenuItem accelerator="Shortcut+Y" 
+                          onAction="#handleRedo" 
+                          text="Redo"/>
+                
               </items>
             </Menu>
           <Menu text="Action">
