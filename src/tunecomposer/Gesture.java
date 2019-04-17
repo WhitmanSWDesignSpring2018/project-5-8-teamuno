@@ -159,6 +159,15 @@ public class Gesture extends TuneRectangle {
         setY(rectStartY + deltaY);
     }
     
+    @Override
+    public void jump(double deltaX, double deltaY) {
+        for (TuneRectangle child : children) {
+            child.jump(deltaX, deltaY);
+        }
+        setX(getX() + deltaX);
+        setY(getY() + deltaY);
+        snapY();
+    }
 
     /**
      * Adjusts the gesture and its child gestures to be in line with the

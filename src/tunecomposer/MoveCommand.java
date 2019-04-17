@@ -5,7 +5,6 @@
  */
 package tunecomposer;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -34,7 +33,7 @@ public class MoveCommand implements Command {
     @Override
     public void execute() {
         for(TuneRectangle rect : editedRects){
-            rect.move(xChange, yChange);
+            rect.jump(xChange, yChange);
             rect.updateNoteMoved();
         }
         selection.execute();
@@ -43,7 +42,7 @@ public class MoveCommand implements Command {
     @Override
     public void unexecute() {
         for(TuneRectangle rect : editedRects){
-            rect.move(-xChange, -yChange);
+            rect.jump(-xChange, -yChange);
             rect.updateNoteMoved();
         }
         selection.unexecute();
