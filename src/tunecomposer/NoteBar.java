@@ -17,7 +17,7 @@ public class NoteBar extends TuneRectangle {
 
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
-    private final Note note;
+    final Note note;
     private static boolean dragWidth;
 
     /**
@@ -98,6 +98,7 @@ public class NoteBar extends TuneRectangle {
                 TuneComposer.composition.clearSelection();
                 getHighestParent().addToSelection();
             }
+            TuneComposer.history.addNewCommand(new SelectionCommand());
             me.consume();
         }
     }
@@ -128,7 +129,7 @@ public class NoteBar extends TuneRectangle {
         // If this notebar is not already selected, make it the only selection
         if (!isSelected()) {
             TuneComposer.composition.clearSelection();
-            TuneComposer.composition.addToSelection(getHighestParent());
+            getHighestParent().addToSelection();
         }
 
         if (dragWidth) {
@@ -151,10 +152,14 @@ public class NoteBar extends TuneRectangle {
     private void onMouseReleased(MouseEvent me) {
         if (dragWidth) {
             TuneComposer.composition.updateResized();
+            TuneComposer.history.addNewCommand(new ResizeCommand(TuneComposer.composition.getSelectionTop() , me.getX()-dragStartX));
         } else {
             TuneComposer.composition.updateMoved();
             TuneComposer.composition.snapSelectionY();
+            TuneComposer.history.addNewCommand(new MoveCommand(TuneComposer.composition.getSelectionTop(), me.getX()-dragStartX, me.getY()-dragStartY));
         }
+        //TODO edit command, not selection, this is for testing
+        new SelectionCommand();
         me.consume();
     }
     /**

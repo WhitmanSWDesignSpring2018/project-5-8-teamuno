@@ -44,6 +44,14 @@ public class Note {
     public void setPitch(int pitch) {
         this.pitch = pitch;
     }
+    
+    public void addToAllNotes(){
+        ALL_NOTES.add(this);
+    }
+    
+    public void removeFromAllNotes(){
+        ALL_NOTES.remove(this);
+    }
 
     /**
      * Gets the pitch of this note.
@@ -54,7 +62,7 @@ public class Note {
 
     /**
      * Changes the start tick of this note.
-     * @param startTick the starTick to change to
+     * @param startTick the startTick to change to
      */
     public void setStartTick(int startTick) {
         this.startTick = startTick;
@@ -130,7 +138,9 @@ public class Note {
     public void delete() {
         ALL_NOTES.remove(this);
     }
-
+    
+    //TODO undelete for undoing deletes
+    
     /**
      * Adds all notes to the midiplayer.
      */

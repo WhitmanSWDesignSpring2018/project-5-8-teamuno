@@ -1,11 +1,10 @@
 /*
  * Provided for use only in CS 370 at Whitman College.
  * DO NOT DISTRIBUTE.
- */
+ */ 
 package tunecomposer;
 
 import java.io.IOException;
-import java.util.HashSet;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -47,6 +46,7 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+    public static CommandHistory history;
 
     /**
      * Construct a new composition pane.
@@ -54,6 +54,7 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
+        history = new CommandHistory();
     }
 
     /**
@@ -168,6 +169,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
+        history.addNewCommand(new SelectionCommand());
     }
 
     /**
@@ -177,6 +179,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
+        history.addNewCommand(new SelectionCommand());
     }
 
     /**
@@ -207,6 +210,21 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleUngroup(ActionEvent event) {
         composition.ungroupSelected();
+    }
+    
+    @FXML
+    protected void handleRedo(ActionEvent event) {
+        history.redo();
+    }
+
+    /**
+     * Removes selected top-level gestures.
+     * The gesture is removed and its children are freed and selected.
+     * @param event
+     */
+    @FXML
+    protected void handleUndo(ActionEvent event) {
+        history.undo();
     }
 
     /**
@@ -244,6 +262,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleCompositionPaneMousePressed(MouseEvent event) {
+        //TODO start selection
         stopPlaying();
         if (!event.isControlDown()) {
             composition.clearSelection();
@@ -253,6 +272,7 @@ public class TuneComposer extends Application {
         selectionRect.setWidth(0);
         selectionRect.setHeight(0);
         selectionRect.setVisible(true);
+        
     }
 
     /**
@@ -274,6 +294,9 @@ public class TuneComposer extends Application {
     protected void handleCompositionPaneMouseReleased(MouseEvent event) {
         NoteBar.selectArea(selectionRect);
         selectionRect.setVisible(false);
+        if (!event.isStillSincePress()) {
+            history.addNewCommand(new SelectionCommand());
+        }
     }
 
     /**
@@ -292,8 +315,10 @@ public class TuneComposer extends Application {
             if (!event.isControlDown()) {
                 composition.clearSelection();
             }
-            new NoteBar(note);
+            NoteBar forCommand = new NoteBar(note);
+            history.addNewCommand(new CreationCommand(forCommand));
         }
+        event.consume();
     }
 
     /**

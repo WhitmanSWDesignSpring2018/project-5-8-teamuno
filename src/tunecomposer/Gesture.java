@@ -81,6 +81,12 @@ public class Gesture extends TuneRectangle {
     public HashSet<TuneRectangle> getChildren() {
         return children;
     }
+    
+    public void addChildrenToComposition(){
+        for(TuneRectangle child: children){
+            TuneComposer.composition.add(child);
+        }
+    }
 
     /**
      * Undraws and removes this gesture and all of its children.
@@ -120,7 +126,7 @@ public class Gesture extends TuneRectangle {
     }
 
     /**
-     * Move this rectangle.
+     * Move this rectangle. requires set start to be called first
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
      */
@@ -132,6 +138,8 @@ public class Gesture extends TuneRectangle {
         setX(rectStartX + deltaX);
         setY(rectStartY + deltaY);
     }
+    
+   
 
     /**
      * Adjusts the gesture and its child gestures to be in line with the
