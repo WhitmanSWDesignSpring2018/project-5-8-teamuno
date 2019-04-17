@@ -26,14 +26,15 @@ public class MoveCommand implements Command {
         editedRects = edits;
         xChange = dX;
         yChange = dY;
-        System.out.println(editedRects);
         selection = new SelectionCommand();
     }
     
     @Override
     public void execute() {
         for(TuneRectangle rect : editedRects){
-            rect.jump(xChange, yChange);
+            if(rect instanceof Gesture){((Gesture)rect).setStart();}
+            rect.move(xChange, yChange);
+            if(rect instanceof Gesture){((Gesture)rect).snapY();}
             rect.updateNoteMoved();
         }
         selection.execute();
@@ -42,7 +43,9 @@ public class MoveCommand implements Command {
     @Override
     public void unexecute() {
         for(TuneRectangle rect : editedRects){
-            rect.jump(-xChange, -yChange);
+            if(rect instanceof Gesture){((Gesture)rect).setStart();}
+            rect.move(-xChange, -yChange);
+            if(rect instanceof Gesture){((Gesture)rect).snapY();}
             rect.updateNoteMoved();
         }
         selection.unexecute();

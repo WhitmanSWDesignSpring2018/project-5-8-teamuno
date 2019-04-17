@@ -40,18 +40,12 @@ public abstract class TuneRectangle extends Rectangle {
     abstract public HashSet<NoteBar> getChildLeaves();
 
     /**
-     * Move this rectangle for continuous operations (drag)
+     * Move this rectangle 
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
      */
     abstract public void move(double deltaX, double deltaY);
     
-    /**
-     * Move this rectangle for discrete operations
-     * @param deltaX distance to move horizontally
-     * @param deltaY distance to move vertically
-     */
-    abstract public void jump(double deltaX, double deltaY);
     
     
     abstract public void updateNoteMoved();

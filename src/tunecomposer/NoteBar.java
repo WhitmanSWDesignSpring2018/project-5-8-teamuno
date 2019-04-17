@@ -206,10 +206,6 @@ public class NoteBar extends TuneRectangle {
         setX(getX() + deltaX);
         setY(getY() + deltaY);
     }
-    
-    public void jump(double deltaX, double deltaY) {
-        move(deltaX, deltaY);
-    }
 
     /**
      * Set the duration of the note to the width of this note bar.
