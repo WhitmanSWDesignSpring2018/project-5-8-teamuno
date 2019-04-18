@@ -6,39 +6,44 @@ import java.util.Set;
 import javafx.scene.layout.Pane;
 
 public class Composition {
-    private Set<TuneRectangle> allTop;
-    private Set<TuneRectangle> selectionTop;
-    private Set<TuneRectangle> selectionTopChanges; //TODO rename?
+    private Set<TuneRectangle> allRoots;
+    private Set<TuneRectangle> selectedRoots;
+    private Set<TuneRectangle> selectionChanges; //TODID rename
     private Pane pane;
     private TuneMenuBar menuBar;
+    private Double selectionTop;
+    private Double selectionBottom;
+    private Double selectionLeft;
+    private Double selectionRight;
+    
 
     public Composition(Pane compositionpane, TuneMenuBar menuBar) {
         pane = compositionpane;
         this.menuBar = menuBar;
-        allTop = new HashSet<>();
-        selectionTop = new HashSet<>();
-        selectionTopChanges = new HashSet<>();
+        allRoots = new HashSet<>();
+        selectedRoots = new HashSet<>();
+        selectionChanges = new HashSet<>();
     }
 
     /**
      * TODO
      */
     public Set<TuneRectangle> getSelectionTracker() {
-        return new HashSet<>(selectionTopChanges);
+        return new HashSet<>(selectionChanges);
     }
     
     /**
      * TODO
      */
     public void clearSelectionTracker() {
-        selectionTopChanges.clear();
+        selectionChanges.clear();
     }
     
     /**
      * TODO
      */
     public Set<TuneRectangle> getSelectionTop() {
-        return new HashSet<>(selectionTop);
+        return new HashSet<>(selectedRoots);
     }
     
     /**
@@ -46,7 +51,7 @@ public class Composition {
      */
     public void selectAll() {
         clearSelection();
-        for(TuneRectangle rect : allTop) {
+        for(TuneRectangle rect : allRoots) {
             rect.addToSelection();
         }
     }
@@ -55,34 +60,38 @@ public class Composition {
      * Clear the selection.
      */
     public void clearSelection() {
-        for(TuneRectangle rect : selectionTop) {
+        for(TuneRectangle rect : selectedRoots) {
             rect.removeSelectStyle();
             trackRectSelect(rect);
         }
-        selectionTop.clear();
+        selectionLeft = null;
+        selectionRight = null;
+        selectionTop = null;
+        selectionBottom = null;
+        selectedRoots.clear();
     }
 
     /**
      * Delete the contents of the selection.
      */
     public void deleteSelection() {
-        HashSet<TuneRectangle> forCommand = new HashSet<>(selectionTop);
+        HashSet<TuneRectangle> forCommand = new HashSet<>(selectedRoots);
         TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
-        for(TuneRectangle rect : selectionTop) {
+        for(TuneRectangle rect : selectedRoots) {
             remove(rect);
             rect.delete(pane);
         }
-        selectionTop.clear();
+        selectedRoots.clear();
     }
 
     /**
      * Group the contents of the selection into a gesture.
      */
     public void groupSelection() {
-        if(selectionTop.isEmpty()) {return;}
+        if(selectedRoots.isEmpty()) {return;}
 
         // Pass the selection by value, not by reference
-        HashSet<TuneRectangle> group = new HashSet<>(selectionTop);
+        HashSet<TuneRectangle> group = new HashSet<>(selectedRoots);
         Gesture newGesture = new Gesture(group);
         HashSet<Gesture> forCommand = new HashSet<>();
         forCommand.add(newGesture);
@@ -95,10 +104,10 @@ public class Composition {
      */
     public void ungroupSelected() {
         HashSet<HashSet<TuneRectangle>> forCommand = new HashSet<>();
-        for(TuneRectangle p : new HashSet<TuneRectangle>(selectionTop)) {
+        for(TuneRectangle p : new HashSet<TuneRectangle>(selectedRoots)) {
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
-                selectionTop.remove(g);
+                selectedRoots.remove(g);
                 g.freeChildren();
                 pane.getChildren().remove(g);
                 HashSet<TuneRectangle> children = g.getChildren();
@@ -120,7 +129,7 @@ public class Composition {
     }
 
     public HashSet<TuneRectangle> ungroupGesture(Gesture Ungroup) {
-        if(selectionTop.contains(Ungroup)){selectionTop.remove(Ungroup);}
+        if(selectedRoots.contains(Ungroup)){selectedRoots.remove(Ungroup);}
         Ungroup.freeChildren();
         pane.getChildren().remove(Ungroup);
         HashSet<TuneRectangle> children = Ungroup.getChildren();
@@ -149,14 +158,14 @@ public class Composition {
     public void add(NoteBar rect) {
         pane.getChildren().add(rect);
         rect.note.addToAllNotes();
-        if(rect.getParentGesture() == null) allTop.add(rect);
+        if(rect.getParentGesture() == null) allRoots.add(rect);
         menuBar.onNoteCreation();
     }
     
     public void add(Gesture rect) {
         pane.getChildren().add(rect);
         rect.addChildrenToComposition();
-        if(rect.getParentGesture() == null) allTop.add(rect);
+        if(rect.getParentGesture() == null) allRoots.add(rect);
         menuBar.onNoteCreation();
     }
 
@@ -170,16 +179,16 @@ public class Composition {
         for(NoteBar child : rect.getChildLeaves()){
             child.note.removeFromAllNotes();
         }
-        allTop.remove(rect);
+        allRoots.remove(rect);
     }
     
     
     public void trackRectSelect(TuneRectangle rect){
-        if(selectionTopChanges.contains(rect)){
-            selectionTopChanges.remove(rect);
+        if(selectionChanges.contains(rect)){
+            selectionChanges.remove(rect);
         }
         else{
-            selectionTopChanges.add(rect);
+            selectionChanges.add(rect);
         }
     }
 
@@ -189,8 +198,9 @@ public class Composition {
      * @param root the TuneRectangle to add
      */
     public void addToSelection(TuneRectangle root) {
-        selectionTop.add(root);
+        selectedRoots.add(root);
         trackRectSelect(root);
+        updateBoundsNewRect(root); //changing selection is not properly changing the bounds
     }
 
     /**
@@ -198,9 +208,42 @@ public class Composition {
      * @param root the TuneRectangle to remove
      */
     public void removeFromSelection(TuneRectangle root) {
-        selectionTop.remove(root);
+        selectedRoots.remove(root);
         root.removeSelectStyle();
         trackRectSelect(root);
+        resetSelectionBounds();
+    }
+    
+    private void updateBoundsNewRect(TuneRectangle root){
+        if(selectionLeft == null || root.getX() < selectionLeft){selectionLeft = root.getX();}
+        if(selectionTop == null || root.getY() < selectionTop){selectionTop = root.getY();}
+        if(selectionRight == null || root.getX()+root.getWidth() > selectionRight){selectionRight = root.getX()+root.getWidth();}
+        if(selectionBottom == null || root.getY() + Constants.LINE_SPACING > selectionBottom){selectionBottom = root.getY() + Constants.LINE_SPACING;}
+        
+    }
+    
+    public void resetSelectionBounds(){
+        selectionLeft = null;
+        selectionRight = null;
+        selectionTop = null;
+        selectionBottom = null;
+        for (TuneRectangle rect : selectedRoots){
+            updateBoundsNewRect(rect);
+        }
+    }
+    
+    public void resetSelectionRight(){
+        selectionRight = null;
+        for (TuneRectangle rect : selectedRoots){
+            if(selectionRight == null || rect.getX()+rect.getWidth() > selectionRight){selectionRight = rect.getX()+rect.getWidth();}
+        }
+    }
+    
+    public void updateSelectionBounds(double deltaX, double deltaY){
+        selectionLeft += deltaX;
+        selectionRight += deltaX;
+        selectionTop += deltaY;
+        selectionBottom += deltaY;
     }
 
     /**
@@ -208,7 +251,7 @@ public class Composition {
      * @param root the TuneRectangle in question
      */
     public boolean isSelectedTop(TuneRectangle root) {
-        return selectionTop.contains(root);
+        return selectedRoots.contains(root);
     }
 
     /**
@@ -216,7 +259,8 @@ public class Composition {
      * @param deltaX the number of pixels to resize by
      */
     public void resizeSelected(double deltaX) {
-        for (TuneRectangle rect : selectionTop) {
+        if(deltaX + selectionRight > Constants.WIDTH){deltaX = Constants.WIDTH - selectionRight;}
+        for (TuneRectangle rect : selectedRoots) {
             if(rect instanceof NoteBar) {
                 NoteBar bar = (NoteBar) rect;
                 bar.resize(deltaX);
@@ -230,7 +274,11 @@ public class Composition {
      * @param deltaY the vertical distance to move the selected items
      */
     public void moveSelected(double deltaX, double deltaY) {
-        for (TuneRectangle rect : selectionTop) {
+        if(selectionLeft + deltaX < 0){deltaX = -selectionLeft;}
+        if(selectionRight + deltaX > Constants.WIDTH){deltaX = Constants.WIDTH-selectionRight;}
+        if(selectionTop + deltaY < 0){deltaY = -selectionTop;}
+        if(selectionBottom + deltaY > Constants.HEIGHT){deltaY = Constants.HEIGHT-selectionBottom;}
+        for (TuneRectangle rect : selectedRoots) {
             rect.move(deltaX, deltaY);
         }
     }
@@ -240,7 +288,7 @@ public class Composition {
      * This needs to be called after any number of NoteBars are resized.
      */
     public void updateResized() {
-        for (TuneRectangle rect : selectionTop) {
+        for (TuneRectangle rect : selectedRoots) {
             if (rect instanceof NoteBar) {
                 NoteBar bar = (NoteBar) rect;
                 bar.updateNoteDuration();
@@ -253,7 +301,7 @@ public class Composition {
      * This needs to be called after any number of NoteBars are moved.
      */
     public void updateMoved() {
-        for (TuneRectangle rect : selectionTop) {
+        for (TuneRectangle rect : selectedRoots) {
             rect.updateNoteMoved();
         }
     }
@@ -263,7 +311,7 @@ public class Composition {
      * This gets called when the mouse button is pressed.
      */
     public void setSelectionStart() {
-        for (TuneRectangle rect : selectionTop) {
+        for (TuneRectangle rect : selectedRoots) {
             if(rect instanceof Gesture) {
                 Gesture g = (Gesture) rect;
                 g.setStart();
@@ -276,7 +324,7 @@ public class Composition {
      * This only snaps gestures because notes snap themselves.
      */
     public void snapSelectionY() {
-        for (TuneRectangle rect : selectionTop) {
+        for (TuneRectangle rect : selectedRoots) {
             if(rect instanceof Gesture) {
                 Gesture g = (Gesture) rect;
                 g.snapY();
@@ -289,17 +337,17 @@ public class Composition {
      * @return true if this composition contains nothing, otherwise false
      */
     public boolean isEmpty() {
-        return allTop.isEmpty();
+        return allRoots.isEmpty();
     }
     
     /**
      * Checks if the selection is empty.
      */
     public boolean isSelectionEmpty() {
-        return selectionTop.isEmpty();
+        return selectedRoots.isEmpty();
     }
 
     private boolean areAllSelected() {
-        return selectionTop.size() == allTop.size();
+        return selectedRoots.size() == allRoots.size();
     }
 }
