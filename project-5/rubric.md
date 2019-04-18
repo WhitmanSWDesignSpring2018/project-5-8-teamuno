@@ -1,4 +1,4 @@
-# GRADE: 64/64 
+# GRADE: 57/64 
 
 ## Functional and implementation requirements: 31/36 points total
 
@@ -49,13 +49,15 @@ Earned|Possible|Requirement | Comments
 1|1| Collaboration statement
 1|1| Team retrospective
 
-## Elegance - 12/12 points
+_Thanks for the thoughtful reflection! I appreciate that you used ideas from the readings as I asked you to._
+
+## Elegance - 11/12 points
 
 I looked at your UML diagram to assess the elegance of your class design.  You will get a grade for class design starting with Project 6.
-I spot-checked a new class () and a modified class () to assess method-level design and self-explanatory code.
+I spot-checked a new class (```TuneRectangle```) and a modified class (```TuneComposer```) to assess method-level design and self-explanatory code.
 
 Earned|Possible|Requirement | Comments
 ------|--------|------------|----------
-0|0| Class design 
-8|8| Method design
-4|4| Self-explanatory code
+0|0| Class design | _See issues relevant to class design._
+8|8| Method design | _In general, methods are not overly complex and act at a consistent level of abstraction._
+3|4| Self-explanatory code | _There are a couple issues on this too._
