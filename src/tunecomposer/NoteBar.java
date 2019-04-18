@@ -115,7 +115,6 @@ public class NoteBar extends TuneRectangle {
 
         // Maybe this NoteBar isn't selected yet
         if(getHighestParent() instanceof Gesture) {((Gesture) getHighestParent()).setStart();}
-
         me.consume();
 
     }
@@ -152,14 +151,14 @@ public class NoteBar extends TuneRectangle {
     private void onMouseReleased(MouseEvent me) {
         if (dragWidth) {
             TuneComposer.composition.updateResized();
+            TuneComposer.composition.resetSelectionRight();
             TuneComposer.history.addNewCommand(new ResizeCommand(TuneComposer.composition.getSelectionTop() , me.getX()-dragStartX));
         } else {
             TuneComposer.composition.updateMoved();
             TuneComposer.composition.snapSelectionY();
+            TuneComposer.composition.resetSelectionBounds();
             TuneComposer.history.addNewCommand(new MoveCommand(TuneComposer.composition.getSelectionTop(), me.getX()-dragStartX, me.getY()-dragStartY));
         }
-        //TODO edit command, not selection, this is for testing
-        new SelectionCommand();
         me.consume();
     }
     /**
