@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -25,29 +26,46 @@
                 <MenuItem accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 
                           text="Select All"
-                          fx:id="selectAllButton"/>
-                  <MenuItem accelerator="Shift+Shortcut+A" 
-                            onAction="#handleSelectNoneAction" 
-                            text="Select None"
-                            fx:id="selectNoneButton"/>
-                  <MenuItem accelerator="backspace" 
-                            onAction="#handleDeleteAction" 
-                            text="Delete" 
-                            fx:id="deleteButton"/>
-                  <MenuItem onAction="#handleGroup" text="Group"/>
-                  <MenuItem onAction="#handleUngroup" text="Ungroup" />
+                          fx:id="selectAllButton" />
+                
+                <MenuItem accelerator="Shift+Shortcut+A" 
+                          onAction="#handleSelectNoneAction" 
+                          text="Select None"
+                          fx:id="selectNoneButton" />
+                
+                <MenuItem accelerator="backspace" 
+                          onAction="#handleDeleteAction" 
+                          text="Delete"
+                          fx:id="deleteButton" />
+                
+                <MenuItem accelerator="Shortcut+G" 
+                          onAction="#handleGroup" 
+                          text="Group" />
+                
+                <MenuItem accelerator="Shortcut+U" 
+                          onAction="#handleUngroup" 
+                          text="Ungroup" />
+                
+                <MenuItem accelerator="Shortcut+Z" 
+                          onAction="#handleUndo" 
+                          text="Undo"/>
+                
+                <MenuItem accelerator="Shortcut+Y" 
+                          onAction="#handleRedo" 
+                          text="Redo"/>
               </items>
             </Menu>
           <Menu text="Action">
             <items>
-              <MenuItem accelerator="Shortcut+P" 
+                <MenuItem fx:id="playButton"
+                        accelerator="Shortcut+P" 
                         onAction="#handlePlayAction" 
-                        text="Play"
-                        fx:id="playButton"/>
-              <MenuItem accelerator="Shortcut+S" 
+                        text="Play" />
+
+              <MenuItem fx:id="stopButton"
+                        accelerator="Shortcut+S" 
                         onAction="#handleStopAction" 
-                        text="Stop"
-                        fx:id="stopButton"/>
+                        text="Stop" />
             </items>
           </Menu>          
         </menus>

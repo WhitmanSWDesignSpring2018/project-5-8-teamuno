@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
  * @author ben, taka, spencer, ian
  */
 public abstract class TuneRectangle extends Rectangle {
-    Gesture parentGesture;
+    protected Gesture parentGesture;
 
     /**
      * Location at the start of a mouse drag.
@@ -40,11 +40,12 @@ public abstract class TuneRectangle extends Rectangle {
     abstract public HashSet<NoteBar> getChildLeaves();
 
     /**
-     * Move this rectangle.
+     * Move this rectangle 
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
      */
     abstract public void move(double deltaX, double deltaY);
+    
     
     
     abstract public void updateNoteMoved();
@@ -65,6 +66,8 @@ public abstract class TuneRectangle extends Rectangle {
     public Gesture getParentGesture() {
         return parentGesture;
     }
+    
+    
 
     /**
      * Gets the root of this rectangle's gesture tree.

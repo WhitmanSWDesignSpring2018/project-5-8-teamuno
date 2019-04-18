@@ -31,38 +31,18 @@ public class Gesture extends TuneRectangle {
      * @param children, the TuneRectangles that will be inside the gesture
      */
     public Gesture(HashSet<TuneRectangle> children) {
-        this.parentGesture = null;
         this.children = children;
+
         for(TuneRectangle child : children) {
             child.setParent(this);
-            TuneComposer.composition.removeFromSelection(child);
         }
+
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
-        Double minX = null;
-        Double maxX = null;
-        Double minY = null;
-        Double maxY = null;
-        for(TuneRectangle child : children) {
-            if(minX == null || child.getX() < minX) {
-                minX = child.getX();
-            }
-            if(minY == null || child.getY() < minY) {
-                minY = child.getY();
-            }
-            if(maxX == null || child.getX()+child.getWidth() > maxX) {
-                maxX = child.getX()+child.getWidth();
-            }
-            if(maxY == null || child.getY()+child.getHeight() > maxY) {
-                maxY = child.getY()+child.getHeight();
-            }
-        }
-        this.setX(minX);
-        this.setY(minY);
-        this.setWidth(maxX-minX);
-        this.setHeight(maxY-minY);
-        TuneComposer.composition.clearSelection();
+        setBounds();
         getStyleClass().add("gesture");
+        
+        TuneComposer.composition.clearSelection();
         addToSelection();
     }
 
@@ -100,6 +80,12 @@ public class Gesture extends TuneRectangle {
      */
     public HashSet<TuneRectangle> getChildren() {
         return children;
+    }
+    
+    public void addChildrenToComposition(){
+        for(TuneRectangle child: children){
+            TuneComposer.composition.add(child);
+        }
     }
 
     /**
@@ -140,7 +126,7 @@ public class Gesture extends TuneRectangle {
     }
 
     /**
-     * Move this rectangle.
+     * Move this rectangle. requires set start to be called first
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
      */
@@ -152,6 +138,8 @@ public class Gesture extends TuneRectangle {
         setX(rectStartX + deltaX);
         setY(rectStartY + deltaY);
     }
+    
+   
 
     /**
      * Adjusts the gesture and its child gestures to be in line with the
@@ -175,5 +163,30 @@ public class Gesture extends TuneRectangle {
        for (TuneRectangle child : children) {
            child.removeSelectStyle();
        }
+    }
+    
+    private void setBounds(){
+        Double minX = null;
+        Double maxX = null;
+        Double minY = null;
+        Double maxY = null;
+        for(TuneRectangle child : children) {
+            if(minX == null || child.getX() < minX) {
+                minX = child.getX();
+            }
+            if(minY == null || child.getY() < minY) {
+                minY = child.getY();
+            }
+            if(maxX == null || child.getX()+child.getWidth() > maxX) {
+                maxX = child.getX()+child.getWidth();
+            }
+            if(maxY == null || child.getY()+child.getHeight() > maxY) {
+                maxY = child.getY()+child.getHeight();
+            }
+        }
+        this.setX(minX);
+        this.setY(minY);
+        this.setWidth(maxX-minX);
+        this.setHeight(maxY-minY);
     }
 }
