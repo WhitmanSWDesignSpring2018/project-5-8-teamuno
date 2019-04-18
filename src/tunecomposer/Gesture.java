@@ -35,6 +35,7 @@ public class Gesture extends TuneRectangle {
 
         for(TuneRectangle child : children) {
             child.setParent(this);
+            TuneComposer.composition.removeFromSelection(child);
         }
 
         TuneComposer.composition.add(this);
@@ -42,7 +43,6 @@ public class Gesture extends TuneRectangle {
         setBounds();
         getStyleClass().add("gesture");
         
-        TuneComposer.composition.clearSelection();
         addToSelection();
     }
 

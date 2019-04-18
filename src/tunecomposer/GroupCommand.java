@@ -53,7 +53,11 @@ public class GroupCommand implements Command{
     private void toggle(){
         if(toUngroup.isEmpty()){
             for(HashSet<TuneRectangle> rectGroup : toGroup){
-                toUngroup.add(TuneComposer.composition.groupTuneRectangles(rectGroup));
+                Gesture toAdd = TuneComposer.composition.groupTuneRectangles(rectGroup);
+                if(!TuneComposer.composition.isSelectedTop(toAdd)){
+                    TuneComposer.composition.addToSelection(toAdd);
+                }
+                toUngroup.add(toAdd);
             }
             toGroup.clear();
         }
