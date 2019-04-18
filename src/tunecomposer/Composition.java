@@ -10,23 +10,34 @@ public class Composition {
     private Set<TuneRectangle> selectionTop;
     private Set<TuneRectangle> selectionTopChanges; //TODO rename?
     private Pane pane;
+    private TuneMenuBar menuBar;
 
-    public Composition(Pane compositionpane) {
+    public Composition(Pane compositionpane, TuneMenuBar menuBar) {
         pane = compositionpane;
+        this.menuBar = menuBar;
         allTop = new HashSet<>();
         selectionTop = new HashSet<>();
         selectionTopChanges = new HashSet<>();
     }
 
-    public Set<TuneRectangle> getSelectionTracker(){
+    /**
+     * TODO
+     */
+    public Set<TuneRectangle> getSelectionTracker() {
         return new HashSet<>(selectionTopChanges);
     }
     
-    public void clearSelectionTracker(){
+    /**
+     * TODO
+     */
+    public void clearSelectionTracker() {
         selectionTopChanges.clear();
     }
     
-    public Set getSelectionTop(){
+    /**
+     * TODO
+     */
+    public Set<TuneRectangle> getSelectionTop() {
         return new HashSet<>(selectionTop);
     }
     
@@ -55,7 +66,7 @@ public class Composition {
      * Delete the contents of the selection.
      */
     public void deleteSelection() {
-        HashSet forCommand = new HashSet(selectionTop);
+        HashSet<TuneRectangle> forCommand = new HashSet<>(selectionTop);
         TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
         for(TuneRectangle rect : selectionTop) {
             remove(rect);
@@ -73,7 +84,7 @@ public class Composition {
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectionTop);
         Gesture newGesture = new Gesture(group);
-        HashSet<Gesture> forCommand = new HashSet();
+        HashSet<Gesture> forCommand = new HashSet<>();
         forCommand.add(newGesture);
         TuneComposer.history.addNewCommand(new GroupCommand(forCommand, true));
         
@@ -83,7 +94,7 @@ public class Composition {
      * Ungroup selected gestures. NoteBars are not affected.
      */
     public void ungroupSelected() {
-        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet();
+        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet<>();
         for(TuneRectangle p : new HashSet<TuneRectangle>(selectionTop)) {
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
@@ -139,12 +150,14 @@ public class Composition {
         pane.getChildren().add(rect);
         rect.note.addToAllNotes();
         if(rect.getParentGesture() == null) allTop.add(rect);
+        menuBar.onNoteCreation();
     }
     
     public void add(Gesture rect) {
         pane.getChildren().add(rect);
         rect.addChildrenToComposition();
         if(rect.getParentGesture() == null) allTop.add(rect);
+        menuBar.onNoteCreation();
     }
 
     /**
@@ -284,5 +297,9 @@ public class Composition {
      */
     public boolean isSelectionEmpty() {
         return selectionTop.isEmpty();
+    }
+
+    private boolean areAllSelected() {
+        return selectionTop.size() == allTop.size();
     }
 }

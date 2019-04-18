@@ -23,36 +23,40 @@
           </Menu>
             <Menu text="Edit">
               <items>
-                <MenuItem accelerator="Shortcut+A" 
+                <MenuItem fx:id="selectAllButton"
+                          accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 
-                          text="Select All"
-                          fx:id="selectAllButton" />
+                          text="Select All" />
                 
-                <MenuItem accelerator="Shift+Shortcut+A" 
+                <MenuItem fx:id="selectNoneButton"
+                          accelerator="Shift+Shortcut+A" 
                           onAction="#handleSelectNoneAction" 
-                          text="Select None"
-                          fx:id="selectNoneButton" />
+                          text="Select None" />
                 
-                <MenuItem accelerator="backspace" 
+                <MenuItem fx:id="deleteButton"
+                          accelerator="backspace" 
                           onAction="#handleDeleteAction" 
-                          text="Delete"
-                          fx:id="deleteButton" />
+                          text="Delete" />
                 
-                <MenuItem accelerator="Shortcut+G" 
+                <MenuItem fx:id="groupButton"
+                          accelerator="Shortcut+G" 
                           onAction="#handleGroup" 
                           text="Group" />
                 
-                <MenuItem accelerator="Shortcut+U" 
+                <MenuItem fx:id="ungroupButton"
+                          accelerator="Shortcut+U" 
                           onAction="#handleUngroup" 
                           text="Ungroup" />
                 
-                <MenuItem accelerator="Shortcut+Z" 
+                <MenuItem fx:id="undoButton"
+                          accelerator="Shortcut+Z" 
                           onAction="#handleUndo" 
-                          text="Undo"/>
+                          text="Undo" />
                 
-                <MenuItem accelerator="Shortcut+Y" 
+                <MenuItem fx:id="redoButton"
+                          accelerator="Shortcut+Y" 
                           onAction="#handleRedo" 
-                          text="Redo"/>
+                          text="Redo" />
               </items>
             </Menu>
           <Menu text="Action">
@@ -61,7 +65,6 @@
                         accelerator="Shortcut+P" 
                         onAction="#handlePlayAction" 
                         text="Play" />
-
               <MenuItem fx:id="stopButton"
                         accelerator="Shortcut+S" 
                         onAction="#handleStopAction" 

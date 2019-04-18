@@ -8,59 +8,103 @@ import javafx.scene.control.MenuItem;
 
 
 /**
- *
- * @author hetterbl
+ * TODO javadoc
+ * @author Ben, Ian
  */
 public class TuneMenuBar {
     
     private MenuItem stopButton;
     private MenuItem playButton;
-    private MenuItem deleteButton;
-    private MenuItem selectAllButton;
     private MenuItem selectNoneButton;
+    private MenuItem selectAllButton;
+    private MenuItem deleteButton;
     private MenuItem groupButton;
     private MenuItem ungroupButton;
+    private MenuItem undoButton;
+    private MenuItem redoButton;
     
-    public TuneMenuBar(MenuItem stopButton, MenuItem playButton, 
-            MenuItem selectNoneButton,MenuItem selectAllButton,
-            MenuItem deleteButton, MenuItem groupButton, MenuItem ungroupButton) 
-    {
-        this.stopButton = stopButton;
-        this.playButton = playButton;
-        this.selectNoneButton = selectNoneButton;
-        this.selectAllButton = selectAllButton;
-        this.deleteButton = deleteButton;
-        this.groupButton = groupButton;
-        this.ungroupButton = ungroupButton;
+    public TuneMenuBar(
+            MenuItem stopButton,
+            MenuItem playButton, 
+            MenuItem selectNoneButton,
+            MenuItem selectAllButton,
+            MenuItem deleteButton,
+            MenuItem groupButton,
+            MenuItem ungroupButton,
+            MenuItem undoButton,
+            MenuItem redoButton) {
+
+        this.stopButton         = stopButton;
+        this.playButton         = playButton;
+        this.selectNoneButton   = selectNoneButton;
+        this.selectAllButton    = selectAllButton;
+        this.deleteButton       = deleteButton;
+        this.groupButton        = groupButton;
+        this.ungroupButton      = ungroupButton;
+        this.undoButton         = undoButton;
+        this.redoButton         = redoButton;
     }
+
+    /**
+     * TODO
+     */
     public void setup() {
-        stopButton.setDisable(true);
-        selectAllButton.setDisable(true);
-        selectNoneButton.setDisable(true);
-        deleteButton.setDisable(true);
-        playButton.setDisable(true);
-        ungroupButton.setDisable(true);
-        groupButton.setDisable(true);
+        disable(stopButton);
+        disable(selectAllButton);
+        disable(selectNoneButton);
+        disable(deleteButton);
+        disable(playButton);
+        disable(ungroupButton);
+        disable(groupButton);
     }
+
+    /**
+     * TODO
+     */
     public void onSelection(boolean allSelected, boolean singleGesture,
             boolean noGesture) {
         if (allSelected) {
-            selectAllButton.setDisable(true);
+            disable(selectAllButton);
         }
+
         if (singleGesture) {
-            groupButton.setDisable(true);
+            disable(groupButton);
         } else if (noGesture) {
-            ungroupButton.setDisable(true);
+            disable(ungroupButton);
         }
-        selectNoneButton.setDisable(false);
-        deleteButton.setDisable(false);
-        ungroupButton.setDisable(false);
-        groupButton.setDisable(false);
-        
+
+        enable(selectNoneButton);
+        enable(deleteButton);
+        enable(ungroupButton);
+        enable(groupButton);
     }
+
+    /**
+     * TODO
+     */
     public void onNoteCreation() {
-        selectAllButton.setDisable(false);
-        playButton.setDisable(false);
+        enable(selectAllButton);
+        enable(playButton);
+    }
+
+    /**
+     * Enable a menu item, un-greying it and making it clickable.
+     * This also enables the corresponding keyboard shortcut.
+     * Added for readability.
+     * @param item the button to be enabled
+     */
+    private void enable(MenuItem button) {
+        button.setDisable(false);
+    }
+
+    /**
+     * Disable a menu item, greying it out and making it unclickable.
+     * This also disables the corresponding keyboard shortcut.
+     * Added for readability.
+     * @param item the button to be disabled
+     */
+    private void disable(MenuItem button) {
+        button.setDisable(true);
     }
 }   
    

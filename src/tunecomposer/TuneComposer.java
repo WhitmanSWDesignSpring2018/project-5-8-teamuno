@@ -40,6 +40,17 @@ public class TuneComposer extends Application {
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
     @FXML private ToggleGroup instrumentgroup;
+
+    @FXML private MenuItem selectAllButton;
+    @FXML private MenuItem selectNoneButton;
+    @FXML private MenuItem deleteButton;
+    @FXML private MenuItem groupButton;
+    @FXML private MenuItem ungroupButton;
+    @FXML private MenuItem stopButton;
+    @FXML private MenuItem playButton;
+    @FXML private MenuItem undoButton;
+    @FXML private MenuItem redoButton;
+    // TODO Add more buttons here and in FXML
  
     private Line playLine;
     private TranslateTransition playAnimation;
@@ -136,7 +147,18 @@ public class TuneComposer extends Application {
     }
 
     private void setupComposition() {
-        composition = new Composition(compositionpane);
+        TuneMenuBar menuBar = new TuneMenuBar(
+                stopButton,
+                playButton,
+                selectNoneButton,
+                selectAllButton,
+                deleteButton,
+                groupButton,
+                ungroupButton,
+                undoButton,
+                redoButton);
+
+        composition = new Composition(compositionpane, menuBar);
     }
 
     /**
