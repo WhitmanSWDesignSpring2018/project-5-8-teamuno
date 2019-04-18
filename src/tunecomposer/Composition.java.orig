@@ -10,40 +10,63 @@ public class Composition {
     private Set<TuneRectangle> selectedRoots;
     private Set<TuneRectangle> selectionChanges; //TODID rename
     private Pane pane;
+<<<<<<< HEAD
     private TuneMenuBar menuBar;
+=======
     private Double selectionTop;
     private Double selectionBottom;
     private Double selectionLeft;
     private Double selectionRight;
     
+                    
+>>>>>>> master
 
     public Composition(Pane compositionpane, TuneMenuBar menuBar) {
         pane = compositionpane;
+<<<<<<< HEAD
         this.menuBar = menuBar;
-        allRoots = new HashSet<>();
-        selectedRoots = new HashSet<>();
-        selectionChanges = new HashSet<>();
+        allTop = new HashSet<>();
+        selectionTop = new HashSet<>();
+        selectionTopChanges = new HashSet<>();
     }
 
     /**
      * TODO
      */
     public Set<TuneRectangle> getSelectionTracker() {
-        return new HashSet<>(selectionChanges);
+        return new HashSet<>(selectionTopChanges);
     }
     
     /**
      * TODO
      */
     public void clearSelectionTracker() {
-        selectionChanges.clear();
+        selectionTopChanges.clear();
     }
     
     /**
      * TODO
      */
     public Set<TuneRectangle> getSelectionTop() {
+        return new HashSet<>(selectionTop);
+=======
+        allRoots = new HashSet<>();
+        selectedRoots = new HashSet<>();
+        selectionChanges = new HashSet<>();
+        
+    }
+
+    public Set<TuneRectangle> getSelectionTracker(){
+        return new HashSet<>(selectionChanges);
+    }
+    
+    public void clearSelectionTracker(){
+        selectionChanges.clear();
+    }
+    
+    public Set getSelectionTop(){
         return new HashSet<>(selectedRoots);
+>>>>>>> master
     }
     
     /**
@@ -75,7 +98,11 @@ public class Composition {
      * Delete the contents of the selection.
      */
     public void deleteSelection() {
-        HashSet<TuneRectangle> forCommand = new HashSet<>(selectedRoots);
+<<<<<<< HEAD
+        HashSet<TuneRectangle> forCommand = new HashSet<>(selectionTop);
+=======
+        HashSet forCommand = new HashSet(selectedRoots);
+>>>>>>> master
         TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
         for(TuneRectangle rect : selectedRoots) {
             remove(rect);
@@ -103,8 +130,13 @@ public class Composition {
      * Ungroup selected gestures. NoteBars are not affected.
      */
     public void ungroupSelected() {
+<<<<<<< HEAD
         HashSet<HashSet<TuneRectangle>> forCommand = new HashSet<>();
+        for(TuneRectangle p : new HashSet<TuneRectangle>(selectionTop)) {
+=======
+        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet();
         for(TuneRectangle p : new HashSet<TuneRectangle>(selectedRoots)) {
+>>>>>>> master
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
                 selectedRoots.remove(g);
@@ -158,15 +190,23 @@ public class Composition {
     public void add(NoteBar rect) {
         pane.getChildren().add(rect);
         rect.note.addToAllNotes();
-        if(rect.getParentGesture() == null) allRoots.add(rect);
+<<<<<<< HEAD
+        if(rect.getParentGesture() == null) allTop.add(rect);
         menuBar.onNoteCreation();
+=======
+        if(rect.getParentGesture() == null) allRoots.add(rect);
+>>>>>>> master
     }
     
     public void add(Gesture rect) {
         pane.getChildren().add(rect);
         rect.addChildrenToComposition();
-        if(rect.getParentGesture() == null) allRoots.add(rect);
+<<<<<<< HEAD
+        if(rect.getParentGesture() == null) allTop.add(rect);
         menuBar.onNoteCreation();
+=======
+        if(rect.getParentGesture() == null) allRoots.add(rect);
+>>>>>>> master
     }
 
     /**
@@ -348,6 +388,6 @@ public class Composition {
     }
 
     private boolean areAllSelected() {
-        return selectedRoots.size() == allRoots.size();
+        return selectionTop.size() == allTop.size();
     }
 }
