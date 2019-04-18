@@ -189,7 +189,7 @@ public class NoteBar extends TuneRectangle {
         for (NoteBar bar : ALLNOTEBARS) {
             Bounds barBounds = bar.getBoundsInParent();
             if (selectionBounds.contains(barBounds)) {
-                bar.addToSelection();
+                bar.getHighestParent().addToSelection();
             }
         }
     }
