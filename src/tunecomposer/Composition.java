@@ -10,16 +10,14 @@ public class Composition {
     private Set<TuneRectangle> selectedRoots;
     private Set<TuneRectangle> selectionChanges; //TODID rename
     private Pane pane;
-    private TuneMenuBar menuBar;
     private Double selectionTop;
     private Double selectionBottom;
     private Double selectionLeft;
     private Double selectionRight;
     
 
-    public Composition(Pane compositionpane, TuneMenuBar menuBar) {
+    public Composition(Pane compositionpane) {
         pane = compositionpane;
-        this.menuBar = menuBar;
         allRoots = new HashSet<>();
         selectedRoots = new HashSet<>();
         selectionChanges = new HashSet<>();
@@ -159,14 +157,12 @@ public class Composition {
         pane.getChildren().add(rect);
         rect.note.addToAllNotes();
         if(rect.getParentGesture() == null) allRoots.add(rect);
-        menuBar.onNoteCreation();
     }
     
     public void add(Gesture rect) {
         pane.getChildren().add(rect);
         rect.addChildrenToComposition();
         if(rect.getParentGesture() == null) allRoots.add(rect);
-        menuBar.onNoteCreation();
     }
 
     /**
@@ -339,15 +335,22 @@ public class Composition {
     public boolean isEmpty() {
         return allRoots.isEmpty();
     }
-    
-    /**
-     * Checks if the selection is empty.
-     */
-    public boolean isSelectionEmpty() {
-        return selectedRoots.isEmpty();
+
+    public int size() {
+        return allRoots.size();
     }
 
-    private boolean areAllSelected() {
-        return selectedRoots.size() == allRoots.size();
+    public int getSelectionSize() {
+        return selectedRoots.size();
+    }
+
+    public boolean isGestureSelected() {
+        for (TuneRectangle rect : selectedRoots) {
+            if (rect instanceof Gesture) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

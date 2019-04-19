@@ -43,6 +43,8 @@ public class TuneMenuBar {
         this.ungroupButton      = ungroupButton;
         this.undoButton         = undoButton;
         this.redoButton         = redoButton;
+
+        setup();
     }
 
     /**
@@ -56,35 +58,39 @@ public class TuneMenuBar {
         disable(playButton);
         disable(ungroupButton);
         disable(groupButton);
+        disable(undoButton);
+        disable(redoButton);
     }
 
-    /**
-     * TODO
-     */
-    public void onSelection(boolean allSelected, boolean singleGesture,
-            boolean noGesture) {
-        if (allSelected) {
-            disable(selectAllButton);
-        }
-
-        if (singleGesture) {
-            disable(groupButton);
-        } else if (noGesture) {
-            disable(ungroupButton);
-        }
-
-        enable(selectNoneButton);
-        enable(deleteButton);
-        enable(ungroupButton);
-        enable(groupButton);
+    public void update(){
+        updatePlay();
+        updateSelect();
+        updateDelete();
+        updateGroupUngroup();
+        updateRedoUndo();
     }
-
-    /**
-     * TODO
-     */
-    public void onNoteCreation() {
-        enable(selectAllButton);
-        enable(playButton);
+    
+    private void updatePlay() {
+        playButton.setDisable(0 == TuneComposer.composition.size());
+    }
+    
+    private void updateSelect(){
+        selectAllButton.setDisable(TuneComposer.composition.size() <= TuneComposer.composition.getSelectionSize());
+        selectNoneButton.setDisable(0 == TuneComposer.composition.getSelectionSize());
+    }
+    
+    private void updateDelete(){
+        deleteButton.setDisable(TuneComposer.composition.getSelectionSize() == 0);
+    }
+    
+    private void updateGroupUngroup(){
+        groupButton.setDisable(TuneComposer.composition.getSelectionSize() <= 1);
+        ungroupButton.setDisable(!TuneComposer.composition.isGestureSelected());
+    }
+    
+    private void updateRedoUndo(){
+        redoButton.setDisable(!TuneComposer.history.canRedo());
+        undoButton.setDisable(!TuneComposer.history.canUndo());        
     }
 
     /**
