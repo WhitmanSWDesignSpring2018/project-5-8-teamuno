@@ -36,13 +36,23 @@ public class TuneComposer extends Application {
     private final MidiPlayer player;
 
     public static Composition composition;
+    public static TuneMenuBar menuBar;
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
     @FXML private ToggleGroup instrumentgroup;
+
+    @FXML private MenuItem selectAllButton;
+    @FXML private MenuItem selectNoneButton;
+    @FXML private MenuItem deleteButton;
+    @FXML private MenuItem groupButton;
+    @FXML private MenuItem ungroupButton;
     @FXML private MenuItem stopButton;
     @FXML private MenuItem playButton;
-    @FXML private MenuItem deleteButton;
+    @FXML private MenuItem undoButton;
+    @FXML private MenuItem redoButton;
+    // TODO Add more buttons here and in FXML
+ 
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
@@ -62,7 +72,6 @@ public class TuneComposer extends Application {
      */
     private void play() {
         stopPlaying();
-        stopButton.setDisable(false);
         if (!Note.isEmpty()) {
             player.stop();
             player.clear();
@@ -85,7 +94,6 @@ public class TuneComposer extends Application {
         player.stop();
         player.clear();
         playAnimation.stop();
-        stopButton.setDisable(true);
         resetPlayLine();
     }
 
@@ -136,10 +144,24 @@ public class TuneComposer extends Application {
 
         playAnimation = new TranslateTransition(Duration.seconds(0), playLine);
         playAnimation.setInterpolator(Interpolator.LINEAR);
-        playAnimation.setOnFinished((ActionEvent e) -> { resetPlayLine(); });
+        playAnimation.setOnFinished((ActionEvent e) -> { 
+            resetPlayLine();
+            stopButton.setDisable(true);
+        });
     }
 
     private void setupComposition() {
+        menuBar = new TuneMenuBar(
+                stopButton,
+                playButton,
+                selectNoneButton,
+                selectAllButton,
+                deleteButton,
+                groupButton,
+                ungroupButton,
+                undoButton,
+                redoButton);
+
         composition = new Composition(compositionpane);
     }
 
@@ -147,7 +169,6 @@ public class TuneComposer extends Application {
      * Reset the position of the play line to offscreen left.
      */
     private void resetPlayLine() {
-         stopButton.setDisable(true);
          playLine.setTranslateX(-1);
     }
 
@@ -170,6 +191,7 @@ public class TuneComposer extends Application {
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
         history.addNewCommand(new SelectionCommand());
+        menuBar.update();
     }
 
     /**
@@ -180,6 +202,7 @@ public class TuneComposer extends Application {
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
         history.addNewCommand(new SelectionCommand());
+        menuBar.update();
     }
 
     /**
@@ -189,6 +212,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleDeleteAction(ActionEvent event) {
         composition.deleteSelection();
+        menuBar.update();
     }
 
     /**
@@ -200,6 +224,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleGroup(ActionEvent event) {
         composition.groupSelection();
+        menuBar.update();
     }
 
     /**
@@ -210,21 +235,20 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleUngroup(ActionEvent event) {
         composition.ungroupSelected();
+        menuBar.update();
     }
     
     @FXML
     protected void handleRedo(ActionEvent event) {
         history.redo();
+        menuBar.update();
     }
 
-    /**
-     * Removes selected top-level gestures.
-     * The gesture is removed and its children are freed and selected.
-     * @param event
-     */
+    
     @FXML
     protected void handleUndo(ActionEvent event) {
         history.undo();
+        menuBar.update();
     }
 
     /**
@@ -234,6 +258,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handlePlayAction(ActionEvent event) {
         play();
+        stopButton.setDisable(false);
     }
 
     /**
@@ -243,6 +268,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleStopAction(ActionEvent event) {
         stopPlaying();
+        stopButton.setDisable(true);
     }
 
     /**
@@ -297,6 +323,7 @@ public class TuneComposer extends Application {
         if (!event.isStillSincePress()) {
             history.addNewCommand(new SelectionCommand());
         }
+        menuBar.update();
     }
 
     /**
@@ -318,6 +345,7 @@ public class TuneComposer extends Application {
             NoteBar forCommand = new NoteBar(note);
             history.addNewCommand(new CreationCommand(forCommand));
         }
+        menuBar.update();
         event.consume();
     }
 
@@ -351,7 +379,7 @@ public class TuneComposer extends Application {
         setupSelectionRect();
         setupInstruments();
         setupComposition();
-        stopButton.setDisable(true);
+        
     }
 
     /**

@@ -99,6 +99,7 @@ public class NoteBar extends TuneRectangle {
                 getHighestParent().addToSelection();
             }
             TuneComposer.history.addNewCommand(new SelectionCommand());
+            TuneComposer.menuBar.update();
             me.consume();
         }
     }
@@ -159,6 +160,7 @@ public class NoteBar extends TuneRectangle {
             TuneComposer.composition.resetSelectionBounds();
             TuneComposer.history.addNewCommand(new MoveCommand(TuneComposer.composition.getSelectionTop(), me.getX()-dragStartX, me.getY()-dragStartY));
         }
+        TuneComposer.menuBar.update();
         me.consume();
     }
     /**

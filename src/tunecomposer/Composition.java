@@ -15,25 +15,32 @@ public class Composition {
     private Double selectionLeft;
     private Double selectionRight;
     
-                    
 
     public Composition(Pane compositionpane) {
         pane = compositionpane;
         allRoots = new HashSet<>();
         selectedRoots = new HashSet<>();
         selectionChanges = new HashSet<>();
-        
     }
 
-    public Set<TuneRectangle> getSelectionTracker(){
+    /**
+     * TODO
+     */
+    public Set<TuneRectangle> getSelectionTracker() {
         return new HashSet<>(selectionChanges);
     }
     
-    public void clearSelectionTracker(){
+    /**
+     * TODO
+     */
+    public void clearSelectionTracker() {
         selectionChanges.clear();
     }
     
-    public Set getSelectionTop(){
+    /**
+     * TODO
+     */
+    public Set<TuneRectangle> getSelectionTop() {
         return new HashSet<>(selectedRoots);
     }
     
@@ -66,7 +73,7 @@ public class Composition {
      * Delete the contents of the selection.
      */
     public void deleteSelection() {
-        HashSet forCommand = new HashSet(selectedRoots);
+        HashSet<TuneRectangle> forCommand = new HashSet<>(selectedRoots);
         TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
         for(TuneRectangle rect : selectedRoots) {
             remove(rect);
@@ -84,7 +91,7 @@ public class Composition {
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectedRoots);
         Gesture newGesture = new Gesture(group);
-        HashSet<Gesture> forCommand = new HashSet();
+        HashSet<Gesture> forCommand = new HashSet<>();
         forCommand.add(newGesture);
         TuneComposer.history.addNewCommand(new GroupCommand(forCommand, true));
         
@@ -94,7 +101,7 @@ public class Composition {
      * Ungroup selected gestures. NoteBars are not affected.
      */
     public void ungroupSelected() {
-        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet();
+        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet<>();
         for(TuneRectangle p : new HashSet<TuneRectangle>(selectedRoots)) {
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
@@ -328,11 +335,22 @@ public class Composition {
     public boolean isEmpty() {
         return allRoots.isEmpty();
     }
-    
-    /**
-     * Checks if the selection is empty.
-     */
-    public boolean isSelectionEmpty() {
-        return selectedRoots.isEmpty();
+
+    public int size() {
+        return allRoots.size();
+    }
+
+    public int getSelectionSize() {
+        return selectedRoots.size();
+    }
+
+    public boolean isGestureSelected() {
+        for (TuneRectangle rect : selectedRoots) {
+            if (rect instanceof Gesture) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
