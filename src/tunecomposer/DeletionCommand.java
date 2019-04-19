@@ -19,6 +19,9 @@ public class DeletionCommand implements Command {
         new SelectionCommand();
     }
     
+    /**
+     * deletes the note
+     */
     @Override
     public void execute() {
         for(TuneRectangle rect : deletedRects){
@@ -26,6 +29,9 @@ public class DeletionCommand implements Command {
         }
     }
 
+    /**
+     * undeletes the note
+     */
     @Override
     public void unexecute() {
         TuneComposer.composition.clearSelection();

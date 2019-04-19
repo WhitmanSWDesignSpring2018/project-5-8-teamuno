@@ -22,10 +22,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * This JavaFX app lets the user compose music.
@@ -150,6 +147,9 @@ public class TuneComposer extends Application {
         });
     }
 
+    /**
+     * prepares the composition and the menubar
+     */
     private void setupComposition() {
         menuBar = new TuneMenuBar(
                 stopButton,
@@ -238,13 +238,20 @@ public class TuneComposer extends Application {
         menuBar.update();
     }
     
+    /**
+     * redoes the latest undone action
+     * @param event , the button click
+     */
     @FXML
     protected void handleRedo(ActionEvent event) {
         history.redo();
         menuBar.update();
     }
 
-    
+    /**
+     * undoes the latest action
+     * @param event , the button click
+     */
     @FXML
     protected void handleUndo(ActionEvent event) {
         history.undo();
@@ -288,7 +295,6 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleCompositionPaneMousePressed(MouseEvent event) {
-        //TODO start selection
         stopPlaying();
         if (!event.isControlDown()) {
             composition.clearSelection();

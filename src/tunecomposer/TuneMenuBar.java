@@ -8,8 +8,8 @@ import javafx.scene.control.MenuItem;
 
 
 /**
- * TODO javadoc
- * @author Ben, Ian
+ * handles the graying out of menu items
+ * @author Ben, Ian, spencer
  */
 public class TuneMenuBar {
     
@@ -48,7 +48,7 @@ public class TuneMenuBar {
     }
 
     /**
-     * TODO
+     * Starts all buttons as disabled.
      */
     public void setup() {
         disable(stopButton);
@@ -62,6 +62,9 @@ public class TuneMenuBar {
         disable(redoButton);
     }
 
+    /**
+     * Checks all non stop button buttons and updates their disability.
+     */
     public void update(){
         updatePlay();
         updateSelect();
@@ -70,24 +73,39 @@ public class TuneMenuBar {
         updateRedoUndo();
     }
     
+    /**
+     * Updates the play button, for a change in number of notes.
+     */
     private void updatePlay() {
         playButton.setDisable(0 == TuneComposer.composition.size());
     }
     
+    /**
+     * Updates the selectall and selectnone buttons.
+     */
     private void updateSelect(){
         selectAllButton.setDisable(TuneComposer.composition.size() <= TuneComposer.composition.getSelectionSize());
         selectNoneButton.setDisable(0 == TuneComposer.composition.getSelectionSize());
     }
     
+    /**
+     * Updates the delete button.
+     */
     private void updateDelete(){
         deleteButton.setDisable(TuneComposer.composition.getSelectionSize() == 0);
     }
     
+    /**
+     * Update group and ungroup buttons.
+     */
     private void updateGroupUngroup(){
         groupButton.setDisable(TuneComposer.composition.getSelectionSize() <= 1);
         ungroupButton.setDisable(!TuneComposer.composition.isGestureSelected());
     }
     
+    /**
+     * Updates the redo and undo buttons.
+     */
     private void updateRedoUndo(){
         redoButton.setDisable(!TuneComposer.history.canRedo());
         undoButton.setDisable(!TuneComposer.history.canUndo());        

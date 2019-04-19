@@ -50,10 +50,18 @@ public class CommandHistory {
         TuneComposer.composition.clearSelectionTracker();
     }
     
+    /**
+     * checks if it is possible to undo
+     * @return boolean
+     */
     public boolean canUndo(){
         return !undoableCommands.isEmpty();
     }
     
+    /**
+     * checks if it is possible to redo
+     * @return boolean
+     */
     public boolean canRedo(){
         return !undoneCommands.isEmpty();
     }

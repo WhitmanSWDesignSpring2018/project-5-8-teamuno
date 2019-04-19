@@ -20,16 +20,26 @@ public class SelectionCommand implements Command{
         changedRects = new HashSet<>(TuneComposer.composition.getSelectionTracker());
         TuneComposer.composition.clearSelectionTracker();
     }
+    
+    /**
+     * calls toggle
+     */
     @Override
     public void execute() {
         toggle();
     }
-
+    
+    /**
+     * calls toggle
+     */
     @Override
     public void unexecute() {
         toggle();
     }
     
+    /**
+     * toggles selection on all given notes
+     */
     private void toggle(){
         for(TuneRectangle rect : changedRects){
             if(TuneComposer.composition.isSelectedTop(rect)){

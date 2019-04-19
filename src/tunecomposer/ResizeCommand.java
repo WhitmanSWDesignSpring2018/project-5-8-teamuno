@@ -26,6 +26,9 @@ public class ResizeCommand implements Command {
         selection = new SelectionCommand();
     }
     
+    /**
+     * extends note to its changed length
+     */
     @Override
     public void execute() {
         for(TuneRectangle rect : editedRects){
@@ -37,6 +40,9 @@ public class ResizeCommand implements Command {
         selection.execute();
     }
 
+    /**
+     * reverts note length to its initial value
+     */
     @Override
     public void unexecute() {
         for(TuneRectangle rect : editedRects){
