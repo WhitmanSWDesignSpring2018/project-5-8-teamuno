@@ -18,13 +18,17 @@ public class CreationCommand implements Command {
         newNote = created;
         selection = new SelectionCommand();
     }
-    
+    /**
+     * creates the note
+     */
     @Override
     public void execute() {
         TuneComposer.composition.add(newNote);
         selection.execute();
     }
-
+    /**
+     * uncreates the note
+     */
     @Override
     public void unexecute() {
         TuneComposer.composition.remove(newNote);

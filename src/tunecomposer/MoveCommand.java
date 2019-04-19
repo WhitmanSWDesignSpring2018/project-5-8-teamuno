@@ -29,6 +29,9 @@ public class MoveCommand implements Command {
         selection = new SelectionCommand();
     }
     
+    /**
+     * moves notes forward to where they went
+     */
     @Override
     public void execute() {
         for(TuneRectangle rect : editedRects){
@@ -40,6 +43,9 @@ public class MoveCommand implements Command {
         selection.execute();
     }
 
+    /**
+     * moves notes back to where they started
+     */
     @Override
     public void unexecute() {
         for(TuneRectangle rect : editedRects){

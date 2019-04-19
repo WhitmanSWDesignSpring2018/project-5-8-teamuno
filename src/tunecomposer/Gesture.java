@@ -35,6 +35,7 @@ public class Gesture extends TuneRectangle {
 
         for(TuneRectangle child : children) {
             child.setParent(this);
+            TuneComposer.composition.removeFromSelection(child);
         }
 
         TuneComposer.composition.add(this);
@@ -42,7 +43,6 @@ public class Gesture extends TuneRectangle {
         setBounds();
         getStyleClass().add("gesture");
         
-        TuneComposer.composition.clearSelection();
         addToSelection();
     }
 
@@ -82,6 +82,9 @@ public class Gesture extends TuneRectangle {
         return children;
     }
     
+    /**
+     * adds all of the gestures children to the pane
+     */
     public void addChildrenToComposition(){
         for(TuneRectangle child: children){
             TuneComposer.composition.add(child);
@@ -108,6 +111,9 @@ public class Gesture extends TuneRectangle {
         }
     }
     
+    /**
+     * updates moved children
+     */
     public void updateNoteMoved(){
         for(TuneRectangle child : children){
             child.updateNoteMoved();
@@ -165,6 +171,9 @@ public class Gesture extends TuneRectangle {
        }
     }
     
+    /**
+     * calculates the edges of the gesture
+     */
     private void setBounds(){
         Double minX = null;
         Double maxX = null;
