@@ -125,7 +125,7 @@ public class NoteBar extends TuneRectangle {
      * dragged while on a note, while none are selected.
      * @param me
      */
-    protected void onMouseDragged(MouseEvent me) {
+    private void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
         if (!isSelected()) {
             TuneComposer.composition.clearSelection();
