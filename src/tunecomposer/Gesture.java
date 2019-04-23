@@ -48,6 +48,7 @@ public class Gesture extends TuneRectangle {
 
     /**
      * Selects this gesture and everything contained by it.
+     * TODO Extract an `applySelectStyle` method and deprecate this.
      */
     @Override
     public void addToSelection() {

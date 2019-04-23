@@ -61,7 +61,7 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
-        history = new CommandHistory();
+        history = new CommandHistory(composition);
     }
 
     /**
@@ -348,7 +348,7 @@ public class TuneComposer extends Application {
             if (!event.isControlDown()) {
                 composition.clearSelection();
             }
-            NoteBar forCommand = new NoteBar(note);
+            NoteBar forCommand = new NoteBar(note, composition);
             history.addNewCommand(new CreationCommand(forCommand));
         }
         menuBar.update();
