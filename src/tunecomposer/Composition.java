@@ -119,8 +119,9 @@ public class Composition {
     }
     
     /**
-     * Creates a group with the given tunerectangles as children
-     * @param toGroup, the tunerectangles to be children
+     * Creates a group with the given tunerectangles as children.
+     * TODO Refactor GroupCommand and deprecate this
+     * @param toGroup the tunerectangles to be children
      * @return the new gesture
      */
     public Gesture groupTuneRectangles(HashSet<TuneRectangle> toGroup) {
@@ -132,8 +133,9 @@ public class Composition {
     }
 
     /**
-     * Ungroups a given gestures
-     * @param Ungroup, the gesture to ungroup
+     * Ungroups the given gesture.
+     * TODO Refactor GroupCommand and deprecate this
+     * @param Ungroup the gesture to ungroup
      * @return the old children of the given gesture
      */
     public HashSet<TuneRectangle> ungroupGesture(Gesture Ungroup) {
@@ -148,40 +150,15 @@ public class Composition {
     }
 
     /**
-     * Adds a tunerectangle to the composition
-     * @param rect , the tunerectangle to add
+     * Adds a tunerectangle to the composition.
+     * @param rect the tunerectangle to add
      */
     public void add(TuneRectangle rect) {
-        if(pane.getChildren().contains(rect)){
-            return;
+        allRoots.add(rect);
+
+        if (!pane.getChildren().contains(rect)) {
+            pane.getChildren().add(rect);
         }
-        else if(rect instanceof NoteBar){
-            add((NoteBar) rect);
-        }
-        else{
-            add((Gesture) rect);
-        }
-    }
-    /**
-     * Adds a notebar to the composition.
-     * Should be called on a newly created or un-deleted note.
-     * @param rect the notebar to be added
-     */
-    public void add(NoteBar rect) {
-        pane.getChildren().add(rect);
-        rect.note.addToAllNotes();
-        if(rect.getParentGesture() == null) allRoots.add(rect);
-    }
-    
-    /**
-     * Adds a gesture to the composition.
-     * Should be called on a newly created or un-deleted note.
-     * @param rect the gesture to be added
-     */
-    public void add(Gesture rect) {
-        pane.getChildren().add(rect);
-        rect.addChildrenToComposition();
-        if(rect.getParentGesture() == null) allRoots.add(rect);
     }
 
     /**
@@ -198,7 +175,8 @@ public class Composition {
     }
     
     /**
-     * notifies the tracker that this tunerectangle has changed selection state
+     * Notifies the tracker that this tunerectangle has changed selection
+     * state.
      * @param rect, the tunerectangle that changed
      */
     public void trackRectSelect(TuneRectangle rect){
@@ -236,7 +214,7 @@ public class Composition {
      * Expands the bounds of selection to include a new tunerectangle
      * @param root, the new tunerectangle
      */
-    private void updateBoundsNewRect(TuneRectangle root){
+    private void updateBoundsNewRect(TuneRectangle root) {
         if(selectionLeft == null || root.getX() < selectionLeft){selectionLeft = root.getX();}
         if(selectionTop == null || root.getY() < selectionTop){selectionTop = root.getY();}
         if(selectionRight == null || root.getX()+root.getWidth() > selectionRight){selectionRight = root.getX()+root.getWidth();}
@@ -267,18 +245,6 @@ public class Composition {
         }
     }
     
-    /**
-     * updates selection bounds after a move
-     * @param deltaX, the change in x
-     * @param deltaY, the change in y 
-     */
-    public void updateSelectionBounds(double deltaX, double deltaY){
-        selectionLeft += deltaX;
-        selectionRight += deltaX;
-        selectionTop += deltaY;
-        selectionBottom += deltaY;
-    }
-
     /**
      * Tells whether the given TuneRectangle is selected.
      * @param root the TuneRectangle in question
