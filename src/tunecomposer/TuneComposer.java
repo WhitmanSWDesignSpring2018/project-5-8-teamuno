@@ -61,7 +61,6 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
-        history = new CommandHistory(composition);
     }
 
     /**
@@ -154,6 +153,10 @@ public class TuneComposer extends Application {
         composition = new Composition(compositionpane);
     }
 
+    private void setupCommandHistory() {
+        history = new CommandHistory(composition);
+    }
+
     private void setupMenuBar() {
         menuBar = new TuneMenuBar(
                 composition,
@@ -193,7 +196,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
-        history.addNewCommand(new SelectionCommand());
+        history.addNewCommand(new SelectionCommand(composition));
         menuBar.update();
     }
 
@@ -204,7 +207,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
-        history.addNewCommand(new SelectionCommand());
+        history.addNewCommand(new SelectionCommand(composition));
         menuBar.update();
     }
 
@@ -330,7 +333,7 @@ public class TuneComposer extends Application {
         NoteBar.selectArea(selectionRect);
         selectionRect.setVisible(false);
         if (!event.isStillSincePress()) {
-            history.addNewCommand(new SelectionCommand());
+            history.addNewCommand(new SelectionCommand(composition));
         }
         menuBar.update();
     }
@@ -352,7 +355,7 @@ public class TuneComposer extends Application {
                 composition.clearSelection();
             }
             NoteBar forCommand = new NoteBar(note, composition);
-            history.addNewCommand(new CreationCommand(forCommand));
+            history.addNewCommand(new CreationCommand(composition, forCommand));
         }
         menuBar.update();
         event.consume();
@@ -388,6 +391,7 @@ public class TuneComposer extends Application {
         setupSelectionRect();
         setupInstruments();
         setupComposition();
+        setupCommandHistory();
         setupMenuBar();
     }
 

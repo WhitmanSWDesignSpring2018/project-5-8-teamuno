@@ -13,17 +13,20 @@ import java.util.Set;
  * @author vankoesd
  */
 public class ResizeCommand implements Command {
-        
+
+    private final Composition composition;
     private final Set<TuneRectangle> editedRects;
     private final double lengthChange;
     private final Command selection;
 
-    public ResizeCommand(Set<TuneRectangle> edits, double dragLength) {
+    public ResizeCommand(Composition composition, Set<TuneRectangle> edits,
+            double dragLength) {
+        this.composition = composition;
         editedRects = edits;
         lengthChange = dragLength;
         System.out.println(dragLength);
         System.out.println(edits);
-        selection = new SelectionCommand();
+        selection = new SelectionCommand(composition);
     }
     
     /**
@@ -36,7 +39,7 @@ public class ResizeCommand implements Command {
                 ((NoteBar) rect).resize(lengthChange);
             }
         }
-        TuneComposer.composition.updateResized();
+        composition.updateResized();
         selection.execute();
     }
 
@@ -50,7 +53,7 @@ public class ResizeCommand implements Command {
                 ((NoteBar) rect).resize(-lengthChange);
             }
         }
-        TuneComposer.composition.updateResized();
+        composition.updateResized();
         selection.unexecute();
     }
 }

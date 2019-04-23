@@ -100,7 +100,7 @@ public class NoteBar extends TuneRectangle {
                 composition.clearSelection();
                 getHighestParent().addToSelection();
             }
-            TuneComposer.history.addNewCommand(new SelectionCommand());
+            TuneComposer.history.addNewCommand(new SelectionCommand(composition));
             TuneComposer.menuBar.update();
             me.consume();
         }
@@ -155,12 +155,12 @@ public class NoteBar extends TuneRectangle {
         if (dragWidth) {
             composition.updateResized();
             composition.resetSelectionRight();
-            TuneComposer.history.addNewCommand(new ResizeCommand(composition.getSelectionTop() , me.getX()-dragStartX));
+            TuneComposer.history.addNewCommand(new ResizeCommand(composition, composition.getSelectionTop() , me.getX()-dragStartX));
         } else {
             composition.updateMoved();
             composition.snapSelectionY();
             composition.resetSelectionBounds();
-            TuneComposer.history.addNewCommand(new MoveCommand(composition.getSelectionTop(), me.getX()-dragStartX, me.getY()-dragStartY));
+            TuneComposer.history.addNewCommand(new MoveCommand(composition, composition.getSelectionTop(), me.getX()-dragStartX, me.getY()-dragStartY));
         }
         TuneComposer.menuBar.update();
         me.consume();

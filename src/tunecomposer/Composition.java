@@ -74,7 +74,7 @@ public class Composition {
      */
     public void deleteSelection() {
         HashSet<TuneRectangle> forCommand = new HashSet<>(selectedRoots);
-        TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
+        TuneComposer.history.addNewCommand(new DeletionCommand(this, forCommand));
         for(TuneRectangle rect : selectedRoots) {
             remove(rect);
             rect.delete(pane);
@@ -93,7 +93,7 @@ public class Composition {
         Gesture newGesture = new Gesture(group);
         HashSet<Gesture> forCommand = new HashSet<>();
         forCommand.add(newGesture);
-        TuneComposer.history.addNewCommand(new GroupCommand(forCommand, true));
+        TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, true));
         
     }
 
@@ -115,7 +115,7 @@ public class Composition {
                 forCommand.add(children);
             }
         }
-        TuneComposer.history.addNewCommand(new GroupCommand(forCommand, false));
+        TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, false));
     }
     
     /**

@@ -14,11 +14,13 @@ import java.util.Set;
  */
 public class SelectionCommand implements Command{
     
+    private final Composition composition;
     private final Set<TuneRectangle> changedRects;
 
-    public SelectionCommand() {
-        changedRects = new HashSet<>(TuneComposer.composition.getSelectionTracker());
-        TuneComposer.composition.clearSelectionTracker();
+    public SelectionCommand(Composition composition) {
+        this.composition = composition;
+        changedRects = new HashSet<>(composition.getSelectionTracker());
+        composition.clearSelectionTracker();
     }
     
     /**
@@ -42,8 +44,8 @@ public class SelectionCommand implements Command{
      */
     private void toggle(){
         for(TuneRectangle rect : changedRects){
-            if(TuneComposer.composition.isSelectedTop(rect)){
-                TuneComposer.composition.removeFromSelection(rect);
+            if(composition.isSelectedTop(rect)){
+                composition.removeFromSelection(rect);
             }
             else{
                 rect.addToSelection();
