@@ -151,7 +151,12 @@ public class TuneComposer extends Application {
      * prepares the composition and the menubar
      */
     private void setupComposition() {
+        composition = new Composition(compositionpane);
+    }
+
+    private void setupMenuBar() {
         menuBar = new TuneMenuBar(
+                composition,
                 stopButton,
                 playButton,
                 selectNoneButton,
@@ -161,8 +166,6 @@ public class TuneComposer extends Application {
                 ungroupButton,
                 undoButton,
                 redoButton);
-
-        composition = new Composition(compositionpane);
     }
 
     /**
@@ -385,7 +388,7 @@ public class TuneComposer extends Application {
         setupSelectionRect();
         setupInstruments();
         setupComposition();
-        
+        setupMenuBar();
     }
 
     /**
