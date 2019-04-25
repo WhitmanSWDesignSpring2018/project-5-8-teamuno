@@ -1,6 +1,7 @@
 
 package tunecomposer;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.layout.Pane;
@@ -40,8 +41,12 @@ public class Composition {
     /**
      * gets a copy of the selectionRoots
      */
-    public Set<TuneRectangle> getSelectionTop() {
+    public Set<TuneRectangle> getSelectedRoots() {
         return new HashSet<>(selectedRoots);
+    }
+    
+    public Set<TuneRectangle> getRoots() {
+        return new HashSet<>(allRoots);
     }
     
     /**
@@ -401,5 +406,22 @@ public class Composition {
         }
 
         return false;
+    }
+
+    void loadRoots(Set<TuneRectangle> loadSet) {
+        for(TuneRectangle rect : allRoots){
+            pane.getChildren().remove(rect);
+        }
+        selectedRoots.clear();
+        allRoots = loadSet;
+        for(TuneRectangle rect : allRoots){
+            add(rect);
+        }
+        for(Object o : pane.getChildren()){
+            if(o instanceof TuneRectangle){
+                System.out.println(o);
+            }
+        }
+        selectedRoots.clear();
     }
 }

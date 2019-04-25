@@ -16,6 +16,12 @@
         <menus>
           <Menu text="File" fx:id="File">
             <items>
+              <MenuItem accelerator="Shortcut+S" 
+                        onAction="#handleSaveAction" 
+                        text="Save" />
+              <MenuItem accelerator="Shortcut+O" 
+                        onAction="#handleOpenAction" 
+                        text="Open" />
               <MenuItem accelerator="Shortcut+Q" 
                         onAction="#handleExitAction" 
                         text="Exit" />

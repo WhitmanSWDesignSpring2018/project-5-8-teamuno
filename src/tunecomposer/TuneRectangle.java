@@ -4,6 +4,7 @@
  */
 package tunecomposer;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -12,7 +13,7 @@ import javafx.scene.shape.Rectangle;
  * Class abstracted from NoteBar and Gesture.
  * @author ben, taka, spencer, ian
  */
-public abstract class TuneRectangle extends Rectangle {
+public abstract class TuneRectangle extends Rectangle implements Serializable {
     protected Gesture parentGesture;
 
     /**

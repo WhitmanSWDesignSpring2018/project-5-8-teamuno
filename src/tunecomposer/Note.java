@@ -4,13 +4,14 @@
  */
 package tunecomposer;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 /**
  * Represents a note.
  * @author janet
  */
-public class Note {
+public class Note implements Serializable {
 
     private static final int VOLUME = 127;
     private static final int TRACK = 0;

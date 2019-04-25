@@ -4,7 +4,13 @@
  */ 
 package tunecomposer;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -285,6 +291,35 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleExitAction(ActionEvent event) {
         System.exit(0);
+    }
+    
+    @FXML
+    protected void handleSaveAction(ActionEvent event) {
+        try {
+            
+            FileOutputStream fileOut = new FileOutputStream("test.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(composition.getRoots());
+            out.close();
+            fileOut.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
+        try {
+            FileInputStream fileIn = new FileInputStream("test.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            Set<TuneRectangle> loadSet = (HashSet<TuneRectangle>) in.readObject();
+            in.close();
+            fileIn.close();
+            composition.loadRoots(loadSet);
+        }catch(IOException e){
+            System.out.println("Catch 1");
+        }
+        menuBar.update();
     }
 
     /**
