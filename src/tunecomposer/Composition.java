@@ -188,6 +188,11 @@ public class Composition {
         rect.addChildrenToComposition();
         if(rect.getParentGesture() == null) allRoots.add(rect);
     }
+    
+    public void addWithoutChildren(Gesture rect) {
+        pane.getChildren().add(rect);
+        if(rect.getParentGesture() == null) allRoots.add(rect);
+    }
 
     /**
      * Remove something from the composition.
@@ -408,20 +413,18 @@ public class Composition {
         return false;
     }
 
-    void loadRoots(Set<TuneRectangle> loadSet) {
+    public void loadRoots(Set<TuneRectangle> loadSet) {
         for(TuneRectangle rect : allRoots){
             pane.getChildren().remove(rect);
         }
         selectedRoots.clear();
         allRoots = loadSet;
         for(TuneRectangle rect : allRoots){
-            add(rect);
-        }
-        for(Object o : pane.getChildren()){
-            if(o instanceof TuneRectangle){
-                System.out.println(o);
-            }
+            rect.init();
         }
         selectedRoots.clear();
     }
+    
+    
+    
 }

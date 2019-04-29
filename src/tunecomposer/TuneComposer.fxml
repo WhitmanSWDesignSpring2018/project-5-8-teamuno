@@ -19,6 +19,8 @@
               <MenuItem accelerator="Shortcut+S" 
                         onAction="#handleSaveAction" 
                         text="Save" />
+              <MenuItem onAction="#handleSaveAsAction" 
+                        text="Save As" />
               <MenuItem accelerator="Shortcut+O" 
                         onAction="#handleOpenAction" 
                         text="Open" />

@@ -4,6 +4,7 @@
  */ 
 package tunecomposer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.control.MenuItem;
+import javafx.stage.FileChooser;
 
 /**
  * This JavaFX app lets the user compose music.
@@ -40,6 +42,7 @@ public class TuneComposer extends Application {
 
     public static Composition composition;
     public static TuneMenuBar menuBar;
+    private Stage primaryStage;
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -56,6 +59,8 @@ public class TuneComposer extends Application {
     @FXML private MenuItem redoButton;
     // TODO Add more buttons here and in FXML
  
+    private File currentFile;
+    private FileChooser fileChooser;
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
@@ -68,6 +73,10 @@ public class TuneComposer extends Application {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
         history = new CommandHistory();
+        fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compositions", "*.ser")
+        );
     }
 
     /**
@@ -295,9 +304,23 @@ public class TuneComposer extends Application {
     
     @FXML
     protected void handleSaveAction(ActionEvent event) {
+        if(currentFile == null){
+            handleSaveAsAction(event);
+        }
+        else{
+            save(currentFile);
+        }
+    }
+    
+    @FXML
+    protected void handleSaveAsAction(ActionEvent event) {
+        currentFile = fileChooser.showSaveDialog(primaryStage);
+        save(currentFile);
+    }
+
+    private void save(File file) {
         try {
-            
-            FileOutputStream fileOut = new FileOutputStream("test.ser");
+            FileOutputStream fileOut = new FileOutputStream(file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(composition.getRoots());
             out.close();
@@ -309,15 +332,26 @@ public class TuneComposer extends Application {
     
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
+        currentFile = fileChooser.showOpenDialog(primaryStage);
+        load(currentFile);
+    }
+    
+    private void load(File file) throws ClassNotFoundException {
         try {
-            FileInputStream fileIn = new FileInputStream("test.ser");
+            FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             Set<TuneRectangle> loadSet = (HashSet<TuneRectangle>) in.readObject();
             in.close();
             fileIn.close();
             composition.loadRoots(loadSet);
+            for(TuneRectangle rect : loadSet){
+                rect.removeSelectStyle();
+            }
+            composition.clearSelection();
+            history.clear();
+            
         }catch(IOException e){
-            System.out.println("Catch 1");
+            System.out.println(e.getStackTrace());
         }
         menuBar.update();
     }
@@ -399,7 +433,7 @@ public class TuneComposer extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("TuneComposer.fxml"));
         Scene scene = new Scene(root);
-
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("Tune Composer");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((WindowEvent we) -> {

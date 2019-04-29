@@ -65,4 +65,9 @@ public class CommandHistory {
     public boolean canRedo(){
         return !undoneCommands.isEmpty();
     }
+    
+    public void clear(){
+        undoableCommands.clear();
+        undoneCommands.clear();
+    }
 }

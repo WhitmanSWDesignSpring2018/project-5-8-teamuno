@@ -32,19 +32,24 @@ public class Gesture extends TuneRectangle {
      */
     public Gesture(HashSet<TuneRectangle> children) {
         this.children = children;
-
         for(TuneRectangle child : children) {
             child.setParent(this);
             TuneComposer.composition.removeFromSelection(child);
         }
-
+        init();
+    }
+    
+    public void init(){
+        System.out.println("Gesture.init");
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
-        setBounds();
+        
         getStyleClass().add("gesture");
         
         addToSelection();
+        setBounds();
     }
+
 
     /**
      * Selects this gesture and everything contained by it.

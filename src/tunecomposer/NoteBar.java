@@ -27,6 +27,11 @@ public class NoteBar extends TuneRectangle {
     public NoteBar(Note note) {
         this.note = note;
 
+        this.init();
+        TuneComposer.composition.add(this);
+    }
+    
+    public void init(){
         getStyleClass().add("note");
         setHeight(Constants.LINE_SPACING - Constants.LINE_THICKNESS);
         update();
@@ -36,10 +41,12 @@ public class NoteBar extends TuneRectangle {
         setOnMouseDragged((MouseEvent me) -> { onMouseDragged(me); });
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
 
-        TuneComposer.composition.add(this);
+        
         ALLNOTEBARS.add(this);
         addToSelection();
     }
+    
+    
     /**
      * Hides this NoteBar from the composition pane.
      * If this isn't in the composition pane, nothing happens.

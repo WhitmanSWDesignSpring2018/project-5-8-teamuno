@@ -4,6 +4,7 @@
  */
 package tunecomposer;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import javafx.scene.layout.Pane;
@@ -28,6 +29,8 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
      * TODO Change name to `select`
      */
     abstract public void addToSelection();
+    
+    abstract public void init();
 
     /**
      * Makes this no longer appear selected.
@@ -81,7 +84,7 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
             return parentGesture.getHighestParent();
         }
     }
-
+    
     /**
      * Hides this rectangle from the composition pane.
      * @param compositionpane the pane from which this should be deleted
