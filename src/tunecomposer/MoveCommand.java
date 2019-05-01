@@ -23,9 +23,9 @@ public class MoveCommand implements Command {
     private final double yChange;
     private final Command selection;
 
-    public MoveCommand(Composition composition, Set edits, double dX, double dY) {
+    public MoveCommand(Composition composition, double dX, double dY) {
         this.composition = composition;
-        editedRects = edits;
+        editedRects = composition.getSelectionTop();
         xChange = dX;
         yChange = dY;
         selection = new SelectionCommand(composition);

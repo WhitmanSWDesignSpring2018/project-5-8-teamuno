@@ -19,13 +19,10 @@ public class ResizeCommand implements Command {
     private final double lengthChange;
     private final Command selection;
 
-    public ResizeCommand(Composition composition, Set<TuneRectangle> edits,
-            double dragLength) {
+    public ResizeCommand(Composition composition, double dragLength) {
         this.composition = composition;
-        editedRects = edits;
+        editedRects = composition.getSelectionTop();
         lengthChange = dragLength;
-        System.out.println(dragLength);
-        System.out.println(edits);
         selection = new SelectionCommand(composition);
     }
     
