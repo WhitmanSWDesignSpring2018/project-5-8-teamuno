@@ -315,6 +315,9 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSaveAsAction(ActionEvent event) {
         currentFile = fileChooser.showSaveDialog(primaryStage);
+        if(currentFile == null){
+            return;
+        }
         save(currentFile);
     }
 
@@ -323,6 +326,7 @@ public class TuneComposer extends Application {
             FileOutputStream fileOut = new FileOutputStream(file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(composition.getRoots());
+            System.out.println(composition.getRoots());
             out.close();
             fileOut.close();
         }catch(IOException e){
@@ -333,6 +337,9 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
         currentFile = fileChooser.showOpenDialog(primaryStage);
+        if(currentFile == null){
+            return;
+        }
         load(currentFile);
     }
     
@@ -344,6 +351,7 @@ public class TuneComposer extends Application {
             in.close();
             fileIn.close();
             composition.loadRoots(loadSet);
+            System.out.println(loadSet);
             for(TuneRectangle rect : loadSet){
                 rect.removeSelectStyle();
             }

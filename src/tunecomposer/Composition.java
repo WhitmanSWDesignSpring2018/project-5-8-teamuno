@@ -418,7 +418,7 @@ public class Composition {
             pane.getChildren().remove(rect);
         }
         selectedRoots.clear();
-        allRoots = loadSet;
+        allRoots = loadSet;     
         for(TuneRectangle rect : allRoots){
             rect.init();
         }
