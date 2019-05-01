@@ -11,13 +11,12 @@ package tunecomposer;
  * TODO this
  */
 public interface Command {
-    
     /**
-     * Does the command
+     * Does the command.
      */
     public void execute();
     /**
-     * undoes the command
+     * Undoes the command.
      */
     public void unexecute();
 }

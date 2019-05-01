@@ -17,16 +17,18 @@ import java.util.Set;
 //TODO fix that
 public class MoveCommand implements Command {
     
+    private final Composition composition;
     private final Set<TuneRectangle> editedRects;
     private final double xChange;
     private final double yChange;
     private final Command selection;
 
-    public MoveCommand(Set edits, double dX, double dY) {
-        editedRects = edits;
+    public MoveCommand(Composition composition, double dX, double dY) {
+        this.composition = composition;
+        editedRects = composition.getSelectionTop();
         xChange = dX;
         yChange = dY;
-        selection = new SelectionCommand();
+        selection = new SelectionCommand(composition);
     }
     
     /**
@@ -34,10 +36,15 @@ public class MoveCommand implements Command {
      */
     @Override
     public void execute() {
-        for(TuneRectangle rect : editedRects){
-            if(rect instanceof Gesture){((Gesture)rect).setStart();}
+        for(TuneRectangle rect : editedRects) {
+            if (rect instanceof Gesture) {
+                ((Gesture)rect).setStart();
+            }
+
             rect.move(xChange, yChange);
-            if(rect instanceof Gesture){((Gesture)rect).snapY();}
+            if (rect instanceof Gesture) {
+                ((Gesture)rect).snapY();
+            }
             rect.updateNoteMoved();
         }
         selection.execute();

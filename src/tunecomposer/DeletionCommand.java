@@ -12,31 +12,33 @@ import java.util.HashSet;
  * @author vankoesd
  */
 public class DeletionCommand implements Command {
+    private final Composition composition;
     private final HashSet<TuneRectangle> deletedRects;
     
-    public DeletionCommand(HashSet<TuneRectangle> rects) {
+    public DeletionCommand(Composition composition, HashSet<TuneRectangle> rects) {
+        this.composition = composition;
         deletedRects = rects;
-        new SelectionCommand();
+        new SelectionCommand(composition);
     }
     
     /**
-     * deletes the note
+     * Deletes the note.
      */
     @Override
     public void execute() {
         for(TuneRectangle rect : deletedRects){
-            TuneComposer.composition.remove(rect);
+            composition.remove(rect);
         }
     }
 
     /**
-     * undeletes the note
+     * Undeletes the note.
      */
     @Override
     public void unexecute() {
-        TuneComposer.composition.clearSelection();
+        composition.clearSelection();
         for (TuneRectangle rect : deletedRects){
-            TuneComposer.composition.add(rect);
+            composition.add(rect);
             rect.addToSelection();
         }
     }
