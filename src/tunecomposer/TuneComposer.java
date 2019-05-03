@@ -410,8 +410,6 @@ public class TuneComposer extends Application {
             fileIn.close();
             composition.clearAll();
             composition.loadRoots(loadSet);
-            composition.clearSelection();
-            System.out.println(loadSet);
             for(TuneRectangle rect : loadSet){
                 rect.removeSelectStyle();
             }

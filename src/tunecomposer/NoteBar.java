@@ -28,7 +28,7 @@ public class NoteBar extends TuneRectangle {
         this.note = note;
 
         this.init();
-        TuneComposer.composition.add(this);
+        
     }
     
     public void init(){
@@ -41,7 +41,7 @@ public class NoteBar extends TuneRectangle {
         setOnMouseDragged((MouseEvent me) -> { onMouseDragged(me); });
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
 
-        
+        TuneComposer.composition.add(this);
         ALLNOTEBARS.add(this);
         addToSelection();
     }

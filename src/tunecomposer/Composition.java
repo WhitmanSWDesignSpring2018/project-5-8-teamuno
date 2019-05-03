@@ -416,7 +416,7 @@ public class Composition {
     public void loadRoots(Set<TuneRectangle> loadSet) {
         
         allRoots.addAll(loadSet);     
-        for(TuneRectangle rect : allRoots){
+        for(TuneRectangle rect : loadSet){
             rect.init();
         }
     }
