@@ -14,6 +14,7 @@ import java.util.Stack;
 public class CommandHistory {
     private final Stack<Command> undoableCommands;
     private final Stack<Command> undoneCommands;
+    private boolean isSaved;
     
     public CommandHistory(){
         undoableCommands = new Stack<>();
@@ -27,6 +28,7 @@ public class CommandHistory {
     public void addNewCommand(Command toAdd){
         undoableCommands.push(toAdd);
         undoneCommands.clear();
+        isSaved = false;
     }
     
     /**
@@ -37,6 +39,7 @@ public class CommandHistory {
         undoing.unexecute();
         undoneCommands.push(undoing);
         TuneComposer.composition.clearSelectionTracker();
+        isSaved = false;
     }
     
     /**
@@ -48,6 +51,7 @@ public class CommandHistory {
         redoing.execute();
         undoableCommands.push(redoing);
         TuneComposer.composition.clearSelectionTracker();
+        isSaved = false;
     }
     
     /**
@@ -64,6 +68,14 @@ public class CommandHistory {
      */
     public boolean canRedo(){
         return !undoneCommands.isEmpty();
+    }
+    
+    public void recordSave(){
+        isSaved = true;
+    }
+    
+    public boolean isSaved(){
+        return isSaved;
     }
     
     public void clear(){

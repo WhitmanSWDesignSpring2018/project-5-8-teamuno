@@ -414,13 +414,16 @@ public class Composition {
     }
 
     public void loadRoots(Set<TuneRectangle> loadSet) {
-        for(TuneRectangle rect : allRoots){
-            pane.getChildren().remove(rect);
-        }
-        selectedRoots.clear();
-        allRoots = loadSet;     
+        
+        allRoots.addAll(loadSet);     
         for(TuneRectangle rect : allRoots){
             rect.init();
+        }
+    }
+    
+    public void clearAll(){
+        for(TuneRectangle rect : new HashSet<TuneRectangle>(allRoots)){
+            remove(rect);
         }
         selectedRoots.clear();
     }

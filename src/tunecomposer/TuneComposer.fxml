@@ -16,6 +16,12 @@
         <menus>
           <Menu text="File" fx:id="File">
             <items>
+              <MenuItem 
+                        onAction="#handleAboutAction" 
+                        text="About" />
+              <MenuItem accelerator="Shortcut+N" 
+                        onAction="#handleNewAction" 
+                        text="New" />
               <MenuItem accelerator="Shortcut+S" 
                         onAction="#handleSaveAction" 
                         text="Save" />
@@ -31,6 +37,18 @@
           </Menu>
             <Menu text="Edit">
               <items>
+                <MenuItem fx:id="cutButton"
+                          accelerator="Shortcut+X" 
+                          onAction="#handleCutAction" 
+                          text="Cut" />
+                <MenuItem fx:id="CopyButton"
+                          accelerator="Shortcut+C" 
+                          onAction="#handleCopyAction" 
+                          text="Select All" />
+                <MenuItem fx:id="pasteButton"
+                          accelerator="Shortcut+V" 
+                          onAction="#handlePasteAction" 
+                          text="Paste" />
                 <MenuItem fx:id="selectAllButton"
                           accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 

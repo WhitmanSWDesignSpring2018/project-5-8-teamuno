@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
@@ -20,6 +21,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -197,7 +203,58 @@ public class TuneComposer extends Application {
         compositionpane.getChildren().add(selectionRect);
     }
     
+    /**
+     * https://code.makery.ch/blog/javafx-dialogs-official/
+     * @param event 
+     */
+    @FXML
+    protected void handleNewAction(ActionEvent event) {
+        if(!history.isSaved()){
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog with Custom Actions");
+            alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+            alert.setContentText("Choose your option.");
+
+            ButtonType buttonTypeOne = new ButtonType("Yes");
+            ButtonType buttonTypeTwo = new ButtonType("No");
+            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeOne){
+                handleSaveAction(event);
+                composition.clearAll();
+                history.clear();
+            } else if (result.get() == buttonTypeTwo) {
+                composition.clearAll();
+                history.clear();
+            }
+        }
+        else{
+            composition.clearAll();
+            history.clear();
+        }
+        
+    }
     
+    @FXML
+    protected void handleAboutAction(ActionEvent event) {
+    }
+    
+    
+    @FXML
+    protected void handleCutAction(ActionEvent event) {
+    }
+    
+    @FXML
+    protected void handleCopyAction(ActionEvent event) {
+        
+    }
+    
+    @FXML
+    protected void handlePasteAction(ActionEvent event) {
+    }
     /**
      * Selects all top-level items drawn in the composition pane.
      * @param event the click on the menu item
@@ -329,6 +386,7 @@ public class TuneComposer extends Application {
             System.out.println(composition.getRoots());
             out.close();
             fileOut.close();
+            history.recordSave();
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -350,7 +408,9 @@ public class TuneComposer extends Application {
             Set<TuneRectangle> loadSet = (HashSet<TuneRectangle>) in.readObject();
             in.close();
             fileIn.close();
+            composition.clearAll();
             composition.loadRoots(loadSet);
+            composition.clearSelection();
             System.out.println(loadSet);
             for(TuneRectangle rect : loadSet){
                 rect.removeSelectStyle();
