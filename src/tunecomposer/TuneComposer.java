@@ -63,7 +63,14 @@ public class TuneComposer extends Application {
     @FXML private MenuItem playButton;
     @FXML private MenuItem undoButton;
     @FXML private MenuItem redoButton;
-    // TODO Add more buttons here and in FXML
+    @FXML private MenuItem cutButton;
+    @FXML private MenuItem copyButton;
+    @FXML private MenuItem pasteButton;
+    @FXML private MenuItem aboutButton;
+    @FXML private MenuItem newButton;
+    @FXML private MenuItem saveButton;
+    @FXML private MenuItem saveAsButton;
+    @FXML private MenuItem openButton;
  
     private File currentFile;
     private FileChooser fileChooser;
@@ -78,7 +85,6 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
-        history = new CommandHistory();
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Compositions", "*.ser")
@@ -172,7 +178,16 @@ public class TuneComposer extends Application {
      * prepares the composition and the menubar
      */
     private void setupComposition() {
+        composition = new Composition(compositionpane);
+    }
+
+    private void setupCommandHistory() {
+        history = new CommandHistory(composition);
+    }
+
+    private void setupMenuBar() {
         menuBar = new TuneMenuBar(
+                composition,
                 stopButton,
                 playButton,
                 selectNoneButton,
@@ -181,9 +196,15 @@ public class TuneComposer extends Application {
                 groupButton,
                 ungroupButton,
                 undoButton,
-                redoButton);
-
-        composition = new Composition(compositionpane);
+                redoButton,
+                cutButton,
+                copyButton,
+                pasteButton,
+                aboutButton,
+                newButton,
+                saveButton,
+                saveAsButton,
+                openButton);
     }
 
     /**
@@ -520,6 +541,8 @@ public class TuneComposer extends Application {
         setupSelectionRect();
         setupInstruments();
         setupComposition();
+        setupCommandHistory();
+        setupMenuBar();
         
     }
 
