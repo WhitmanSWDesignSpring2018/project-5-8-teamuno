@@ -404,7 +404,7 @@ public class Composition {
         
         allRoots.addAll(loadSet);     
         for(TuneRectangle rect : loadSet){
-            rect.init();
+            rect.init(this);
         }
     }
     

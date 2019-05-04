@@ -15,18 +15,20 @@ public class PasteCommand implements Command {
 
     private final Set<TuneRectangle> pasted;
     private final SelectionCommand selection;
+    private final Composition composition;
     
     public PasteCommand(Composition composition, Set<TuneRectangle> added) {
         pasted = added;
         selection = new SelectionCommand(composition);
+        this.composition = composition;
     }
     /**
      * creates the notes
      */
     @Override
     public void execute() {
-        for(TuneRectangle rect : pasted){
-            TuneComposer.composition.add(rect);
+        for(TuneRectangle rect : pasted) {
+            composition.add(rect);
         }
         selection.execute();
     }
@@ -34,7 +36,7 @@ public class PasteCommand implements Command {
     
     public void init() {
         for(TuneRectangle rect : pasted){
-            rect.init();
+            rect.init(composition);
         }
     }
     

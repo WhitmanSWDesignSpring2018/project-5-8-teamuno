@@ -37,12 +37,12 @@ public class Gesture extends TuneRectangle {
             TuneComposer.composition.removeFromSelection(child);
             TuneComposer.composition.remove(child);
         }
-        init();
+        init(TuneComposer.composition);
     }
     
-    public void init() {
+    public void init(Composition composition) {
         for(TuneRectangle child : children) {
-            child.init();
+            child.init(composition);
         }
         System.out.println("Gesture.init");
         TuneComposer.composition.add(this);

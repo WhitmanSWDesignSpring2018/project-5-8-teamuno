@@ -30,7 +30,7 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
      */
     abstract public void addToSelection();
     
-    abstract public void init();
+    abstract public void init(Composition composition);
 
     /**
      * Makes this no longer appear selected.

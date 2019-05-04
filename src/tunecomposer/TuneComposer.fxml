@@ -54,7 +54,7 @@
                 <MenuItem fx:id="copyButton"
                           accelerator="Shortcut+C" 
                           onAction="#handleCopyAction" 
-                          text="Select All" />
+                          text="Copy" />
 
                 <MenuItem fx:id="pasteButton"
                           accelerator="Shortcut+V" 
