@@ -51,7 +51,7 @@
                           onAction="#handleCutAction" 
                           text="Cut" />
 
-                <MenuItem fx:id="CopyButton"
+                <MenuItem fx:id="copyButton"
                           accelerator="Shortcut+C" 
                           onAction="#handleCopyAction" 
                           text="Select All" />

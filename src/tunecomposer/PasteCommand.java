@@ -16,9 +16,9 @@ public class PasteCommand implements Command {
     private final Set<TuneRectangle> pasted;
     private final SelectionCommand selection;
     
-    public PasteCommand(Set<TuneRectangle> added) {
+    public PasteCommand(Composition composition, Set<TuneRectangle> added) {
         pasted = added;
-        selection = new SelectionCommand();
+        selection = new SelectionCommand(composition);
     }
     /**
      * creates the notes

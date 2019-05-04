@@ -15,8 +15,10 @@ public class CommandHistory {
     private final Stack<Command> undoableCommands;
     private final Stack<Command> undoneCommands;
     private boolean isSaved;
+    private final Composition composition;
     
-    public CommandHistory(){
+    public CommandHistory(Composition composition) {
+        this.composition = composition;
         undoableCommands = new Stack<>();
         undoneCommands = new Stack<>();
     }
@@ -38,24 +40,24 @@ public class CommandHistory {
         Command undoing = undoableCommands.pop();
         undoing.unexecute();
         undoneCommands.push(undoing);
-        TuneComposer.composition.clearSelectionTracker();
+        composition.clearSelectionTracker();
         isSaved = false;
     }
     
     /**
-     * Redoes the top command and makes it available for undo
+     * Redoes the top command and makes it available for undo.
      */
-    public void redo(){
+    public void redo() {
         if(undoneCommands.isEmpty()){return;}
         Command redoing = undoneCommands.pop();
         redoing.execute();
         undoableCommands.push(redoing);
-        TuneComposer.composition.clearSelectionTracker();
+        composition.clearSelectionTracker();
         isSaved = false;
     }
     
     /**
-     * checks if it is possible to undo
+     * Checks if it is possible to undo.
      * @return boolean
      */
     public boolean canUndo(){
@@ -63,10 +65,10 @@ public class CommandHistory {
     }
     
     /**
-     * checks if it is possible to redo
+     * Checks if it is possible to redo.
      * @return boolean
      */
-    public boolean canRedo(){
+    public boolean canRedo() {
         return !undoneCommands.isEmpty();
     }
     

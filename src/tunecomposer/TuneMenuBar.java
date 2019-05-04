@@ -8,8 +8,8 @@ import javafx.scene.control.MenuItem;
 
 
 /**
- * handles the graying out of menu items
- * @author Ben, Ian, spencer
+ * Handles the graying out of menu items.
+ * @author Ben, Ian, Spencer
  */
 public class TuneMenuBar {
     
@@ -30,7 +30,7 @@ public class TuneMenuBar {
     private MenuItem newButton;
     private MenuItem saveButton;
     
-    public TuneMenuBar(
+    public TuneMenuBar (
             Composition composition,
             MenuItem stopButton,
             MenuItem playButton, 
@@ -178,4 +178,4 @@ public class TuneMenuBar {
     private void disable(MenuItem button) {
         button.setDisable(true);
     }
-}   
+}

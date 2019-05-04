@@ -11,19 +11,21 @@ package tunecomposer;
  */
 public class CreationCommand implements Command {
 
+    private final Composition composition;
     private final NoteBar newNote;
     private final SelectionCommand selection;
     
-    public CreationCommand(NoteBar created) {
+    public CreationCommand(Composition composition, NoteBar created) {
+        this.composition = composition;
         newNote = created;
-        selection = new SelectionCommand();
+        selection = new SelectionCommand(composition);
     }
     /**
      * creates the note
      */
     @Override
     public void execute() {
-        TuneComposer.composition.add(newNote);
+        composition.add(newNote);
         selection.execute();
     }
     /**
@@ -31,7 +33,7 @@ public class CreationCommand implements Command {
      */
     @Override
     public void unexecute() {
-        TuneComposer.composition.remove(newNote);
+        composition.remove(newNote);
         selection.unexecute();
     }
     

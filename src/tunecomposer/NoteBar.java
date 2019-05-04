@@ -17,21 +17,23 @@ public class NoteBar extends TuneRectangle {
 
 
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
-    final Note note;
+    public final Note note;
     private static boolean dragWidth;
+    private final Composition composition;
 
     /**
      * Create a new note bar.
      * @param note The note that this bar will display on screen.
      */
-    public NoteBar(Note note) {
+    public NoteBar(Note note, Composition composition) {
         this.note = note;
+        this.composition = composition;
 
         this.init();
         
     }
     
-    public void init(){
+    public void init() {
         getStyleClass().add("note");
         setHeight(Constants.LINE_SPACING - Constants.LINE_THICKNESS);
         update();
@@ -41,7 +43,7 @@ public class NoteBar extends TuneRectangle {
         setOnMouseDragged((MouseEvent me) -> { onMouseDragged(me); });
         setOnMouseReleased((MouseEvent me) -> { onMouseReleased(me); });
 
-        TuneComposer.composition.add(this);
+        composition.add(this);
         ALLNOTEBARS.add(this);
         addToSelection();
     }
@@ -55,7 +57,7 @@ public class NoteBar extends TuneRectangle {
     public void delete(Pane compositionpane) {
         note.delete();
         ALLNOTEBARS.remove(this);
-        TuneComposer.composition.remove(this); //TODO probably should handle this elsewhere
+        composition.remove(this); //TODO probably should handle this elsewhere
     }
 
     /**
@@ -86,7 +88,7 @@ public class NoteBar extends TuneRectangle {
      */
     private boolean isSelected() {
         TuneRectangle root = getHighestParent();
-        return TuneComposer.composition.isSelectedTop(root);
+        return composition.isSelectedTop(root);
     }
 
     /**
@@ -97,15 +99,15 @@ public class NoteBar extends TuneRectangle {
         if (me.isStillSincePress()) {
             if (me.isControlDown()) {
                 if (isSelected()) {
-                    TuneComposer.composition.removeFromSelection(getHighestParent());
+                    composition.removeFromSelection(getHighestParent());
                 } else {
                     getHighestParent().addToSelection();
                 }
             } else {
-                TuneComposer.composition.clearSelection();
+                composition.clearSelection();
                 getHighestParent().addToSelection();
             }
-            TuneComposer.history.addNewCommand(new SelectionCommand());
+            TuneComposer.history.addNewCommand(new SelectionCommand(composition));
             TuneComposer.menuBar.update();
             me.consume();
         }
@@ -119,7 +121,7 @@ public class NoteBar extends TuneRectangle {
         dragWidth = (me.getX() >= rightEdge - 5);
         dragStartX = me.getX();
         dragStartY = me.getY();
-        TuneComposer.composition.setSelectionStart();
+        composition.setSelectionStart();
 
         // Maybe this NoteBar isn't selected yet
         if(getHighestParent() instanceof Gesture) {((Gesture) getHighestParent()).setStart();}
@@ -135,19 +137,19 @@ public class NoteBar extends TuneRectangle {
     private void onMouseDragged(MouseEvent me) {
         // If this notebar is not already selected, make it the only selection
         if (!isSelected()) {
-            TuneComposer.composition.clearSelection();
+            composition.clearSelection();
             getHighestParent().addToSelection();
         }
 
         if (dragWidth) {
             if(parentGesture == null) {
                 double dragDeltaWidth = me.getX() - dragStartX;
-                TuneComposer.composition.resizeSelected(dragDeltaWidth);
+                composition.resizeSelected(dragDeltaWidth);
             }
         } else {
             double dragDeltaX = me.getX() - dragStartX;
             double dragDeltaY = me.getY() - dragStartY;
-            TuneComposer.composition.moveSelected(dragDeltaX, dragDeltaY);
+            composition.moveSelected(dragDeltaX, dragDeltaY);
         }
         me.consume();
     }
@@ -158,14 +160,14 @@ public class NoteBar extends TuneRectangle {
      */
     private void onMouseReleased(MouseEvent me) {
         if (dragWidth) {
-            TuneComposer.composition.updateResized();
-            TuneComposer.composition.resetSelectionRight();
-            TuneComposer.history.addNewCommand(new ResizeCommand(TuneComposer.composition.getSelectedRoots() , me.getX()-dragStartX));
+            composition.updateResized();
+            composition.resetSelectionRight();
+            TuneComposer.history.addNewCommand(new ResizeCommand(composition, me.getX()-dragStartX));
         } else {
-            TuneComposer.composition.updateMoved();
-            TuneComposer.composition.snapSelectionY();
-            TuneComposer.composition.resetSelectionBounds();
-            TuneComposer.history.addNewCommand(new MoveCommand(TuneComposer.composition.getSelectedRoots(), me.getX()-dragStartX, me.getY()-dragStartY));
+            composition.updateMoved();
+            composition.snapSelectionY();
+            composition.resetSelectionBounds();
+            TuneComposer.history.addNewCommand(new MoveCommand(composition, me.getX()-dragStartX, me.getY()-dragStartY));
         }
         TuneComposer.menuBar.update();
         me.consume();
@@ -175,7 +177,7 @@ public class NoteBar extends TuneRectangle {
      */
     public void addToSelection() {
         if (parentGesture == null) {
-            TuneComposer.composition.addToSelection(this);
+            composition.addToSelection(this);
         }
         if(!getStyleClass().contains("selected")) { //this works, change it if we have time
             getStyleClass().add("selected");

@@ -40,16 +40,16 @@ public class Gesture extends TuneRectangle {
         init();
     }
     
-    public void init(){
-        for(TuneRectangle child : children){
+    public void init() {
+        for(TuneRectangle child : children) {
             child.init();
         }
         System.out.println("Gesture.init");
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
-        
+
         getStyleClass().add("gesture");
-        
+
         addToSelection();
         setBounds();
     }
@@ -57,6 +57,7 @@ public class Gesture extends TuneRectangle {
 
     /**
      * Selects this gesture and everything contained by it.
+     * TODO Extract an `applySelectStyle` method and deprecate this.
      */
     @Override
     public void addToSelection() {

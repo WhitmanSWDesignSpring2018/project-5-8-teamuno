@@ -283,7 +283,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
-        history.addNewCommand(new SelectionCommand());
+        history.addNewCommand(new SelectionCommand(composition));
         menuBar.update();
     }
 
@@ -294,7 +294,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
-        history.addNewCommand(new SelectionCommand());
+        history.addNewCommand(new SelectionCommand(composition));
         menuBar.update();
     }
 
@@ -483,7 +483,7 @@ public class TuneComposer extends Application {
         NoteBar.selectArea(selectionRect);
         selectionRect.setVisible(false);
         if (!event.isStillSincePress()) {
-            history.addNewCommand(new SelectionCommand());
+            history.addNewCommand(new SelectionCommand(composition));
         }
         menuBar.update();
     }
@@ -504,8 +504,8 @@ public class TuneComposer extends Application {
             if (!event.isControlDown()) {
                 composition.clearSelection();
             }
-            NoteBar forCommand = new NoteBar(note);
-            history.addNewCommand(new CreationCommand(forCommand));
+            NoteBar forCommand = new NoteBar(note, composition);
+            history.addNewCommand(new CreationCommand(composition, forCommand));
         }
         menuBar.update();
         event.consume();
@@ -543,7 +543,6 @@ public class TuneComposer extends Application {
         setupComposition();
         setupCommandHistory();
         setupMenuBar();
-        
     }
 
     /**
