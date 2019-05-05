@@ -30,6 +30,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -42,6 +43,7 @@ import javafx.util.Duration;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 
 /**
@@ -218,9 +220,9 @@ public class TuneComposer extends Application {
     protected void handleNewAction(ActionEvent event) {
         if(!history.isSaved()){
             Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation Dialog with Custom Actions");
-            alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
-            alert.setContentText("Choose your option.");
+            alert.setTitle("Unsaved Progress");
+            alert.setHeaderText("You have not saved your progress.");
+            alert.setContentText("Would you like to save before continuing?");
 
             ButtonType buttonTypeOne = new ButtonType("Yes");
             ButtonType buttonTypeTwo = new ButtonType("No");
@@ -245,8 +247,23 @@ public class TuneComposer extends Application {
         
     }
     
+    /**
+     * consulted:
+     * https://stackoverflow.com/questions/28937392/javafx-alerts-and-their-size
+     * @param event 
+     */
     @FXML
     protected void handleAboutAction(ActionEvent event) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("About Dialog");
+        alert.setHeaderText(null);
+        alert.setContentText("This program was created by Ian, Taka, Ben and Spencer. "
+                + "Its purpose is to be able to compose music. \n"
+                + "We tried to make it as intuitive as possible, so click around, drag notes"
+                + ", try the menu items, and above all have fun! \n"
+                + "See you later Beethoven! ");
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        alert.showAndWait();
     }
     
     
@@ -294,7 +311,7 @@ public class TuneComposer extends Application {
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes); 
             ObjectInput in = new ObjectInputStream(bis);
             Set loadedRects = (HashSet<TuneRectangle>) in.readObject();
-            
+            composition.clearSelection();
             composition.loadRoots(loadedRects);
             history.addNewCommand(new PasteCommand(loadedRects));
         }
@@ -303,6 +320,9 @@ public class TuneComposer extends Application {
         }
         catch(ClassNotFoundException e){
             e.printStackTrace();
+        }
+        catch(IllegalArgumentException e){
+        //this is in case the user tries to copy a non-set<TuneRectangle>, nothing should happen
         }
     }
     
