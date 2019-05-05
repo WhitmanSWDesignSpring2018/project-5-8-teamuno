@@ -5,6 +5,7 @@
  */
 package tunecomposer;
 
+import tunecomposer.command.*;
 import java.util.Stack;
 
 /**

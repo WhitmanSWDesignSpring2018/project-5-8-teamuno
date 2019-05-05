@@ -3,7 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tunecomposer;
+package tunecomposer.command;
+
+import tunecomposer.Composition;
+import tunecomposer.NoteBar;
+import tunecomposer.command.SelectionCommand;
 
 /**
  *
