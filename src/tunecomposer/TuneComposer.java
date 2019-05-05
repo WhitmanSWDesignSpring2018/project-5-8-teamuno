@@ -4,6 +4,7 @@
  */ 
 package tunecomposer;
 
+import tunecomposer.command.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

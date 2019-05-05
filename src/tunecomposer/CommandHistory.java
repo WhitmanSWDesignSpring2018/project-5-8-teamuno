@@ -6,6 +6,8 @@
 package tunecomposer;
 
 import java.util.Stack;
+import tunecomposer.command.*;
+import tunecomposer.Composition;
 
 /**
  * Keeps track of commands as well as undoing and redoing them
