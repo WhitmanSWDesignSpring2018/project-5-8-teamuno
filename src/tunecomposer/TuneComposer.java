@@ -213,6 +213,7 @@ public class TuneComposer extends Application {
     }
     
     /**
+     * Clears the pane and history.
      * https://code.makery.ch/blog/javafx-dialogs-official/
      * @param event 
      */
@@ -248,6 +249,7 @@ public class TuneComposer extends Application {
     }
     
     /**
+     * displays a window with information about the program.
      * consulted:
      * https://stackoverflow.com/questions/28937392/javafx-alerts-and-their-size
      * @param event 
@@ -267,13 +269,18 @@ public class TuneComposer extends Application {
     }
     
     
+    /**
+     * deletes selected notes and adds them to the clipboard
+     * @param event 
+     */
     @FXML
     protected void handleCutAction(ActionEvent event) {
         handleCopyAction(event);
         handleDeleteAction(event);
     }
     
-    /**
+    /** 
+     * adds selected notes to the clipboard.
      * consulted: 
      * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
      * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
@@ -298,7 +305,8 @@ public class TuneComposer extends Application {
         }
     }
     
-    /**
+    /** 
+     * Puts notes from clipboard onto the selected pane, leaves them the only selected notes.
      * consulted: 
      * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
      * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
@@ -431,6 +439,10 @@ public class TuneComposer extends Application {
         System.exit(0);
     }
     
+    /**
+     * Tests whether there is a current file, and saves or saves as appropriately
+     * @param event 
+     */
     @FXML
     protected void handleSaveAction(ActionEvent event) {
         if(currentFile == null){
@@ -441,6 +453,10 @@ public class TuneComposer extends Application {
         }
     }
     
+    /**
+     * Prompts the user for a file and saves to it.
+     * @param event 
+     */
     @FXML
     protected void handleSaveAsAction(ActionEvent event) {
         currentFile = fileChooser.showSaveDialog(primaryStage);
@@ -450,6 +466,10 @@ public class TuneComposer extends Application {
         save(currentFile);
     }
 
+    /**
+     * Serializes all notes and writes them to a file
+     * @param file, the file to write to
+     */
     private void save(File file) {
         try {
             FileOutputStream fileOut = new FileOutputStream(file);
@@ -464,6 +484,11 @@ public class TuneComposer extends Application {
         }
     }
     
+    /**
+     * Prompts the user for a file and Deserializes the notes from it, clearing the pane except for the new notes
+     * @param event
+     * @throws ClassNotFoundException 
+     */
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
         currentFile = fileChooser.showOpenDialog(primaryStage);
@@ -473,6 +498,11 @@ public class TuneComposer extends Application {
         load(currentFile);
     }
     
+    /**
+     * Deserializes notes from a given file, also clears history
+     * @param file, the file to read from
+     * @throws ClassNotFoundException 
+     */
     private void load(File file) throws ClassNotFoundException {
         try {
             FileInputStream fileIn = new FileInputStream(file);
