@@ -87,7 +87,6 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
-        history = new CommandHistory();
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Compositions", "*.ser")
@@ -181,7 +180,16 @@ public class TuneComposer extends Application {
      * prepares the composition and the menubar
      */
     private void setupComposition() {
+        composition = new Composition(compositionpane);
+    }
+
+    private void setupCommandHistory() {
+        history = new CommandHistory(composition);
+    }
+
+    private void setupMenuBar() {
         menuBar = new TuneMenuBar(
+                composition,
                 stopButton,
                 playButton,
                 selectNoneButton,
@@ -191,8 +199,6 @@ public class TuneComposer extends Application {
                 ungroupButton,
                 undoButton,
                 redoButton);
-
-        composition = new Composition(compositionpane);
     }
 
     /**
@@ -321,7 +327,7 @@ public class TuneComposer extends Application {
             Set loadedRects = (HashSet<TuneRectangle>) in.readObject();
             composition.clearSelection();
             composition.loadRoots(loadedRects);
-            history.addNewCommand(new PasteCommand(loadedRects));
+            history.addNewCommand(new PasteCommand(composition, loadedRects));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -342,7 +348,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectAllAction(ActionEvent event) {
         composition.selectAll();
-        history.addNewCommand(new SelectionCommand());
+        history.addNewCommand(new SelectionCommand(composition));
         menuBar.update();
     }
 
@@ -353,7 +359,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleSelectNoneAction(ActionEvent event) {
         composition.clearSelection();
-        history.addNewCommand(new SelectionCommand());
+        history.addNewCommand(new SelectionCommand(composition));
         menuBar.update();
     }
 
@@ -479,7 +485,7 @@ public class TuneComposer extends Application {
             out.close();
             fileOut.close();
             history.recordSave();
-        }catch(IOException e){
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
@@ -564,7 +570,7 @@ public class TuneComposer extends Application {
         NoteBar.selectArea(selectionRect);
         selectionRect.setVisible(false);
         if (!event.isStillSincePress()) {
-            history.addNewCommand(new SelectionCommand());
+            history.addNewCommand(new SelectionCommand(composition));
         }
         menuBar.update();
     }
@@ -585,8 +591,8 @@ public class TuneComposer extends Application {
             if (!event.isControlDown()) {
                 composition.clearSelection();
             }
-            NoteBar forCommand = new NoteBar(note);
-            history.addNewCommand(new CreationCommand(forCommand));
+            NoteBar forCommand = new NoteBar(note, composition);
+            history.addNewCommand(new CreationCommand(composition, forCommand));
         }
         menuBar.update();
         event.consume();
@@ -622,7 +628,8 @@ public class TuneComposer extends Application {
         setupSelectionRect();
         setupInstruments();
         setupComposition();
-        
+        setupCommandHistory();
+        setupMenuBar();
     }
 
     /**

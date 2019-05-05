@@ -79,7 +79,7 @@ public class Composition {
      */
     public void deleteSelection() {
         HashSet<TuneRectangle> forCommand = new HashSet<>(selectedRoots);
-        TuneComposer.history.addNewCommand(new DeletionCommand(forCommand));
+        TuneComposer.history.addNewCommand(new DeletionCommand(this, forCommand));
         for(TuneRectangle rect : selectedRoots) {
             remove(rect);
             rect.delete(pane);
@@ -95,10 +95,10 @@ public class Composition {
 
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectedRoots);
-        Gesture newGesture = new Gesture(group);
+        Gesture newGesture = new Gesture(this, group);
         HashSet<Gesture> forCommand = new HashSet<>();
         forCommand.add(newGesture);
-        TuneComposer.history.addNewCommand(new GroupCommand(forCommand, true));
+        TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, true));
         
     }
 
@@ -120,12 +120,13 @@ public class Composition {
                 forCommand.add(children);
             }
         }
-        TuneComposer.history.addNewCommand(new GroupCommand(forCommand, false));
+        TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, false));
     }
     
     /**
-     * Creates a group with the given tunerectangles as children
-     * @param toGroup, the tunerectangles to be children
+     * Creates a group with the given tunerectangles as children.
+     * TODO Refactor GroupCommand and deprecate this
+     * @param toGroup the tunerectangles to be children
      * @return the new gesture
      */
     public Gesture groupTuneRectangles(HashSet<TuneRectangle> toGroup) {
@@ -133,16 +134,19 @@ public class Composition {
 
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(toGroup);
-        return new Gesture(group);
+        return new Gesture(this, group);
     }
 
     /**
-     * Ungroups a given gestures
-     * @param Ungroup, the gesture to ungroup
+     * Ungroups the given gesture.
+     * TODO Refactor GroupCommand and deprecate this
+     * @param Ungroup the gesture to ungroup
      * @return the old children of the given gesture
      */
     public HashSet<TuneRectangle> ungroupGesture(Gesture Ungroup) {
-        if(selectedRoots.contains(Ungroup)){selectedRoots.remove(Ungroup);}
+        if(selectedRoots.contains(Ungroup)) {
+            selectedRoots.remove(Ungroup);
+        }
         Ungroup.freeChildren();
         pane.getChildren().remove(Ungroup);
         HashSet<TuneRectangle> children = Ungroup.getChildren();
@@ -153,18 +157,14 @@ public class Composition {
     }
 
     /**
-     * Adds a tunerectangle to the composition
-     * @param rect , the tunerectangle to add
+     * Adds a tunerectangle to the composition.
+     * @param rect the tunerectangle to add
      */
     public void add(TuneRectangle rect) {
-        if(pane.getChildren().contains(rect)){
-            return;
-        }
-        else if(rect instanceof NoteBar){
-            add((NoteBar) rect);
-        }
-        else{
-            add((Gesture) rect);
+        allRoots.add(rect);
+
+        if (!pane.getChildren().contains(rect)) {
+            pane.getChildren().add(rect);
         }
     }
     /**
@@ -208,7 +208,8 @@ public class Composition {
     }
     
     /**
-     * notifies the tracker that this tunerectangle has changed selection state
+     * Notifies the tracker that this tunerectangle has changed selection
+     * state.
      * @param rect, the tunerectangle that changed
      */
     public void trackRectSelect(TuneRectangle rect){
@@ -246,7 +247,7 @@ public class Composition {
      * Expands the bounds of selection to include a new tunerectangle
      * @param root, the new tunerectangle
      */
-    private void updateBoundsNewRect(TuneRectangle root){
+    private void updateBoundsNewRect(TuneRectangle root) {
         if(selectionLeft == null || root.getX() < selectionLeft){selectionLeft = root.getX();}
         if(selectionTop == null || root.getY() < selectionTop){selectionTop = root.getY();}
         if(selectionRight == null || root.getX()+root.getWidth() > selectionRight){selectionRight = root.getX()+root.getWidth();}
@@ -277,18 +278,6 @@ public class Composition {
         }
     }
     
-    /**
-     * updates selection bounds after a move
-     * @param deltaX, the change in x
-     * @param deltaY, the change in y 
-     */
-    public void updateSelectionBounds(double deltaX, double deltaY){
-        selectionLeft += deltaX;
-        selectionRight += deltaX;
-        selectionTop += deltaY;
-        selectionBottom += deltaY;
-    }
-
     /**
      * Tells whether the given TuneRectangle is selected.
      * @param root the TuneRectangle in question
@@ -416,8 +405,8 @@ public class Composition {
     public void loadRoots(Set<TuneRectangle> loadSet) {
         
         allRoots.addAll(loadSet);     
-        for(TuneRectangle rect : loadSet){
-            rect.init();
+        for(TuneRectangle rect : loadSet) {
+            rect.init(this);
         }
     }
     

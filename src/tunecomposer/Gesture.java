@@ -30,19 +30,21 @@ public class Gesture extends TuneRectangle {
      * Creates a gesture.
      * @param children, the TuneRectangles that will be inside the gesture
      */
-    public Gesture(HashSet<TuneRectangle> children) {
+    public Gesture(Composition composition, HashSet<TuneRectangle> children) {
         this.children = children;
+        this.composition = composition;
         for(TuneRectangle child : children) {
             child.setParent(this);
             TuneComposer.composition.removeFromSelection(child);
             TuneComposer.composition.remove(child);
         }
-        init();
+        init(composition);
     }
     
-    public void init(){
-        for(TuneRectangle child : children){
-            child.init();
+    public void init(Composition composition) {
+        this.composition = composition;
+        for(TuneRectangle child : children) {
+            child.init(composition);
         }
         System.out.println("Gesture.init");
         TuneComposer.composition.add(this);
@@ -57,6 +59,7 @@ public class Gesture extends TuneRectangle {
 
     /**
      * Selects this gesture and everything contained by it.
+     * TODO Extract an `applySelectStyle` method and deprecate this.
      */
     @Override
     public void addToSelection() {

@@ -15,8 +15,10 @@ public class CommandHistory {
     private final Stack<Command> undoableCommands;
     private final Stack<Command> undoneCommands;
     private boolean isSaved;
-    
-    public CommandHistory(){
+    private final Composition composition;
+
+    public CommandHistory(Composition composition) {
+        this.composition = composition;
         undoableCommands = new Stack<>();
         undoneCommands = new Stack<>();
     }
@@ -38,7 +40,7 @@ public class CommandHistory {
         Command undoing = undoableCommands.pop();
         undoing.unexecute();
         undoneCommands.push(undoing);
-        TuneComposer.composition.clearSelectionTracker();
+        composition.clearSelectionTracker();
         isSaved = false;
     }
     
@@ -50,7 +52,7 @@ public class CommandHistory {
         Command redoing = undoneCommands.pop();
         redoing.execute();
         undoableCommands.push(redoing);
-        TuneComposer.composition.clearSelectionTracker();
+        composition.clearSelectionTracker();
         isSaved = false;
     }
     

@@ -9,10 +9,11 @@ import javafx.scene.control.MenuItem;
 
 /**
  * handles the graying out of menu items
- * @author Ben, Ian, spencer
+ * @author Ben, Ian, Spencer
  */
 public class TuneMenuBar {
     
+    private Composition composition;
     private MenuItem stopButton;
     private MenuItem playButton;
     private MenuItem selectNoneButton;
@@ -24,6 +25,7 @@ public class TuneMenuBar {
     private MenuItem redoButton;
     
     public TuneMenuBar(
+            Composition composition,
             MenuItem stopButton,
             MenuItem playButton, 
             MenuItem selectNoneButton,
@@ -34,6 +36,7 @@ public class TuneMenuBar {
             MenuItem undoButton,
             MenuItem redoButton) {
 
+        this.composition        = composition;
         this.stopButton         = stopButton;
         this.playButton         = playButton;
         this.selectNoneButton   = selectNoneButton;
@@ -65,7 +68,7 @@ public class TuneMenuBar {
     /**
      * Checks all non stop button buttons and updates their disability.
      */
-    public void update(){
+    public void update() {
         updatePlay();
         updateSelect();
         updateDelete();
@@ -77,30 +80,30 @@ public class TuneMenuBar {
      * Updates the play button, for a change in number of notes.
      */
     private void updatePlay() {
-        playButton.setDisable(0 == TuneComposer.composition.size());
+        playButton.setDisable(0 == composition.size());
     }
     
     /**
      * Updates the selectall and selectnone buttons.
      */
     private void updateSelect(){
-        selectAllButton.setDisable(TuneComposer.composition.size() <= TuneComposer.composition.getSelectionSize());
-        selectNoneButton.setDisable(0 == TuneComposer.composition.getSelectionSize());
+        selectAllButton.setDisable(composition.size() <= composition.getSelectionSize());
+        selectNoneButton.setDisable(0 == composition.getSelectionSize());
     }
     
     /**
      * Updates the delete button.
      */
     private void updateDelete(){
-        deleteButton.setDisable(TuneComposer.composition.getSelectionSize() == 0);
+        deleteButton.setDisable(composition.getSelectionSize() == 0);
     }
     
     /**
      * Update group and ungroup buttons.
      */
     private void updateGroupUngroup(){
-        groupButton.setDisable(TuneComposer.composition.getSelectionSize() <= 1);
-        ungroupButton.setDisable(!TuneComposer.composition.isGestureSelected());
+        groupButton.setDisable(composition.getSelectionSize() <= 1);
+        ungroupButton.setDisable(!composition.isGestureSelected());
     }
     
     /**
@@ -130,5 +133,4 @@ public class TuneMenuBar {
     private void disable(MenuItem button) {
         button.setDisable(true);
     }
-}   
-   
+}
