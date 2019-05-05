@@ -52,6 +52,7 @@ public class Gesture extends TuneRectangle {
         
         addToSelection();
         setBounds();
+        TuneComposer.composition.resetSelectionBounds();
     }
 
 
