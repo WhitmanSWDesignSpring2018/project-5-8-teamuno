@@ -4,6 +4,8 @@
  */
 package tunecomposer;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashSet;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -12,7 +14,8 @@ import javafx.scene.shape.Rectangle;
  * Class abstracted from NoteBar and Gesture.
  * @author ben, taka, spencer, ian
  */
-public abstract class TuneRectangle extends Rectangle {
+public abstract class TuneRectangle extends Rectangle implements Serializable {
+    protected transient Composition composition;
     protected Gesture parentGesture;
 
     /**
@@ -27,6 +30,8 @@ public abstract class TuneRectangle extends Rectangle {
      * TODO Change name to `select`
      */
     abstract public void addToSelection();
+    
+    abstract public void init(Composition composition);
 
     /**
      * Makes this no longer appear selected.
@@ -80,7 +85,7 @@ public abstract class TuneRectangle extends Rectangle {
             return parentGesture.getHighestParent();
         }
     }
-
+    
     /**
      * Hides this rectangle from the composition pane.
      * @param compositionpane the pane from which this should be deleted

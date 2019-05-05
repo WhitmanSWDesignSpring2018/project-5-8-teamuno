@@ -19,7 +19,6 @@ public class NoteBar extends TuneRectangle {
     static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     public final Note note;
     private static boolean dragWidth;
-    private final Composition composition;
 
     /**
      * Create a new note bar.
@@ -29,6 +28,11 @@ public class NoteBar extends TuneRectangle {
         this.note = note;
         this.composition = composition;
 
+        this.init(composition);
+    }
+
+    public void init(Composition composition) {
+        this.composition = composition;
         getStyleClass().add("note");
         setHeight(Constants.LINE_SPACING - Constants.LINE_THICKNESS);
         update();
@@ -42,6 +46,7 @@ public class NoteBar extends TuneRectangle {
         ALLNOTEBARS.add(this);
         addToSelection();
     }
+    
     /**
      * Hides this NoteBar from the composition pane.
      * If this isn't in the composition pane, nothing happens.

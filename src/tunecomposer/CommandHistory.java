@@ -14,8 +14,9 @@ import java.util.Stack;
 public class CommandHistory {
     private final Stack<Command> undoableCommands;
     private final Stack<Command> undoneCommands;
+    private boolean isSaved = true;
     private final Composition composition;
-    
+
     public CommandHistory(Composition composition) {
         this.composition = composition;
         undoableCommands = new Stack<>();
@@ -29,6 +30,7 @@ public class CommandHistory {
     public void addNewCommand(Command toAdd){
         undoableCommands.push(toAdd);
         undoneCommands.clear();
+        isSaved = false;
     }
     
     /**
@@ -39,21 +41,23 @@ public class CommandHistory {
         undoing.unexecute();
         undoneCommands.push(undoing);
         composition.clearSelectionTracker();
+        isSaved = false;
     }
     
     /**
-     * Redoes the top command and makes it available for undo
+     * Redoes the top command and makes it available for undo.
      */
-    public void redo(){
+    public void redo() {
         if(undoneCommands.isEmpty()){return;}
         Command redoing = undoneCommands.pop();
         redoing.execute();
         undoableCommands.push(redoing);
         composition.clearSelectionTracker();
+        isSaved = false;
     }
     
     /**
-     * checks if it is possible to undo
+     * Checks if it is possible to undo.
      * @return boolean
      */
     public boolean canUndo(){
@@ -61,10 +65,23 @@ public class CommandHistory {
     }
     
     /**
-     * checks if it is possible to redo
+     * Checks if it is possible to redo.
      * @return boolean
      */
-    public boolean canRedo(){
+    public boolean canRedo() {
         return !undoneCommands.isEmpty();
+    }
+    
+    public void recordSave(){
+        isSaved = true;
+    }
+    
+    public boolean isSaved(){
+        return isSaved;
+    }
+    
+    public void clear(){
+        undoableCommands.clear();
+        undoneCommands.clear();
     }
 }

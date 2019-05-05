@@ -21,7 +21,7 @@ public class ResizeCommand implements Command {
 
     public ResizeCommand(Composition composition, double dragLength) {
         this.composition = composition;
-        editedRects = composition.getSelectionTop();
+        editedRects = composition.getSelectedRoots();
         lengthChange = dragLength;
         selection = new SelectionCommand(composition);
     }

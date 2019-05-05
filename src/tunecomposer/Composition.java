@@ -1,6 +1,7 @@
 
 package tunecomposer;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.layout.Pane;
@@ -40,8 +41,12 @@ public class Composition {
     /**
      * gets a copy of the selectionRoots
      */
-    public Set<TuneRectangle> getSelectionTop() {
+    public Set<TuneRectangle> getSelectedRoots() {
         return new HashSet<>(selectedRoots);
+    }
+    
+    public Set<TuneRectangle> getRoots() {
+        return new HashSet<>(allRoots);
     }
     
     /**
@@ -90,7 +95,7 @@ public class Composition {
 
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectedRoots);
-        Gesture newGesture = new Gesture(group);
+        Gesture newGesture = new Gesture(this, group);
         HashSet<Gesture> forCommand = new HashSet<>();
         forCommand.add(newGesture);
         TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, true));
@@ -129,7 +134,7 @@ public class Composition {
 
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(toGroup);
-        return new Gesture(group);
+        return new Gesture(this, group);
     }
 
     /**
@@ -139,7 +144,9 @@ public class Composition {
      * @return the old children of the given gesture
      */
     public HashSet<TuneRectangle> ungroupGesture(Gesture Ungroup) {
-        if(selectedRoots.contains(Ungroup)){selectedRoots.remove(Ungroup);}
+        if(selectedRoots.contains(Ungroup)) {
+            selectedRoots.remove(Ungroup);
+        }
         Ungroup.freeChildren();
         pane.getChildren().remove(Ungroup);
         HashSet<TuneRectangle> children = Ungroup.getChildren();
@@ -162,11 +169,37 @@ public class Composition {
     }
 
     /**
+     * Adds a notebar to the composition.
+     * Should be called on a newly created or un-deleted note.
+     * @param rect the notebar to be added
+     */
+    public void add(NoteBar rect) {
+        pane.getChildren().add(rect);
+        rect.note.addToAllNotes();
+        if(rect.getParentGesture() == null) allRoots.add(rect);
+    }
+    
+    /**
+     * Adds a gesture to the composition.
+     * Should be called on a newly created or un-deleted note.
+     * @param rect the gesture to be added
+     */
+    public void add(Gesture rect) {
+        pane.getChildren().add(rect);
+        rect.addChildrenToComposition();
+        if(rect.getParentGesture() == null) allRoots.add(rect);
+    }
+    
+    public void addWithoutChildren(Gesture rect) {
+        pane.getChildren().add(rect);
+        if(rect.getParentGesture() == null) allRoots.add(rect);
+    }
+
+    /**
      * Remove something from the composition.
      * @param rect the TuneRectangle to be removed
      */
     public void remove(TuneRectangle rect) {
-        // TODO Remove redundant compositionpane removals elsewhere
         pane.getChildren().remove(rect);
         for(NoteBar child : rect.getChildLeaves()){
             child.note.removeFromAllNotes();
@@ -368,4 +401,22 @@ public class Composition {
 
         return false;
     }
+
+    public void loadRoots(Set<TuneRectangle> loadSet) {
+        
+        allRoots.addAll(loadSet);     
+        for(TuneRectangle rect : loadSet) {
+            rect.init(this);
+        }
+    }
+    
+    public void clearAll(){
+        for(TuneRectangle rect : new HashSet<TuneRectangle>(allRoots)){
+            remove(rect);
+        }
+        selectedRoots.clear();
+    }
+    
+    
+    
 }

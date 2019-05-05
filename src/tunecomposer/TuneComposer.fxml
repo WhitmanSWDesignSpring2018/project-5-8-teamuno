@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -16,6 +17,31 @@
         <menus>
           <Menu text="File" fx:id="File">
             <items>
+              <MenuItem fx:id="aboutButton"
+                        onAction="#handleAboutAction" 
+                        text="About" />
+
+              <MenuItem fx:id="newButton"
+                        accelerator="Shortcut+N" 
+                        onAction="#handleNewAction" 
+                        text="New" />
+
+              <MenuItem fx:id="saveButton"
+                        accelerator="Shortcut+S" 
+                        onAction="#handleSaveAction" 
+                        text="Save" />
+
+              <MenuItem fx:id="saveAsButton"
+                        onAction="#handleSaveAsAction" 
+                        text="Save As" />
+
+              <MenuItem fx:id="openButton"
+                        accelerator="Shortcut+O" 
+                        onAction="#handleOpenAction" 
+                        text="Open" />
+
+              <SeparatorMenuItem mnemonicParsing="false" />
+
               <MenuItem accelerator="Shortcut+Q" 
                         onAction="#handleExitAction" 
                         text="Exit" />
@@ -23,6 +49,21 @@
           </Menu>
             <Menu text="Edit">
               <items>
+                <MenuItem fx:id="cutButton"
+                          accelerator="Shortcut+X" 
+                          onAction="#handleCutAction" 
+                          text="Cut" />
+
+                <MenuItem fx:id="copyButton"
+                          accelerator="Shortcut+C" 
+                          onAction="#handleCopyAction" 
+                          text="Copy" />
+
+                <MenuItem fx:id="pasteButton"
+                          accelerator="Shortcut+V" 
+                          onAction="#handlePasteAction" 
+                          text="Paste" />
+
                 <MenuItem fx:id="selectAllButton"
                           accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 
@@ -65,6 +106,7 @@
                         accelerator="Shortcut+P" 
                         onAction="#handlePlayAction" 
                         text="Play" />
+
               <MenuItem fx:id="stopButton"
                         accelerator="Shortcut+S" 
                         onAction="#handleStopAction" 

@@ -4,7 +4,19 @@
  */ 
 package tunecomposer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -13,6 +25,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -23,6 +41,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 
 /**
  * This JavaFX app lets the user compose music.
@@ -34,6 +56,8 @@ public class TuneComposer extends Application {
 
     public static Composition composition;
     public static TuneMenuBar menuBar;
+    private Stage primaryStage;
+    final Clipboard clipboard = Clipboard.getSystemClipboard();
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -48,11 +72,23 @@ public class TuneComposer extends Application {
     @FXML private MenuItem playButton;
     @FXML private MenuItem undoButton;
     @FXML private MenuItem redoButton;
-    // TODO Add more buttons here and in FXML
+    @FXML private MenuItem cutButton;
+    @FXML private MenuItem copyButton;
+    @FXML private MenuItem pasteButton;
+    @FXML private MenuItem aboutButton;
+    @FXML private MenuItem newButton;
+    @FXML private MenuItem saveButton;
+    @FXML private MenuItem saveAsButton;
+    @FXML private MenuItem openButton;
  
+    private File currentFile;
+    private FileChooser fileChooser;
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+    private static final int CONFIRMATIONYES = 1;
+    private static final int CONFIRMATIONNO = 2;
+    private static final int CONFIRMATIONCANCEL = 3;
     public static CommandHistory history;
 
     /**
@@ -61,6 +97,10 @@ public class TuneComposer extends Application {
     public TuneComposer() {
         player = new MidiPlayer(Constants.TICKS_PER_BEAT,
                                 Constants.BEATS_PER_MINUTE);
+        fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compositions", "*.tcom")
+        );
     }
 
     /**
@@ -168,7 +208,15 @@ public class TuneComposer extends Application {
                 groupButton,
                 ungroupButton,
                 undoButton,
-                redoButton);
+                redoButton,
+                cutButton,
+                copyButton,
+                pasteButton,
+                aboutButton,
+                newButton,
+                saveButton,
+                saveAsButton,
+                openButton);
     }
 
     /**
@@ -186,6 +234,142 @@ public class TuneComposer extends Application {
         selectionRect.setId("selectionarea");
         selectionRect.setVisible(false);
         compositionpane.getChildren().add(selectionRect);
+    }
+    
+    /**
+     * creates and displays a confirmation alert about saving before continuing
+     * 
+     * @return int, 1 for yes, 2 for no, 3 for cancel 
+     */
+    private int ConfirmationAlert(){
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Unsaved Progress");
+            alert.setHeaderText("You have not saved your progress.");
+            alert.setContentText("Would you like to save before continuing?");
+
+            ButtonType buttonTypeOne = new ButtonType("Yes");
+            ButtonType buttonTypeTwo = new ButtonType("No");
+            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeOne){
+                return CONFIRMATIONYES;
+            } else if (result.get() == buttonTypeTwo) {
+                return CONFIRMATIONNO;
+            }
+            else{
+                return CONFIRMATIONCANCEL;
+            }
+    }
+    
+    /**
+     * Clears the pane and history.
+     * https://code.makery.ch/blog/javafx-dialogs-official/
+     * @param event 
+     */
+    @FXML
+    protected void handleNewAction(ActionEvent event) {
+        if(!history.isSaved()){
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES){
+                handleSaveAction(event);
+                composition.clearAll();
+                history.clear();
+            } else if (choice == CONFIRMATIONNO) {
+                composition.clearAll();
+                history.clear();
+            }
+        }
+        else{
+            composition.clearAll();
+            history.clear();
+        }
+        
+    }
+    
+    /**
+     * displays a window with information about the program.
+     * consulted:
+     * https://stackoverflow.com/questions/28937392/javafx-alerts-and-their-size
+     * @param event 
+     */
+    @FXML
+    protected void handleAboutAction(ActionEvent event) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("About Dialog");
+        alert.setHeaderText(null);
+        alert.setContentText("This program was created by Ian, Taka, Ben and Spencer. "
+                + "Its purpose is to be able to compose music. \n"
+                + "We tried to make it as intuitive as possible, so click around, drag notes"
+                + ", try the menu items, and above all have fun! \n"
+                + "See you later Beethoven! ");
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        alert.showAndWait();
+    }
+    
+    
+    /**
+     * deletes selected notes and adds them to the clipboard
+     * @param event 
+     */
+    @FXML
+    protected void handleCutAction(ActionEvent event) {
+        handleCopyAction(event);
+        handleDeleteAction(event);
+    }
+    
+    /** 
+     * adds selected notes to the clipboard.
+     * consulted: 
+     * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
+     * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
+     * @param event 
+     */
+    @FXML
+    protected void handleCopyAction(ActionEvent event) {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream output = new ObjectOutputStream(bos);
+            output.writeObject(composition.getSelectedRoots());
+            final byte[] byteArray = bos.toByteArray();
+            String toPut = Base64.getEncoder().encodeToString(byteArray);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(toPut);
+            clipboard.setContent(content);
+            output.close();
+            
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /** 
+     * Puts notes from clipboard onto the selected pane, leaves them the only selected notes.
+     * consulted: 
+     * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
+     * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
+     * @param event 
+     */
+    @FXML
+    protected void handlePasteAction(ActionEvent event) {
+        try{
+            final byte[] bytes = Base64.getDecoder().decode(clipboard.getString().getBytes());
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes); 
+            ObjectInput in = new ObjectInputStream(bis);
+            Set loadedRects = (HashSet<TuneRectangle>) in.readObject();
+            composition.clearSelection();
+            composition.loadRoots(loadedRects);
+            history.addNewCommand(new PasteCommand(composition, loadedRects));
+        }
+        catch(IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch(IllegalArgumentException e){
+        //this is in case the user tries to copy a non-'set<TuneRectangle>', nothing should happen
+        }
     }
     
     
@@ -290,7 +474,114 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleExitAction(ActionEvent event) {
-        System.exit(0);
+        if(!history.isSaved()){
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES){
+                handleSaveAction(event);
+                System.exit(0);
+            } else if (choice == CONFIRMATIONNO) {
+                System.exit(0);
+            }
+        }
+        else{
+            System.exit(0);
+        }
+        
+    }
+    
+    /**
+     * Tests whether there is a current file, and saves or saves as appropriately
+     * @param event 
+     */
+    @FXML
+    protected void handleSaveAction(ActionEvent event) {
+        if(currentFile == null){
+            handleSaveAsAction(event);
+        }
+        else{
+            save(currentFile);
+        }
+    }
+    
+    /**
+     * Prompts the user for a file and saves to it.
+     * @param event 
+     */
+    @FXML
+    protected void handleSaveAsAction(ActionEvent event) {
+        currentFile = fileChooser.showSaveDialog(primaryStage);
+        if(currentFile == null){
+            return;
+        }
+        save(currentFile);
+    }
+
+    /**
+     * Serializes all notes and writes them to a file
+     * @param file, the file to write to
+     */
+    private void save(File file) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(composition.getRoots());
+            System.out.println(composition.getRoots());
+            out.close();
+            fileOut.close();
+            history.recordSave();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Prompts the user for a file and Deserializes the notes from it, clearing the pane except for the new notes
+     * @param event
+     * @throws ClassNotFoundException 
+     */
+    @FXML
+    protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
+        if(!history.isSaved()){
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES){
+                handleSaveAction(event);
+            } else if (choice == CONFIRMATIONNO) {
+                
+            } else {
+                return;
+            }
+        }
+        currentFile = fileChooser.showOpenDialog(primaryStage);
+        if(currentFile == null){
+            return;
+        }
+        load(currentFile);
+    }
+    
+    /**
+     * Deserializes notes from a given file, also clears history
+     * @param file, the file to read from
+     * @throws ClassNotFoundException 
+     */
+    private void load(File file) throws ClassNotFoundException {
+        try {
+            FileInputStream fileIn = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            Set<TuneRectangle> loadSet = (HashSet<TuneRectangle>) in.readObject();
+            in.close();
+            fileIn.close();
+            composition.clearAll();
+            composition.loadRoots(loadSet);
+            for(TuneRectangle rect : loadSet){
+                rect.removeSelectStyle();
+            }
+            composition.clearSelection();
+            history.clear();
+            
+        }catch(IOException e){
+            System.out.println(e.getStackTrace());
+        }
+        menuBar.update();
     }
 
     /**
@@ -370,7 +661,7 @@ public class TuneComposer extends Application {
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("TuneComposer.fxml"));
         Scene scene = new Scene(root);
-
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("Tune Composer");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((WindowEvent we) -> {
