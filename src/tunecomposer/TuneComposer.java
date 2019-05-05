@@ -4,12 +4,16 @@
  */ 
 package tunecomposer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -36,6 +40,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.stage.FileChooser;
 
 /**
@@ -49,6 +55,7 @@ public class TuneComposer extends Application {
     public static Composition composition;
     public static TuneMenuBar menuBar;
     private Stage primaryStage;
+    final Clipboard clipboard = Clipboard.getSystemClipboard();
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -245,16 +252,61 @@ public class TuneComposer extends Application {
     
     @FXML
     protected void handleCutAction(ActionEvent event) {
+        handleCopyAction(event);
+        handleDeleteAction(event);
     }
     
+    /**
+     * consulted: 
+     * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
+     * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
+     * @param event 
+     */
     @FXML
     protected void handleCopyAction(ActionEvent event) {
-        
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream output = new ObjectOutputStream(bos);
+            output.writeObject(composition.getSelectedRoots());
+            final byte[] byteArray = bos.toByteArray();
+            String toPut = Base64.getEncoder().encodeToString(byteArray);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(toPut);
+            clipboard.setContent(content);
+            output.close();
+            
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
     }
     
+    /**
+     * consulted: 
+     * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
+     * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
+     * @param event 
+     */
     @FXML
     protected void handlePasteAction(ActionEvent event) {
+        try{
+            final byte[] bytes = Base64.getDecoder().decode(clipboard.getString().getBytes());
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes); 
+            ObjectInput in = new ObjectInputStream(bis);
+            Set loadedRects = (HashSet<TuneRectangle>) in.readObject();
+            
+            composition.loadRoots(loadedRects);
+            history.addNewCommand(new PasteCommand(loadedRects));
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
+    
+    
     /**
      * Selects all top-level items drawn in the composition pane.
      * @param event the click on the menu item
