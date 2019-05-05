@@ -79,6 +79,9 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+    private static final int CONFIRMATIONYES = 1;
+    private static final int CONFIRMATIONNO = 2;
+    private static final int CONFIRMATIONCANCEL = 3;
     public static CommandHistory history;
 
     /**
@@ -90,7 +93,7 @@ public class TuneComposer extends Application {
         history = new CommandHistory();
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Compositions", "*.ser")
+                new FileChooser.ExtensionFilter("Compositions", "*.tcom")
         );
     }
 
@@ -213,13 +216,11 @@ public class TuneComposer extends Application {
     }
     
     /**
-     * Clears the pane and history.
-     * https://code.makery.ch/blog/javafx-dialogs-official/
-     * @param event 
+     * creates and displays a confirmation alert about saving before continuing
+     * 
+     * @return int, 1 for yes, 2 for no, 3 for cancel 
      */
-    @FXML
-    protected void handleNewAction(ActionEvent event) {
-        if(!history.isSaved()){
+    private int ConfirmationAlert(){
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Unsaved Progress");
             alert.setHeaderText("You have not saved your progress.");
@@ -233,10 +234,29 @@ public class TuneComposer extends Application {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == buttonTypeOne){
+                return CONFIRMATIONYES;
+            } else if (result.get() == buttonTypeTwo) {
+                return CONFIRMATIONNO;
+            }
+            else{
+                return CONFIRMATIONCANCEL;
+            }
+    }
+    
+    /**
+     * Clears the pane and history.
+     * https://code.makery.ch/blog/javafx-dialogs-official/
+     * @param event 
+     */
+    @FXML
+    protected void handleNewAction(ActionEvent event) {
+        if(!history.isSaved()){
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES){
                 handleSaveAction(event);
                 composition.clearAll();
                 history.clear();
-            } else if (result.get() == buttonTypeTwo) {
+            } else if (choice == CONFIRMATIONNO) {
                 composition.clearAll();
                 history.clear();
             }
@@ -323,14 +343,11 @@ public class TuneComposer extends Application {
             composition.loadRoots(loadedRects);
             history.addNewCommand(new PasteCommand(loadedRects));
         }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-        catch(ClassNotFoundException e){
+        catch(IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         catch(IllegalArgumentException e){
-        //this is in case the user tries to copy a non-set<TuneRectangle>, nothing should happen
+        //this is in case the user tries to copy a non-'set<TuneRectangle>', nothing should happen
         }
     }
     
@@ -436,7 +453,19 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleExitAction(ActionEvent event) {
-        System.exit(0);
+        if(!history.isSaved()){
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES){
+                handleSaveAction(event);
+                System.exit(0);
+            } else if (choice == CONFIRMATIONNO) {
+                System.exit(0);
+            }
+        }
+        else{
+            System.exit(0);
+        }
+        
     }
     
     /**
@@ -491,6 +520,16 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
+        if(!history.isSaved()){
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES){
+                handleSaveAction(event);
+            } else if (choice == CONFIRMATIONNO) {
+                
+            } else {
+                return;
+            }
+        }
         currentFile = fileChooser.showOpenDialog(primaryStage);
         if(currentFile == null){
             return;

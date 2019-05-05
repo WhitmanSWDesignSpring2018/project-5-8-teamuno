@@ -14,7 +14,7 @@ import java.util.Stack;
 public class CommandHistory {
     private final Stack<Command> undoableCommands;
     private final Stack<Command> undoneCommands;
-    private boolean isSaved;
+    private boolean isSaved = true;
     
     public CommandHistory(){
         undoableCommands = new Stack<>();
