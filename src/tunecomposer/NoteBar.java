@@ -3,6 +3,7 @@
  * DO NOT DISTRIBUTE.
  */
 package tunecomposer;
+import tunecomposer.command.*;
 import java.util.HashSet;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;

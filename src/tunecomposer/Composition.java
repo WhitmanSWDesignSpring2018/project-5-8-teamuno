@@ -1,7 +1,7 @@
 
 package tunecomposer;
 
-import java.io.Serializable;
+import tunecomposer.command.*;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.layout.Pane;
