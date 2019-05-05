@@ -167,6 +167,7 @@ public class Composition {
             pane.getChildren().add(rect);
         }
     }
+
     /**
      * Adds a notebar to the composition.
      * Should be called on a newly created or un-deleted note.
@@ -199,7 +200,6 @@ public class Composition {
      * @param rect the TuneRectangle to be removed
      */
     public void remove(TuneRectangle rect) {
-        // TODO Remove redundant compositionpane removals elsewhere
         pane.getChildren().remove(rect);
         for(NoteBar child : rect.getChildLeaves()){
             child.note.removeFromAllNotes();

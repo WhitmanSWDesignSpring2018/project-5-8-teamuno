@@ -8,7 +8,7 @@ import javafx.scene.control.MenuItem;
 
 
 /**
- * handles the graying out of menu items
+ * Handles the graying out of menu items.
  * @author Ben, Ian, Spencer
  */
 public class TuneMenuBar {
@@ -23,8 +23,14 @@ public class TuneMenuBar {
     private MenuItem ungroupButton;
     private MenuItem undoButton;
     private MenuItem redoButton;
+    private MenuItem cutButton;
+    private MenuItem copyButton;
+    private MenuItem pasteButton;
+    private MenuItem aboutButton;
+    private MenuItem newButton;
+    private MenuItem saveButton;
     
-    public TuneMenuBar(
+    public TuneMenuBar (
             Composition composition,
             MenuItem stopButton,
             MenuItem playButton, 
@@ -34,7 +40,15 @@ public class TuneMenuBar {
             MenuItem groupButton,
             MenuItem ungroupButton,
             MenuItem undoButton,
-            MenuItem redoButton) {
+            MenuItem redoButton,
+            MenuItem cutButton,
+            MenuItem copyButton,
+            MenuItem pasteButton,
+            MenuItem aboutButton,
+            MenuItem newButton,
+            MenuItem saveButton,
+            MenuItem saveAsButton,
+            MenuItem openButton) {
 
         this.composition        = composition;
         this.stopButton         = stopButton;
@@ -46,6 +60,12 @@ public class TuneMenuBar {
         this.ungroupButton      = ungroupButton;
         this.undoButton         = undoButton;
         this.redoButton         = redoButton;
+        this.cutButton          = cutButton;
+        this.copyButton         = copyButton;
+        this.pasteButton        = pasteButton;
+        this.aboutButton        = aboutButton;
+        this.newButton          = newButton;
+        this.saveButton         = saveButton;
 
         setup();
     }
@@ -63,6 +83,9 @@ public class TuneMenuBar {
         disable(groupButton);
         disable(undoButton);
         disable(redoButton);
+        disable(cutButton);
+        disable(copyButton);
+        disable(newButton);
     }
 
     /**
@@ -74,44 +97,66 @@ public class TuneMenuBar {
         updateDelete();
         updateGroupUngroup();
         updateRedoUndo();
+        updateCopyCut();
+        updateNew();
     }
     
     /**
-     * Updates the play button, for a change in number of notes.
+     * Updates the 'Play' button, for a change in number of notes.
      */
     private void updatePlay() {
         playButton.setDisable(0 == composition.size());
     }
     
     /**
-     * Updates the selectall and selectnone buttons.
+     * Updates the 'Selectall' and selectnone buttons.
      */
-    private void updateSelect(){
+    private void updateSelect() {
         selectAllButton.setDisable(composition.size() <= composition.getSelectionSize());
         selectNoneButton.setDisable(0 == composition.getSelectionSize());
     }
     
     /**
-     * Updates the delete button.
+     * Updates the 'Delete' button.
      */
-    private void updateDelete(){
+    private void updateDelete() {
         deleteButton.setDisable(composition.getSelectionSize() == 0);
     }
     
     /**
-     * Update group and ungroup buttons.
+     * Update 'Group' and 'Ungroup' buttons.
      */
-    private void updateGroupUngroup(){
+    private void updateGroupUngroup() {
         groupButton.setDisable(composition.getSelectionSize() <= 1);
         ungroupButton.setDisable(!composition.isGestureSelected());
     }
     
     /**
-     * Updates the redo and undo buttons.
+     * Updates the 'Redo' and 'Undo' buttons.
      */
-    private void updateRedoUndo(){
+    private void updateRedoUndo() {
         redoButton.setDisable(!TuneComposer.history.canRedo());
         undoButton.setDisable(!TuneComposer.history.canUndo());        
+    }
+
+    /**
+     * Updates the 'Copy' and 'Cut' buttons.
+     */
+    private void updateCopyCut() {
+        boolean ability = composition.getSelectionSize() <= 0;
+        copyButton.setDisable(ability);
+        cutButton.setDisable(ability);
+    }
+
+    /**
+     * Updates the 'New' button.
+     */
+    private void updateNew() {
+        boolean hasHistory;
+        hasHistory  = TuneComposer.history.canUndo();
+        hasHistory |= TuneComposer.history.canRedo();
+
+        newButton.setDisable(hasHistory && composition.isEmpty());
     }
 
     /**

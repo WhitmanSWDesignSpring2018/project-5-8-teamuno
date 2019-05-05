@@ -16,20 +16,29 @@
         <menus>
           <Menu text="File" fx:id="File">
             <items>
-              <MenuItem 
+              <MenuItem fx:id="aboutButton"
                         onAction="#handleAboutAction" 
                         text="About" />
-              <MenuItem accelerator="Shortcut+N" 
+
+              <MenuItem fx:id="newButton"
+                        accelerator="Shortcut+N" 
                         onAction="#handleNewAction" 
                         text="New" />
-              <MenuItem accelerator="Shortcut+S" 
+
+              <MenuItem fx:id="saveButton"
+                        accelerator="Shortcut+S" 
                         onAction="#handleSaveAction" 
                         text="Save" />
-              <MenuItem onAction="#handleSaveAsAction" 
+
+              <MenuItem fx:id="saveAsButton"
+                        onAction="#handleSaveAsAction" 
                         text="Save As" />
-              <MenuItem accelerator="Shortcut+O" 
+
+              <MenuItem fx:id="openButton"
+                        accelerator="Shortcut+O" 
                         onAction="#handleOpenAction" 
                         text="Open" />
+
               <MenuItem accelerator="Shortcut+Q" 
                         onAction="#handleExitAction" 
                         text="Exit" />
@@ -41,14 +50,17 @@
                           accelerator="Shortcut+X" 
                           onAction="#handleCutAction" 
                           text="Cut" />
-                <MenuItem fx:id="CopyButton"
+
+                <MenuItem fx:id="copyButton"
                           accelerator="Shortcut+C" 
                           onAction="#handleCopyAction" 
-                          text="Select All" />
+                          text="Copy" />
+
                 <MenuItem fx:id="pasteButton"
                           accelerator="Shortcut+V" 
                           onAction="#handlePasteAction" 
                           text="Paste" />
+
                 <MenuItem fx:id="selectAllButton"
                           accelerator="Shortcut+A" 
                           onAction="#handleSelectAllAction" 
@@ -91,6 +103,7 @@
                         accelerator="Shortcut+P" 
                         onAction="#handlePlayAction" 
                         text="Play" />
+
               <MenuItem fx:id="stopButton"
                         accelerator="Shortcut+S" 
                         onAction="#handleStopAction" 

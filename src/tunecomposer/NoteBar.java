@@ -29,7 +29,6 @@ public class NoteBar extends TuneRectangle {
         this.composition = composition;
 
         this.init(composition);
-        
     }
 
     public void init(Composition composition) {

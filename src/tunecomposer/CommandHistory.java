@@ -45,9 +45,9 @@ public class CommandHistory {
     }
     
     /**
-     * Redoes the top command and makes it available for undo
+     * Redoes the top command and makes it available for undo.
      */
-    public void redo(){
+    public void redo() {
         if(undoneCommands.isEmpty()){return;}
         Command redoing = undoneCommands.pop();
         redoing.execute();
@@ -57,7 +57,7 @@ public class CommandHistory {
     }
     
     /**
-     * checks if it is possible to undo
+     * Checks if it is possible to undo.
      * @return boolean
      */
     public boolean canUndo(){
@@ -65,10 +65,10 @@ public class CommandHistory {
     }
     
     /**
-     * checks if it is possible to redo
+     * Checks if it is possible to redo.
      * @return boolean
      */
-    public boolean canRedo(){
+    public boolean canRedo() {
         return !undoneCommands.isEmpty();
     }
     

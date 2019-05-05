@@ -72,7 +72,14 @@ public class TuneComposer extends Application {
     @FXML private MenuItem playButton;
     @FXML private MenuItem undoButton;
     @FXML private MenuItem redoButton;
-    // TODO Add more buttons here and in FXML
+    @FXML private MenuItem cutButton;
+    @FXML private MenuItem copyButton;
+    @FXML private MenuItem pasteButton;
+    @FXML private MenuItem aboutButton;
+    @FXML private MenuItem newButton;
+    @FXML private MenuItem saveButton;
+    @FXML private MenuItem saveAsButton;
+    @FXML private MenuItem openButton;
  
     private File currentFile;
     private FileChooser fileChooser;
@@ -198,7 +205,15 @@ public class TuneComposer extends Application {
                 groupButton,
                 ungroupButton,
                 undoButton,
-                redoButton);
+                redoButton,
+                cutButton,
+                copyButton,
+                pasteButton,
+                aboutButton,
+                newButton,
+                saveButton,
+                saveAsButton,
+                openButton);
     }
 
     /**

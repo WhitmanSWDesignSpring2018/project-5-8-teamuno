@@ -49,9 +49,9 @@ public class Gesture extends TuneRectangle {
         System.out.println("Gesture.init");
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
-        
+
         getStyleClass().add("gesture");
-        
+
         addToSelection();
         setBounds();
     }

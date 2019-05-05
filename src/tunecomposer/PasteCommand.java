@@ -28,7 +28,7 @@ public class PasteCommand implements Command {
     @Override
     public void execute() {
         for(TuneRectangle rect : pasted) {
-            TuneComposer.composition.add(rect);
+            composition.add(rect);
         }
         selection.execute();
     }
