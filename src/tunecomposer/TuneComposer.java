@@ -519,6 +519,7 @@ public class TuneComposer extends Application {
         menuBar.notifyWindowOpened();
         currentFile = fileChooser.showSaveDialog(primaryStage);
         if(currentFile == null){
+            menuBar.notifyWindowClosed();
             return;
         }
         save(currentFile);
@@ -563,6 +564,7 @@ public class TuneComposer extends Application {
         }
         currentFile = fileChooser.showOpenDialog(primaryStage);
         if(currentFile == null){
+            menuBar.notifyWindowClosed();
             return;
         }
         load(currentFile);
