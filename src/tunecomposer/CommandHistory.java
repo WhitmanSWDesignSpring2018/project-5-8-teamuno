@@ -9,8 +9,8 @@ import tunecomposer.command.*;
 import java.util.Stack;
 
 /**
- * Keeps track of commands as well as undoing and redoing them
- * @author vankoesd
+ * Keeps track of commands, as well as undoing and redoing them.
+ * @author Spencer
  */
 public class CommandHistory {
     private final Stack<Command> undoableCommands;
@@ -25,10 +25,10 @@ public class CommandHistory {
     }
     
     /**
-     * Records a new command that can be undone later
+     * Records a new command that can be undone later.
      * @param toAdd, the new command
      */
-    public void addNewCommand(Command toAdd){
+    public void addNewCommand(Command toAdd) {
         undoableCommands.push(toAdd);
         undoneCommands.clear();
         isSaved = false;
@@ -36,10 +36,10 @@ public class CommandHistory {
     }
     
     /**
-     * Undoes the top command and makes it available for redo
+     * Undoes the top command and makes it available for redo.
      */
-    public void undo(){
-        if(canUndo()){
+    public void undo() {
+        if(canUndo()) {
             Command undoing = undoableCommands.pop();
             undoing.unexecute();
             undoneCommands.push(undoing);
@@ -52,7 +52,7 @@ public class CommandHistory {
      * Redoes the top command and makes it available for undo.
      */
     public void redo() {
-        if(canRedo()){
+        if(canRedo()) {
             Command redoing = undoneCommands.pop();
             redoing.execute();
             undoableCommands.push(redoing);
@@ -65,7 +65,7 @@ public class CommandHistory {
      * Checks if it is possible to undo.
      * @return boolean
      */
-    public boolean canUndo(){
+    public boolean canUndo() {
         return !undoableCommands.isEmpty();
     }
     
@@ -77,15 +77,15 @@ public class CommandHistory {
         return !undoneCommands.isEmpty();
     }
     
-    public void recordSave(){
+    public void recordSave() {
         isSaved = true;
     }
     
-    public boolean isSaved(){
+    public boolean isSaved() {
         return isSaved;
     }
     
-    public void clear(){
+    public void clear() {
         undoableCommands.clear();
         undoneCommands.clear();
     }

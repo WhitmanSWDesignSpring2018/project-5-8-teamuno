@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.layout.Pane;
 
+/**
+ * A musical composition comprised of TuneRectangles.
+ */
 public class Composition {
     private Set<TuneRectangle> allRoots;
     private Set<TuneRectangle> selectedRoots;
@@ -16,7 +19,6 @@ public class Composition {
     private Double selectionLeft;
     private Double selectionRight;
     
-
     public Composition(Pane compositionpane) {
         pane = compositionpane;
         allRoots = new HashSet<>();
@@ -25,31 +27,41 @@ public class Composition {
     }
 
     /**
-     * returns a set of notes that have had their selection changed
+     * Returns a set of notes that have had their selection status changed.
+     * @return notes that have been selected or unselected
      */
     public Set<TuneRectangle> getSelectionTracker() {
         return new HashSet<>(selectionChanges);
     }
     
     /**
-     * resets the selection tracker
+     * Resets the selection tracker.
      */
     public void clearSelectionTracker() {
         selectionChanges.clear();
     }
     
     /**
-     * gets a copy of the selectionRoots
+     * Gets a copy of the selected roots.
+     * @return a set of selected roots
      */
     public Set<TuneRectangle> getSelectedRoots() {
         return new HashSet<>(selectedRoots);
     }
     
+    /**
+     * Gets all the root TuneRectangles.
+     * @return a set of roots
+     */
     public Set<TuneRectangle> getRoots() {
         return new HashSet<>(allRoots);
     }
     
-    public boolean contains(TuneRectangle rect){
+    /**
+     * Checks if the given TuneRectangle is in the composition.
+     * @return true if the TuneRectangle is present, false otherwise
+     */
+    public boolean contains(TuneRectangle rect) {
         return allRoots.contains(rect);
     }
     

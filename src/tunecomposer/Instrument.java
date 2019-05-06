@@ -43,7 +43,7 @@ public enum Instrument {
     }
     
     /**
-     * gets the program that is being modified
+     * Gets the program that is being modified.
      * @return midiprogram, the program that is modified
      */
     public int getMidiProgram() {

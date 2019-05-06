@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 
 /**
  * Represents a note bar on screen.
- * @author janet
+ * @author Janet, Ian, Spencer, Taka, Ben
  */
 public class NoteBar extends TuneRectangle {
 

@@ -8,8 +8,8 @@ import javafx.scene.control.MenuItem;
 
 
 /**
- * Handles the graying out of menu items.
- * @author Ben, Ian, Spencer
+ * Handles the disabling and enabling of menu items.
+ * @author Ben, Ian, Spencer, Taka
  */
 public class TuneMenuBar {
     
@@ -116,7 +116,7 @@ public class TuneMenuBar {
     }
     
     /**
-     * Updates the 'Selectall' and selectnone buttons.
+     * Updates the 'Select all' and 'Select none' buttons.
      */
     private void updateSelect() {
         selectAllButton.setDisable(composition.size() <= composition.getSelectionSize());
@@ -166,12 +166,18 @@ public class TuneMenuBar {
         newButton.setDisable(hasHistory && composition.isEmpty());
     }
     
-    private void updateSave(){
+    /**
+     * Updates the 'Save' and 'Save as' Buttons.
+     */
+    private void updateSave() {
         saveButton.setDisable(TuneComposer.history.isSaved());
         saveAsButton.setDisable(TuneComposer.history.isSaved());
     }
     
-    public void notifyWindowOpened(){
+    /**
+     * Disables window-opening buttons when a pop-up is already open.
+     */
+    public void notifyWindowOpened() {
         disable(aboutButton);
         disable(newButton);
         disable(saveButton);
@@ -179,7 +185,10 @@ public class TuneMenuBar {
         disable(openButton);
     }
     
-    public void notifyWindowClosed(){
+    /**
+     * Enables window-opening buttons when a pop-up is closed.
+     */
+    public void notifyWindowClosed() {
         enable(aboutButton);
         enable(newButton);
         enable(saveButton);
