@@ -11,8 +11,8 @@ import tunecomposer.Composition;
 import tunecomposer.TuneRectangle;
 
 /**
- *
- * @author vankoesd
+ * Command for deleting some TuneRectangles.
+ * @author Spencer
  */
 public class DeletionCommand implements Command {
     private final Composition composition;

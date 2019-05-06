@@ -10,8 +10,8 @@ import tunecomposer.NoteBar;
 import tunecomposer.command.SelectionCommand;
 
 /**
- *
- * @author vankoesd
+ * Command for creating a new NoteBar.
+ * @author Spencer
  */
 public class CreationCommand implements Command {
 
@@ -25,7 +25,7 @@ public class CreationCommand implements Command {
         selection = new SelectionCommand(composition);
     }
     /**
-     * creates the note
+     * Creates the note.
      */
     @Override
     public void execute() {
@@ -33,7 +33,7 @@ public class CreationCommand implements Command {
         selection.execute();
     }
     /**
-     * uncreates the note
+     * Uncreates the note.
      */
     @Override
     public void unexecute() {

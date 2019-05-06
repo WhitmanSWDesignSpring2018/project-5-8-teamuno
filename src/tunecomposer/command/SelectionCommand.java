@@ -11,8 +11,8 @@ import tunecomposer.Composition;
 import tunecomposer.TuneRectangle;
 
 /**
- *
- * @author vankoesd
+ * Command for selecting TuneRectangles.
+ * @author Spencer
  */
 public class SelectionCommand implements Command{
     
@@ -26,7 +26,7 @@ public class SelectionCommand implements Command{
     }
     
     /**
-     * calls toggle
+     * Toggles the selection status of each targeted note.
      */
     @Override
     public void execute() {
@@ -34,7 +34,7 @@ public class SelectionCommand implements Command{
     }
     
     /**
-     * calls toggle
+     * Toggles the selection status of each targeted note.
      */
     @Override
     public void unexecute() {
@@ -42,7 +42,7 @@ public class SelectionCommand implements Command{
     }
     
     /**
-     * toggles selection on all given notes
+     * Toggles the selection status of each targeted note.
      */
     private void toggle(){
         for(TuneRectangle rect : changedRects){

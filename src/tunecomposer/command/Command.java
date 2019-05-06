@@ -6,15 +6,15 @@
 package tunecomposer.command;
 
 /**
- *
- * @author vankoesd
- * TODO this
+ * Interface for command pattern.
+ * @author Spencer
  */
 public interface Command {
     /**
      * Does the command.
      */
     public void execute();
+
     /**
      * Undoes the command.
      */
