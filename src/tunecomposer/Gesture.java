@@ -44,7 +44,9 @@ public class Gesture extends TuneRectangle {
     public void init(Composition composition) {
         this.composition = composition;
         for(TuneRectangle child : children) {
-            child.init(composition);
+            if(!composition.contains(child)){
+                child.init(composition);
+            }
         }
         System.out.println("Gesture.init");
         TuneComposer.composition.add(this);
