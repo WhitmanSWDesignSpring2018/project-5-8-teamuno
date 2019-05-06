@@ -70,7 +70,8 @@ public class Note implements Serializable {
     }
 
     /**
-     * Get the start tick of this note.
+     * Gets the start tick of this note.
+     * @return the start tick of this note
      */
     public int getStartTick() {
         return startTick;
@@ -86,6 +87,7 @@ public class Note implements Serializable {
 
     /**
      * Gets the duration of this note.
+     * @return the duration of this note
      */
     public int getDuration() {
         return duration;
@@ -93,20 +95,22 @@ public class Note implements Serializable {
 
     /**
      * Gets the endTick of this note.
+     * @return the endTick of this note
      */
     public int getEndTick() {
         return startTick + duration;
     }
 
     /**
-     * Returns the instrument of this note
+     * Gets the instrument of this note.
+     * @return the instrument that this note plays
      */
     public Instrument getInstrument() {
         return instrument;
     }
 
     /**
-     * Checks if any notes exist
+     * Checks if any notes exist.
      */
     public static boolean isEmpty() {
         return ALL_NOTES.isEmpty();
@@ -127,6 +131,7 @@ public class Note implements Serializable {
 
     /**
      * Adds note to the midiplayer so that it may be played.
+     * @param player the player to which this note should be added
      */
     public void addToPlayer(MidiPlayer player) {
         player.addNote(pitch, VOLUME, startTick, duration,

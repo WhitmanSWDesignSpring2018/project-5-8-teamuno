@@ -12,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * Class abstracted from NoteBar and Gesture.
- * @author ben, taka, spencer, ian
+ * @author Ben, Taka, Spencer, Ian
  */
 public abstract class TuneRectangle extends Rectangle implements Serializable {
     protected transient Composition composition;
@@ -31,6 +31,9 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
      */
     abstract public void addToSelection();
     
+    /**
+     * Set up a TuneRectangle during construction or after deserialization.
+     */
     abstract public void init(Composition composition);
 
     /**
@@ -45,14 +48,15 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
     abstract public HashSet<NoteBar> getChildLeaves();
 
     /**
-     * Move this rectangle 
+     * Move this rectangle.
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
      */
     abstract public void move(double deltaX, double deltaY);
     
-    
-    
+    /**
+     * Update related notes after this has been moved.
+     */
     abstract public void updateNoteMoved();
 
     /**
@@ -91,8 +95,4 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
      * @param compositionpane the pane from which this should be deleted
      */
     public abstract void delete(Pane compositionpane);
-
-    public void init() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

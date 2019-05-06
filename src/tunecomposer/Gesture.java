@@ -28,7 +28,7 @@ public class Gesture extends TuneRectangle {
 
     /**
      * Creates a gesture.
-     * @param children, the TuneRectangles that will be inside the gesture
+     * @param children the TuneRectangles that will be inside the gesture
      */
     public Gesture(Composition composition, HashSet<TuneRectangle> children) {
         this.children = children;
@@ -48,7 +48,6 @@ public class Gesture extends TuneRectangle {
                 child.init(composition);
             }
         }
-        System.out.println("Gesture.init");
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);
 
@@ -98,9 +97,9 @@ public class Gesture extends TuneRectangle {
     }
     
     /**
-     * adds all of the gestures children to the pane
+     * Adds all of the gestures children to the pane.
      */
-    public void addChildrenToComposition(){
+    public void addChildrenToComposition() {
         for(TuneRectangle child: children){
             TuneComposer.composition.add(child);
         }
@@ -127,9 +126,9 @@ public class Gesture extends TuneRectangle {
     }
     
     /**
-     * updates moved children
+     * Updates moved children.
      */
-    public void updateNoteMoved(){
+    public void updateNoteMoved() {
         for(TuneRectangle child : children){
             child.updateNoteMoved();
         }
@@ -142,12 +141,14 @@ public class Gesture extends TuneRectangle {
         rectStartX = this.getX();
         rectStartY = this.getY();
         for (TuneRectangle child : children) {
-            if(child instanceof Gesture) {((Gesture) child).setStart();}
+            if (child instanceof Gesture) {
+                ((Gesture) child).setStart();
+            }
         }
     }
 
     /**
-     * Move this rectangle. requires set start to be called first
+     * Move this rectangle. Requires set start to be called first.
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
      */
@@ -187,9 +188,9 @@ public class Gesture extends TuneRectangle {
     }
     
     /**
-     * calculates the edges of the gesture
+     * Calculates the edges of the gesture.
      */
-    private void setBounds(){
+    private void setBounds() {
         Double minX = null;
         Double maxX = null;
         Double minY = null;

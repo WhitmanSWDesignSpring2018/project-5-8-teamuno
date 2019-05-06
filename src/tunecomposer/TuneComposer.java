@@ -65,6 +65,7 @@ public class TuneComposer extends Application {
     @FXML private Pane instrumentpane;
     @FXML private ToggleGroup instrumentgroup;
 
+    // Menu bar buttons
     @FXML private MenuItem selectAllButton;
     @FXML private MenuItem selectNoneButton;
     @FXML private MenuItem deleteButton;
@@ -88,9 +89,11 @@ public class TuneComposer extends Application {
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
+
     private static final int CONFIRMATIONYES = 1;
     private static final int CONFIRMATIONNO = 2;
     private static final int CONFIRMATIONCANCEL = 3;
+
     public static CommandHistory history;
 
     /**
@@ -189,16 +192,22 @@ public class TuneComposer extends Application {
     }
 
     /**
-     * prepares the composition and the menubar
+     * Prepares the composition.
      */
     private void setupComposition() {
         composition = new Composition(compositionpane);
     }
 
+    /**
+     * Set up the empty command history for undo and redo.
+     */
     private void setupCommandHistory() {
         history = new CommandHistory(composition);
     }
 
+    /**
+     * Set up the menu bar to enable and disable buttons.
+     */
     private void setupMenuBar() {
         menuBar = new TuneMenuBar(
                 composition,
@@ -239,11 +248,12 @@ public class TuneComposer extends Application {
     }
     
     /**
-     * creates and displays a confirmation alert about saving before continuing
+     * Creates and displays a confirmation alert about saving before
+     * continuing.
      * 
-     * @return int, 1 for yes, 2 for no, 3 for cancel 
+     * @return CONFIRMATIONYES, CONFIRMATIONNO, or CONFIRMATIONCANCEL
      */
-    private int ConfirmationAlert(){
+    private int ConfirmationAlert() {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Unsaved Progress");
             alert.setHeaderText("You have not saved your progress.");
@@ -273,7 +283,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleNewAction(ActionEvent event) {
-        if(!history.isSaved()){
+        if(!history.isSaved()) {
             int choice = ConfirmationAlert();
             if (choice == CONFIRMATIONYES){
                 handleSaveAction(event);
@@ -284,7 +294,7 @@ public class TuneComposer extends Application {
                 history.clear();
             }
         }
-        else{
+        else {
             composition.clearAll();
             history.clear();
         }
@@ -292,7 +302,7 @@ public class TuneComposer extends Application {
     }
     
     /**
-     * displays a window with information about the program.
+     * Displays a window with information about the program.
      * consulted:
      * https://stackoverflow.com/questions/28937392/javafx-alerts-and-their-size
      * @param event 
@@ -316,7 +326,7 @@ public class TuneComposer extends Application {
     
     
     /**
-     * deletes selected notes and adds them to the clipboard
+     * Deletes selected notes and adds them to the clipboard.
      * @param event 
      */
     @FXML
@@ -326,7 +336,7 @@ public class TuneComposer extends Application {
     }
     
     /** 
-     * adds selected notes to the clipboard.
+     * Adds selected notes to the clipboard.
      * consulted: 
      * https://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
      * https://stackoverflow.com/questions/46818958/invalid-stream-header-efbfbdef-when-converting-object-from-byte-string/46819395
@@ -360,7 +370,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handlePasteAction(ActionEvent event) {
-        try{
+        try {
             final byte[] bytes = Base64.getDecoder().decode(clipboard.getString().getBytes());
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes); 
             ObjectInput in = new ObjectInputStream(bis);
@@ -372,7 +382,7 @@ public class TuneComposer extends Application {
         catch(IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        catch(IllegalArgumentException e){
+        catch(IllegalArgumentException e) {
         //this is in case the user tries to copy a non-'set<TuneRectangle>', nothing should happen
         }
     }
@@ -425,7 +435,7 @@ public class TuneComposer extends Application {
     /**
      * Removes selected top-level gestures.
      * The gesture is removed and its children are freed and selected.
-     * @param event
+     * @param event menu button event
      */
     @FXML
     protected void handleUngroup(ActionEvent event) {
@@ -434,8 +444,8 @@ public class TuneComposer extends Application {
     }
     
     /**
-     * redoes the latest undone action
-     * @param event , the button click
+     * Re-executes the latest unexecuted action.
+     * @param event menu button event
      */
     @FXML
     protected void handleRedo(ActionEvent event) {
@@ -445,7 +455,7 @@ public class TuneComposer extends Application {
 
     /**
      * undoes the latest action
-     * @param event , the button click
+     * @param event menu button event
      */
     @FXML
     protected void handleUndo(ActionEvent event) {
@@ -455,7 +465,7 @@ public class TuneComposer extends Application {
 
     /**
      * When the user selects the "Play" menu item, play the composition.
-     * @param event the menu selection event
+     * @param event menu button event
      */
     @FXML
     protected void handlePlayAction(ActionEvent event) {
@@ -465,7 +475,7 @@ public class TuneComposer extends Application {
 
     /**
      * When the user selects the "Stop" menu item, stop playing.
-     * @param event the menu selection event
+     * @param event menu button event
      */
     @FXML
     protected void handleStopAction(ActionEvent event) {
@@ -475,14 +485,14 @@ public class TuneComposer extends Application {
 
     /**
      * When the user clicks the "Exit" menu item, exit the program.
-     * @param event the menu selection event
+     * @param event menu button event
      */
     @FXML
     protected void handleExitAction(ActionEvent event) {
-        if(!history.isSaved()){
+        if (!history.isSaved()) {
             menuBar.notifyWindowOpened();
             int choice = ConfirmationAlert();
-            if (choice == CONFIRMATIONYES){
+            if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
                 System.exit(0);
             } else if (choice == CONFIRMATIONNO) {
@@ -490,7 +500,7 @@ public class TuneComposer extends Application {
             }
             menuBar.notifyWindowClosed();
         }
-        else{
+        else {
             System.exit(0);
         }
         
@@ -518,7 +528,7 @@ public class TuneComposer extends Application {
     protected void handleSaveAsAction(ActionEvent event) {
         menuBar.notifyWindowOpened();
         currentFile = fileChooser.showSaveDialog(primaryStage);
-        if(currentFile == null){
+        if(currentFile == null) {
             menuBar.notifyWindowClosed();
             return;
         }
@@ -528,14 +538,13 @@ public class TuneComposer extends Application {
 
     /**
      * Serializes all notes and writes them to a file
-     * @param file, the file to write to
+     * @param file the file to write to
      */
     private void save(File file) {
         try {
             FileOutputStream fileOut = new FileOutputStream(file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(composition.getRoots());
-            System.out.println(composition.getRoots());
             out.close();
             fileOut.close();
             history.recordSave();
@@ -552,9 +561,9 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
         menuBar.notifyWindowOpened();
-        if(!history.isSaved()){
+        if(!history.isSaved()) {
             int choice = ConfirmationAlert();
-            if (choice == CONFIRMATIONYES){
+            if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
             } else if (choice == CONFIRMATIONNO) {
                 
@@ -563,7 +572,7 @@ public class TuneComposer extends Application {
             }
         }
         currentFile = fileChooser.showOpenDialog(primaryStage);
-        if(currentFile == null){
+        if(currentFile == null) {
             menuBar.notifyWindowClosed();
             return;
         }
@@ -572,8 +581,9 @@ public class TuneComposer extends Application {
     }
     
     /**
-     * Deserializes notes from a given file, also clears history
-     * @param file, the file to read from
+     * Deserializes notes from a given file.
+     * Also clears history.
+     * @param file the file to read from
      * @throws ClassNotFoundException 
      */
     private void load(File file) throws ClassNotFoundException {
