@@ -12,13 +12,9 @@ import tunecomposer.Gesture;
 import tunecomposer.TuneRectangle;
 
 /**
- *
- * @author vankoesd
+ * Command for moving selected TuneRectangles.
+ * @author Spencer
  */
-
-//does not work because the Gesture.move method is wierd and different from Note.move
-
-//TODO fix that
 public class MoveCommand implements Command {
     
     private final Composition composition;
@@ -36,7 +32,7 @@ public class MoveCommand implements Command {
     }
     
     /**
-     * moves notes forward to where they went
+     * Moves notes.
      */
     @Override
     public void execute() {
@@ -55,7 +51,7 @@ public class MoveCommand implements Command {
     }
 
     /**
-     * moves notes back to where they started
+     * Moves notes back to their locations before being moved.
      */
     @Override
     public void unexecute() {

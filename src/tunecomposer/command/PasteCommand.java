@@ -12,8 +12,8 @@ import tunecomposer.TuneComposer;
 import tunecomposer.TuneRectangle;
 
 /**
- *
- * @author vankoesd
+ * Command for pasting TuneRectangles.
+ * @author Spencer
  */
 public class PasteCommand implements Command {
 
@@ -27,7 +27,7 @@ public class PasteCommand implements Command {
         selection = new SelectionCommand(composition);
     }
     /**
-     * Creates the notes.
+     * Pastes the notes from the clipboard.
      */
     @Override
     public void execute() {
@@ -45,7 +45,7 @@ public class PasteCommand implements Command {
     }
     
     /**
-     * Uncreates the notes.
+     * Uncreates (unpastes) the notes.
      */
     @Override
     public void unexecute() {

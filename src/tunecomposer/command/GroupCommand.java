@@ -12,8 +12,8 @@ import tunecomposer.Gesture;
 import tunecomposer.TuneRectangle;
 
 /**
- *
- * @author vankoesd
+ * Command for grouping some TuneRectangles.
+ * @author Spencer
  */
 public class GroupCommand implements Command {
     
@@ -21,7 +21,8 @@ public class GroupCommand implements Command {
     private HashSet<Gesture> toUngroup;
     private HashSet<HashSet<TuneRectangle>> toGroup;
 
-    public GroupCommand(Composition composition, HashSet stuff, boolean wasGrouped){
+    // TODO Split into two constructors or two classes
+    public GroupCommand(Composition composition, HashSet stuff, boolean wasGrouped) {
         this.composition = composition;
         if (wasGrouped) {
             groupedConstructor(stuff);
@@ -31,8 +32,8 @@ public class GroupCommand implements Command {
         new SelectionCommand(composition);
     }
     /**
-     *Sets up the command
-     * @param grouped, the new gestures
+     * Sets up the command for grouping.
+     * @param grouped the new gestures
      */
     private void groupedConstructor(HashSet<Gesture> grouped) {
         toUngroup = new HashSet(grouped);
@@ -40,8 +41,8 @@ public class GroupCommand implements Command {
     }
     
     /**
-     * sets up the command
-     * @param ungrouped, the freed children
+     * Sets up the command for ungrouping.
+     * @param ungrouped the freed children
      */
     private void ungroupedConstructor(HashSet<HashSet<TuneRectangle>> ungrouped) {
         toGroup = new HashSet(ungrouped);
@@ -49,7 +50,7 @@ public class GroupCommand implements Command {
     }
     
     /**
-     * calls toggle
+     * Groups the TuneRectangles into a gesture.
      */
     @Override
     public void execute() {
@@ -57,7 +58,7 @@ public class GroupCommand implements Command {
     }
     
     /**
-     * calls toggle
+     * Removes a gesture, leaving its components.
      */
     @Override
     public void unexecute() {
@@ -65,7 +66,7 @@ public class GroupCommand implements Command {
     }
     
     /**
-     * Toggles grouping on the given gestures/notes
+     * Toggles grouping on the given gestures/notes.
      */
     private void toggle(){
         if(toUngroup.isEmpty()){

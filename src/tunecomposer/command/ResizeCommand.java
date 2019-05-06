@@ -13,8 +13,8 @@ import tunecomposer.NoteBar;
 import tunecomposer.TuneRectangle;
 
 /**
- *
- * @author vankoesd
+ * Command for resizing NoteBars.
+ * @author Spencer
  */
 public class ResizeCommand implements Command {
 
@@ -31,12 +31,12 @@ public class ResizeCommand implements Command {
     }
     
     /**
-     * extends note to its changed length
+     * Extends note to its changed length.
      */
     @Override
     public void execute() {
-        for(TuneRectangle rect : editedRects){
-            if(rect instanceof NoteBar && rect.getParentGesture() == null){
+        for(TuneRectangle rect : editedRects) {
+            if(rect instanceof NoteBar && rect.getParentGesture() == null) {
                 ((NoteBar) rect).resize(lengthChange);
             }
         }
@@ -45,12 +45,12 @@ public class ResizeCommand implements Command {
     }
 
     /**
-     * reverts note length to its initial value
+     * Reverts note to its previous length.
      */
     @Override
     public void unexecute() {
-        for(TuneRectangle rect : editedRects){
-            if(rect instanceof NoteBar && rect.getParentGesture() == null){
+        for(TuneRectangle rect : editedRects) {
+            if(rect instanceof NoteBar && rect.getParentGesture() == null) {
                 ((NoteBar) rect).resize(-lengthChange);
             }
         }
