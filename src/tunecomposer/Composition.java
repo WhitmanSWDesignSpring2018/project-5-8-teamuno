@@ -170,6 +170,9 @@ public class Composition {
         if (!pane.getChildren().contains(rect)) {
             pane.getChildren().add(rect);
         }
+        if(rect instanceof NoteBar){
+            ((NoteBar) rect).note.addToAllNotes();
+        }
     }
 
     /**
@@ -208,6 +211,7 @@ public class Composition {
         for(NoteBar child : rect.getChildLeaves()){
             child.note.removeFromAllNotes();
         }
+        ((NoteBar) rect).note.removeFromAllNotes();
         allRoots.remove(rect);
     }
     

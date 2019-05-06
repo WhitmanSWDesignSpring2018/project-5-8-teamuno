@@ -17,7 +17,7 @@ import javafx.scene.layout.Pane;
 public class NoteBar extends TuneRectangle {
 
 
-    static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
+    public static final HashSet<NoteBar> ALLNOTEBARS = new HashSet<>();
     public final Note note;
     private static boolean dragWidth;
 
