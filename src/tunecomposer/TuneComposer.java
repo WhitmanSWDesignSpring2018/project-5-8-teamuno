@@ -24,6 +24,8 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -621,7 +623,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleCompositionPaneMouseReleased(MouseEvent event) {
-        NoteBar.selectArea(selectionRect);
+        selectArea(selectionRect);
         selectionRect.setVisible(false);
         if (!event.isStillSincePress()) {
             history.addNewCommand(new SelectionCommand(composition));
@@ -629,6 +631,22 @@ public class TuneComposer extends Application {
         menuBar.update();
     }
 
+    /**
+     * Selects everything in the given area.
+     * @param selectionArea the area in which TuneRectangles should be selected
+     */
+    public void selectArea(Node selectionArea) {
+        Bounds selectionBounds = selectionArea.getBoundsInParent();
+        for (TuneRectangle rect : composition.getRoots()) {
+            for (NoteBar bar : rect.getChildLeaves()){
+                Bounds barBounds = bar.getBoundsInParent();
+                if (selectionBounds.contains(barBounds)) {
+                    bar.getHighestParent().addToSelection();
+                }
+            }
+        }
+    }
+    
     /**
      * When the user clicks in the composition pane, add a note.
      * @param event the mouse click event
