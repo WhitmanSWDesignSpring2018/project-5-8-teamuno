@@ -32,6 +32,7 @@ public class CommandHistory {
         undoableCommands.push(toAdd);
         undoneCommands.clear();
         isSaved = false;
+        TuneComposer.menuBar.update();
     }
     
     /**

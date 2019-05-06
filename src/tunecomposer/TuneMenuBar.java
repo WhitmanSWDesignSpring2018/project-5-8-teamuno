@@ -29,6 +29,8 @@ public class TuneMenuBar {
     private MenuItem aboutButton;
     private MenuItem newButton;
     private MenuItem saveButton;
+    private MenuItem saveAsButton;
+    private MenuItem openButton;
     
     public TuneMenuBar (
             Composition composition,
@@ -66,6 +68,8 @@ public class TuneMenuBar {
         this.aboutButton        = aboutButton;
         this.newButton          = newButton;
         this.saveButton         = saveButton;
+        this.saveAsButton       = saveAsButton;
+        this.openButton         = openButton;
 
         setup();
     }
@@ -86,6 +90,8 @@ public class TuneMenuBar {
         disable(cutButton);
         disable(copyButton);
         disable(newButton);
+        disable(saveButton);
+        disable(saveAsButton);
     }
 
     /**
@@ -99,6 +105,7 @@ public class TuneMenuBar {
         updateRedoUndo();
         updateCopyCut();
         updateNew();
+        updateSave();
     }
     
     /**
@@ -157,6 +164,27 @@ public class TuneMenuBar {
         hasHistory |= TuneComposer.history.canRedo();
 
         newButton.setDisable(hasHistory && composition.isEmpty());
+    }
+    
+    private void updateSave(){
+        saveButton.setDisable(TuneComposer.history.isSaved());
+        saveAsButton.setDisable(TuneComposer.history.isSaved());
+    }
+    
+    public void notifyWindowOpened(){
+        disable(aboutButton);
+        disable(newButton);
+        disable(saveButton);
+        disable(saveAsButton);
+        disable(openButton);
+    }
+    
+    public void notifyWindowClosed(){
+        enable(aboutButton);
+        enable(newButton);
+        enable(saveButton);
+        disable(saveAsButton);
+        enable(openButton);
     }
 
     /**
