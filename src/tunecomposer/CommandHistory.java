@@ -39,23 +39,26 @@ public class CommandHistory {
      * Undoes the top command and makes it available for redo
      */
     public void undo(){
-        Command undoing = undoableCommands.pop();
-        undoing.unexecute();
-        undoneCommands.push(undoing);
-        composition.clearSelectionTracker();
-        isSaved = false;
+        if(canUndo()){
+            Command undoing = undoableCommands.pop();
+            undoing.unexecute();
+            undoneCommands.push(undoing);
+            composition.clearSelectionTracker();
+            isSaved = false;
+        }
     }
     
     /**
      * Redoes the top command and makes it available for undo.
      */
     public void redo() {
-        if(undoneCommands.isEmpty()){return;}
-        Command redoing = undoneCommands.pop();
-        redoing.execute();
-        undoableCommands.push(redoing);
-        composition.clearSelectionTracker();
-        isSaved = false;
+        if(canRedo()){
+            Command redoing = undoneCommands.pop();
+            redoing.execute();
+            undoableCommands.push(redoing);
+            composition.clearSelectionTracker();
+            isSaved = false;
+        }
     }
     
     /**
