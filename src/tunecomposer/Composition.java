@@ -49,6 +49,10 @@ public class Composition {
         return new HashSet<>(allRoots);
     }
     
+    public boolean contains(TuneRectangle rect){
+        return allRoots.contains(rect);
+    }
+    
     /**
      * Select all the items in the composition.
      */
@@ -90,7 +94,7 @@ public class Composition {
     /**
      * Group the contents of the selection into a gesture.
      */
-    public void groupSelection() {
+    public void groupSelected() {
         if(selectedRoots.isEmpty()) {return;}
 
         // Pass the selection by value, not by reference
@@ -227,6 +231,9 @@ public class Composition {
      * @param root the TuneRectangle to add
      */
     public void addToSelection(TuneRectangle root) {
+        if(!contains(root)){
+            return;
+        }
         selectedRoots.add(root);
         trackRectSelect(root);
         updateBoundsNewRect(root); //changing selection is not properly changing the bounds

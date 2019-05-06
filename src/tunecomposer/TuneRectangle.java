@@ -91,4 +91,8 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
      * @param compositionpane the pane from which this should be deleted
      */
     public abstract void delete(Pane compositionpane);
+
+    public void init() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

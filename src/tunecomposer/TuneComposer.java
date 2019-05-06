@@ -24,6 +24,8 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -297,6 +299,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleAboutAction(ActionEvent event) {
+        menuBar.notifyWindowOpened();
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("About Dialog");
         alert.setHeaderText(null);
@@ -305,8 +308,10 @@ public class TuneComposer extends Application {
                 + "We tried to make it as intuitive as possible, so click around, drag notes"
                 + ", try the menu items, and above all have fun! \n"
                 + "See you later Beethoven! ");
-        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label)
+                .forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
         alert.showAndWait();
+        menuBar.notifyWindowClosed();
     }
     
     
@@ -413,7 +418,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleGroup(ActionEvent event) {
-        composition.groupSelection();
+        composition.groupSelected();
         menuBar.update();
     }
 
@@ -475,6 +480,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleExitAction(ActionEvent event) {
         if(!history.isSaved()){
+            menuBar.notifyWindowOpened();
             int choice = ConfirmationAlert();
             if (choice == CONFIRMATIONYES){
                 handleSaveAction(event);
@@ -482,6 +488,7 @@ public class TuneComposer extends Application {
             } else if (choice == CONFIRMATIONNO) {
                 System.exit(0);
             }
+            menuBar.notifyWindowClosed();
         }
         else{
             System.exit(0);
@@ -509,11 +516,13 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleSaveAsAction(ActionEvent event) {
+        menuBar.notifyWindowOpened();
         currentFile = fileChooser.showSaveDialog(primaryStage);
         if(currentFile == null){
             return;
         }
         save(currentFile);
+        menuBar.notifyWindowClosed();
     }
 
     /**
@@ -541,6 +550,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
+        menuBar.notifyWindowOpened();
         if(!history.isSaved()){
             int choice = ConfirmationAlert();
             if (choice == CONFIRMATIONYES){
@@ -556,6 +566,7 @@ public class TuneComposer extends Application {
             return;
         }
         load(currentFile);
+        menuBar.notifyWindowClosed();
     }
     
     /**
@@ -621,7 +632,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleCompositionPaneMouseReleased(MouseEvent event) {
-        NoteBar.selectArea(selectionRect);
+        selectArea(selectionRect);
         selectionRect.setVisible(false);
         if (!event.isStillSincePress()) {
             history.addNewCommand(new SelectionCommand(composition));
@@ -629,6 +640,22 @@ public class TuneComposer extends Application {
         menuBar.update();
     }
 
+    /**
+     * Selects everything in the given area.
+     * @param selectionArea the area in which TuneRectangles should be selected
+     */
+    public void selectArea(Node selectionArea) {
+        Bounds selectionBounds = selectionArea.getBoundsInParent();
+        for (TuneRectangle rect : composition.getRoots()) {
+            for (NoteBar bar : rect.getChildLeaves()){
+                Bounds barBounds = bar.getBoundsInParent();
+                if (selectionBounds.contains(barBounds)) {
+                    bar.getHighestParent().addToSelection();
+                }
+            }
+        }
+    }
+    
     /**
      * When the user clicks in the composition pane, add a note.
      * @param event the mouse click event

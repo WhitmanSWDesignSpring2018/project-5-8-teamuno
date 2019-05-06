@@ -191,20 +191,6 @@ public class NoteBar extends TuneRectangle {
 
 
     /**
-     * Selects everything in the given area.
-     * @param selectionArea the area in which TuneRectangles should be selected
-     */
-    public static void selectArea(Node selectionArea) {
-        Bounds selectionBounds = selectionArea.getBoundsInParent();
-        for (NoteBar bar : ALLNOTEBARS) {
-            Bounds barBounds = bar.getBoundsInParent();
-            if (selectionBounds.contains(barBounds)) {
-                bar.getHighestParent().addToSelection();
-            }
-        }
-    }
-
-    /**
      * Moves this NoteBar.
      * @param deltaX distance to move horizontally
      * @param deltaY distance to move vertically
