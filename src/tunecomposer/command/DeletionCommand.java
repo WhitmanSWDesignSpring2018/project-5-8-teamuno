@@ -7,6 +7,7 @@ package tunecomposer.command;
 
 import java.util.HashSet;
 import tunecomposer.Composition;
+import tunecomposer.NoteBar;
 import tunecomposer.TuneRectangle;
 
 /**
