@@ -90,7 +90,7 @@ public class Composition {
     /**
      * Group the contents of the selection into a gesture.
      */
-    public void groupSelection() {
+    public void groupSelected() {
         if(selectedRoots.isEmpty()) {return;}
 
         // Pass the selection by value, not by reference

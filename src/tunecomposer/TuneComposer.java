@@ -413,7 +413,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleGroup(ActionEvent event) {
-        composition.groupSelection();
+        composition.groupSelected();
         menuBar.update();
     }
 
