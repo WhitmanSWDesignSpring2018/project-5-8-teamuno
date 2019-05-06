@@ -522,8 +522,8 @@ public class TuneComposer extends Application {
             menuBar.notifyWindowClosed();
             return;
         }
-        save(currentFile);
         menuBar.notifyWindowClosed();
+        save(currentFile);
     }
 
     /**

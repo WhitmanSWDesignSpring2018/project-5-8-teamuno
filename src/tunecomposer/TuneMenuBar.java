@@ -183,7 +183,7 @@ public class TuneMenuBar {
         enable(aboutButton);
         enable(newButton);
         enable(saveButton);
-        disable(saveAsButton);
+        enable(saveAsButton);
         enable(openButton);
     }
 
