@@ -5,7 +5,6 @@
  */
 package tunecomposer.command;
 
-import tunecomposer.command.SelectionCommand;
 import java.util.HashSet;
 import tunecomposer.Composition;
 import tunecomposer.TuneRectangle;
