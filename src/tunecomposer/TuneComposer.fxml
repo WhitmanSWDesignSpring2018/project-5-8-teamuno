@@ -41,6 +41,12 @@
                         text="Open" />
 
               <SeparatorMenuItem mnemonicParsing="false" />
+              
+              <MenuItem fx:id="importButton" 
+                        onAction="#handleImportAction" 
+                        text="Open" />
+              
+              <SeparatorMenuItem mnemonicParsing="false" />
 
               <MenuItem accelerator="Shortcut+Q" 
                         onAction="#handleExitAction" 

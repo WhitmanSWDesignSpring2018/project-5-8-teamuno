@@ -5,6 +5,7 @@
 package tunecomposer;
 
 import tunecomposer.command.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,6 +61,7 @@ public class TuneComposer extends Application {
     public static TuneMenuBar menuBar;
     private Stage primaryStage;
     final Clipboard clipboard = Clipboard.getSystemClipboard();
+    private final Instruments instruments = new Instruments();
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -116,7 +118,7 @@ public class TuneComposer extends Application {
         if (!Note.isEmpty()) {
             player.stop();
             player.clear();
-            Instrument.addAll(player);
+            instruments.addAll(player);
             Note.playAllNotes(player);
             player.play();
 
@@ -143,7 +145,7 @@ public class TuneComposer extends Application {
      */
     private void setupInstruments() {
         boolean first = true;
-        for (Instrument inst : Instrument.values()) {
+        for (Instrument inst : instruments.getInstruments()) {
             RadioButton rb = new RadioButton();
             rb.setText(inst.getDisplayName());
             rb.setTextFill(inst.getDisplayColor());
@@ -579,6 +581,29 @@ public class TuneComposer extends Application {
         load(currentFile);
         menuBar.notifyWindowClosed();
     }
+    
+    @FXML
+    protected void handleImportAction(ActionEvent event) throws ClassNotFoundException {
+        menuBar.notifyWindowOpened();
+        if(!history.isSaved()) {
+            int choice = ConfirmationAlert();
+            if (choice == CONFIRMATIONYES) {
+                handleSaveAction(event);
+            } else if (choice == CONFIRMATIONNO) {
+                
+            } else {
+                return;
+            }
+        }
+//        currentFile = importFileChooser.showOpenDialog(primaryStage);
+//        if(currentFile == null) {
+//            menuBar.notifyWindowClosed();
+//            return;
+//        }
+//        import(currentFile);
+        menuBar.notifyWindowClosed();
+    }
+    
     
     /**
      * Deserializes notes from a given file.

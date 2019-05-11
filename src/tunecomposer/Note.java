@@ -37,6 +37,14 @@ public class Note implements Serializable {
         this.duration = Constants.DURATION;
         this.instrument = instrument;
     }
+    
+    public Note(int pitch, int startTick, Instrument instrument, long duration) {
+        ALL_NOTES.add(this);
+        this.pitch = pitch;
+        this.startTick = startTick;
+        this.duration = (int) duration;
+        this.instrument = instrument;
+    }
 
     /**
      * Changes the pitch of this note.
