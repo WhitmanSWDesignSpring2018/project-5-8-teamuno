@@ -46,6 +46,11 @@ public class Instruments {
     
     public void addInstrument(int midiProgram, int channel, 
         String displayName){
+        for(Instrument inst : instruments){
+            if(inst.getMidiProgram() == midiProgram){
+                return;
+            } //whatever the objective instrument number is, might not be MidiProgram TODO check this
+        }
         Color displayColor = null;
         while(!usedColors.contains(displayColor)){
             displayColor = Color.valueOf(generateColor());
