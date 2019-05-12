@@ -5,12 +5,10 @@
  */
 package tunecomposer;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import javafx.scene.paint.Color;
 import javax.sound.midi.ShortMessage;
 /**
@@ -20,20 +18,20 @@ import javax.sound.midi.ShortMessage;
 public class Instruments {
     
     private final ArrayList<Instrument> instruments = new ArrayList<>();
-    private HashSet<Color> usedColors = new HashSet<>();
+    private final HashSet<Color> usedColors = new HashSet<>();
     private final static Random r = new Random();
     
     
     
     public Instruments(){
-        this.addInstrument(1,  0, "Piano",        Color.SLATEGRAY);
-        this.addInstrument(7,  1, "Harpsichord",  Color.CRIMSON);
-        this.addInstrument(13, 2, "Marimba",      Color.DARKORANGE);
-        this.addInstrument(20, 3, "Church organ", Color.GOLD);
-        this.addInstrument(22, 4, "Accordion",    Color.GREEN);
-        this.addInstrument(25, 5, "Guitar",       Color.BLUE);
-        this.addInstrument(41, 6, "Violin",       Color.DARKVIOLET);
-        this.addInstrument(61, 7, "French horn",  Color.PURPLE);
+        this.addInstrument(1,  121, "Piano",        Color.SLATEGRAY);
+        this.addInstrument(7,  122, "Harpsichord",  Color.CRIMSON);
+        this.addInstrument(13, 123, "Marimba",      Color.DARKORANGE);
+        this.addInstrument(20, 124, "Church organ", Color.GOLD);
+        this.addInstrument(22, 125, "Accordion",    Color.GREEN);
+        this.addInstrument(25, 126, "Guitar",       Color.BLUE);
+        this.addInstrument(41, 127, "Violin",       Color.DARKVIOLET);
+        this.addInstrument(61, 128, "French horn",  Color.PURPLE);
         
     }
     
