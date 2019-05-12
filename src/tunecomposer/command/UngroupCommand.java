@@ -2,6 +2,7 @@
 package tunecomposer.command;
 
 import tunecomposer.command.SelectionCommand;
+import java.util.Set;
 import java.util.HashSet;
 import tunecomposer.Composition;
 import tunecomposer.Gesture;
@@ -11,17 +12,14 @@ import tunecomposer.TuneRectangle;
  * Command for grouping some TuneRectangles.
  * @author Spencer, Ian
  */
-public class GroupCommand implements Command {
-
+public class UngroupCommand implements Command {
+    
     private final Composition composition;
-    private final Gesture gesture;
+    private final Set<Gesture> gestures;
 
-    public GroupCommand(Composition composition, Gesture newGesture) {
+    public UngroupCommand(Composition composition, Set<Gesture> ungrouped) {
         this.composition = composition;
-        this.gesture = newGesture;
-
-        // Reset selection tracker
-        new SelectionCommand(composition);
+        this.gestures = ungrouped;
     }
 
     /**
@@ -29,9 +27,9 @@ public class GroupCommand implements Command {
      */
     @Override
     public void execute() {
-        // `init` might not be right, we may need to make something new.
-        gesture.init(composition);
-        gesture.updateChildrenParent();
+        for(Gesture g : gestures) {
+            composition.ungroupGesture(g);
+        }
     }
     
     /**
@@ -39,6 +37,8 @@ public class GroupCommand implements Command {
      */
     @Override
     public void unexecute() {
-        composition.ungroupGesture(gesture);
+        for(Gesture g : gestures) {
+            g.init(composition);
+        }
     }
 }

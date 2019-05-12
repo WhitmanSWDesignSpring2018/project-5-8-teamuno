@@ -2,8 +2,8 @@
 package tunecomposer;
 
 import tunecomposer.command.*;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 import javafx.scene.layout.Pane;
 
 /**
@@ -112,31 +112,28 @@ public class Composition {
         // Pass the selection by value, not by reference
         HashSet<TuneRectangle> group = new HashSet<>(selectedRoots);
         Gesture newGesture = new Gesture(this, group);
-        HashSet<Gesture> forCommand = new HashSet<>();
-        forCommand.add(newGesture);
-        TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, true));
-        
+        TuneComposer.history.addNewCommand(new GroupCommand(this, newGesture));
     }
 
     /**
      * Ungroup selected gestures. NoteBars are not affected.
      */
     public void ungroupSelected() {
-        HashSet<HashSet<TuneRectangle>> forCommand = new HashSet<>();
+        HashSet<Gesture> ungrouped = new HashSet<>();
         for(TuneRectangle p : new HashSet<TuneRectangle>(selectedRoots)) {
             if (p instanceof Gesture) {
                 Gesture g = (Gesture) p;
-                selectedRoots.remove(g);
-                g.freeChildren();
-                pane.getChildren().remove(g);
+                ungrouped.add(g);
+                ungroupGesture(g);
                 HashSet<TuneRectangle> children = g.getChildren();
                 children.forEach((child) -> {
                     child.addToSelection();
                 });
-                forCommand.add(children);
             }
         }
-        TuneComposer.history.addNewCommand(new GroupCommand(this, forCommand, false));
+
+        UngroupCommand command = new UngroupCommand(this, ungrouped);
+        TuneComposer.history.addNewCommand(command);
     }
     
     /**
@@ -156,16 +153,19 @@ public class Composition {
     /**
      * Ungroups the given gesture.
      * TODO Refactor GroupCommand and deprecate this
-     * @param Ungroup the gesture to ungroup
-     * @return the old children of the given gesture
+     * @param ungroup the gesture to ungroup
+     * @return the old children of the given gesture, now selected
      */
-    public HashSet<TuneRectangle> ungroupGesture(Gesture Ungroup) {
-        if(selectedRoots.contains(Ungroup)) {
-            selectedRoots.remove(Ungroup);
+    public HashSet<TuneRectangle> ungroupGesture(Gesture ungroup) {
+        if(selectedRoots.contains(ungroup)) {
+            selectedRoots.remove(ungroup);
         }
-        Ungroup.freeChildren();
-        pane.getChildren().remove(Ungroup);
-        HashSet<TuneRectangle> children = Ungroup.getChildren();
+        if(allRoots.contains(ungroup)) {
+            allRoots.remove(ungroup);
+        }
+        pane.getChildren().remove(ungroup);
+        ungroup.freeChildren();
+        HashSet<TuneRectangle> children = ungroup.getChildren();
         children.forEach((child) -> {
             child.addToSelection();
         });
@@ -223,7 +223,9 @@ public class Composition {
         for(NoteBar child : rect.getChildLeaves()){
             child.note.removeFromAllNotes();
         }
-        ((NoteBar) rect).note.removeFromAllNotes();
+        if(rect instanceof NoteBar) {
+            ((NoteBar) rect).note.removeFromAllNotes();
+        }
         allRoots.remove(rect);
     }
     

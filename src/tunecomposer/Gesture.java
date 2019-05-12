@@ -58,6 +58,11 @@ public class Gesture extends TuneRectangle {
         TuneComposer.composition.resetSelectionBounds();
     }
 
+    public void updateChildrenParent() {
+        for(TuneRectangle rect : children) {
+            rect.setParent(this);
+        }
+    }
 
     /**
      * Selects this gesture and everything contained by it.
