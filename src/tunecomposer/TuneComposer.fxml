@@ -44,7 +44,7 @@
               
               <MenuItem fx:id="importButton" 
                         onAction="#handleImportAction" 
-                        text="Open" />
+                        text="Import Midi" />
               
               <SeparatorMenuItem mnemonicParsing="false" />
 
