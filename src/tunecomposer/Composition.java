@@ -330,7 +330,7 @@ public class Composition {
      */
     public void moveSelected(double deltaX, double deltaY) {
         if(selectionLeft + deltaX < 0){deltaX = -selectionLeft;}
-        if(selectionRight + deltaX > Constants.WIDTH){deltaX = Constants.WIDTH-selectionRight;}
+        //if(selectionRight + deltaX > Constants.WIDTH){deltaX = Constants.WIDTH-selectionRight;}
         if(selectionTop + deltaY < 0){deltaY = -selectionTop;}
         if(selectionBottom + deltaY > Constants.HEIGHT){deltaY = Constants.HEIGHT-selectionBottom;}
         for (TuneRectangle rect : selectedRoots) {

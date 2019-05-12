@@ -41,6 +41,16 @@
                         text="Open" />
 
               <SeparatorMenuItem mnemonicParsing="false" />
+              
+              <MenuItem fx:id="importButton" 
+                        onAction="#handleImportAction" 
+                        text="Import Midi" />
+              
+              <MenuItem fx:id="tempoButton" 
+                        onAction="#handleTempoAction" 
+                        text="Change Tempo" />
+              
+              <SeparatorMenuItem mnemonicParsing="false" />
 
               <MenuItem accelerator="Shortcut+Q" 
                         onAction="#handleExitAction" 
@@ -88,6 +98,11 @@
                           accelerator="Shortcut+U" 
                           onAction="#handleUngroup" 
                           text="Ungroup" />
+                
+                <MenuItem fx:id="instrumentButton"
+                          accelerator="Shortcut+I" 
+                          onAction="#handleInstrumentChange" 
+                          text="Change Instruments" />
                 
                 <MenuItem fx:id="undoButton"
                           accelerator="Shortcut+Z" 

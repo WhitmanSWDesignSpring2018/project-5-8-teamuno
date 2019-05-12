@@ -5,10 +5,10 @@
 package tunecomposer;
 import tunecomposer.command.*;
 import java.util.HashSet;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javax.sound.midi.Instrument;
 
 /**
  * Represents a note bar on screen.
@@ -67,7 +67,24 @@ public class NoteBar extends TuneRectangle {
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
         setWidth(note.getDuration());
-        setFill(note.getInstrument().getDisplayColor());
+        setFill(Color.web(note.getInstrument().getDisplayColor().toString()));
+    }
+    
+    /**
+     * changes the instrument of the note and updates the noteBar
+     * @param instrument, the instrument to change to
+     */
+    public void changeInstruments(tunecomposer.Instrument instrument) {
+        note.setInstrument(instrument);
+        update();
+    }
+    
+    /**
+     * gets the instrument of the note of this NoteBar
+     * @return, instrument, the instrument of the note that belongs to this NoteBar
+     */
+    public tunecomposer.Instrument getInstrument(){
+        return note.getInstrument();
     }
 
     /**
@@ -151,6 +168,7 @@ public class NoteBar extends TuneRectangle {
             composition.moveSelected(dragDeltaX, dragDeltaY);
         }
         me.consume();
+        TuneComposer.updateLines();
     }
     /**
      * Handles a mouse release whether that be a note bar width drag, or
@@ -170,6 +188,7 @@ public class NoteBar extends TuneRectangle {
         }
         TuneComposer.menuBar.update();
         me.consume();
+        TuneComposer.updateLines();
     }
     /**
      * Adds a child to the selection if it is not within a gesture.

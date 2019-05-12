@@ -5,6 +5,7 @@
 package tunecomposer;
 
 import tunecomposer.command.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,8 +15,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javafx.animation.Interpolator;
@@ -25,6 +31,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -43,9 +50,12 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 /**
@@ -60,6 +70,8 @@ public class TuneComposer extends Application {
     public static TuneMenuBar menuBar;
     private Stage primaryStage;
     final Clipboard clipboard = Clipboard.getSystemClipboard();
+    private final Instruments instruments = new Instruments();
+    private static HashSet<Line> grayLines;
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -83,9 +95,11 @@ public class TuneComposer extends Application {
     @FXML private MenuItem saveButton;
     @FXML private MenuItem saveAsButton;
     @FXML private MenuItem openButton;
+    @FXML private MenuItem instrumentButton;
  
     private File currentFile;
     private FileChooser fileChooser;
+    private FileChooser importChooser;
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
@@ -106,6 +120,13 @@ public class TuneComposer extends Application {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Compositions", "*.tcom")
         );
+        importChooser = new FileChooser();
+        List<String> toAdd = new ArrayList<>();
+        toAdd.add("*.midi");
+        toAdd.add("*.mid");
+        importChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compositions", toAdd)
+        );
     }
 
     /**
@@ -116,7 +137,7 @@ public class TuneComposer extends Application {
         if (!Note.isEmpty()) {
             player.stop();
             player.clear();
-            Instrument.addAll(player);
+            instruments.addAll(player);
             Note.playAllNotes(player);
             player.play();
 
@@ -143,7 +164,8 @@ public class TuneComposer extends Application {
      */
     private void setupInstruments() {
         boolean first = true;
-        for (Instrument inst : Instrument.values()) {
+        for (Iterator<Instrument> it = instruments.getInstruments().iterator(); it.hasNext();) {
+            Instrument inst = it.next();
             RadioButton rb = new RadioButton();
             rb.setText(inst.getDisplayName());
             rb.setTextFill(inst.getDisplayColor());
@@ -162,6 +184,7 @@ public class TuneComposer extends Application {
      * vertically by LINE_SPACING and have CSS class pitchline.
      */
     private void drawLines() {
+        grayLines = new HashSet<>();
         for (int i = 1; i < Constants.NUM_PITCHES; i++) {
             int ypos = Constants.LINE_SPACING * i;
             Line line = new Line();
@@ -171,9 +194,20 @@ public class TuneComposer extends Application {
             line.setEndY(ypos);
             line.getStyleClass().add("pitchline");
             compositionpane.getChildren().add(line);
+            grayLines.add(line);
         }
     }
-
+    
+    public static void updateLines(){
+        for(Line line : grayLines){
+            line.setEndX(Math.max(Note.getLastTick(), Constants.WIDTH));
+        }
+    }
+    
+    private static void updateTempo(int newTempo){
+        MidiAdapter.changeTempo(newTempo);
+    }
+    
     /**
      * Create the moving play line.
      */
@@ -227,7 +261,8 @@ public class TuneComposer extends Application {
                 newButton,
                 saveButton,
                 saveAsButton,
-                openButton);
+                openButton,
+                instrumentButton);
     }
 
     /**
@@ -253,7 +288,7 @@ public class TuneComposer extends Application {
      * 
      * @return CONFIRMATIONYES, CONFIRMATIONNO, or CONFIRMATIONCANCEL
      */
-    private int ConfirmationAlert() {
+    private int confirmationAlert() {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Unsaved Progress");
             alert.setHeaderText("You have not saved your progress.");
@@ -284,7 +319,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleNewAction(ActionEvent event) {
         if(!history.isSaved()) {
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES){
                 handleSaveAction(event);
                 composition.clearAll();
@@ -374,7 +409,7 @@ public class TuneComposer extends Application {
             final byte[] bytes = Base64.getDecoder().decode(clipboard.getString().getBytes());
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes); 
             ObjectInput in = new ObjectInputStream(bis);
-            Set loadedRects = (HashSet<TuneRectangle>) in.readObject();
+            Set<TuneRectangle> loadedRects = (HashSet<TuneRectangle>) in.readObject();
             composition.clearSelection();
             composition.loadRoots(loadedRects);
             history.addNewCommand(new PasteCommand(composition, loadedRects));
@@ -491,7 +526,7 @@ public class TuneComposer extends Application {
     protected void handleExitAction(ActionEvent event) {
         if (!history.isSaved()) {
             menuBar.notifyWindowOpened();
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
                 System.exit(0);
@@ -562,7 +597,7 @@ public class TuneComposer extends Application {
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
         menuBar.notifyWindowOpened();
         if(!history.isSaved()) {
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
             } else if (choice == CONFIRMATIONNO) {
@@ -579,6 +614,55 @@ public class TuneComposer extends Application {
         load(currentFile);
         menuBar.notifyWindowClosed();
     }
+    
+    @FXML
+    protected void handleImportAction(ActionEvent event) throws ClassNotFoundException, NoteEndNotFoundException {
+        menuBar.notifyWindowOpened();
+        if(!history.isSaved()) {
+            int choice = confirmationAlert();
+            if (choice == CONFIRMATIONYES) {
+                handleSaveAction(event);
+            } else if (choice == CONFIRMATIONNO) {
+                
+            } else {
+                return;
+            }
+        }
+        currentFile = importChooser.showOpenDialog(primaryStage);
+        loadMidi(currentFile);
+        currentFile = null;
+        menuBar.notifyWindowClosed();
+    }
+    
+    @FXML
+    protected void handleTempoAction(ActionEvent event){
+        menuBar.notifyWindowOpened();
+        TextInputDialog dialog = new TextInputDialog("5");
+        dialog.setTitle("Import Tempo Dialog");
+        dialog.setContentText("Please enter the Tempo you would like for your Import (0-50):");
+
+        // Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            int newTempo = 5;
+            try{
+            newTempo = Integer.parseInt(result.get());
+            }
+            catch(NumberFormatException e){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("Invalid Input");
+                alert.setContentText("Please input an integer between 0 and 50");
+
+                alert.showAndWait();
+            }
+            updateTempo(newTempo);
+            menuBar.notifyWindowClosed();
+        }
+        
+        menuBar.notifyWindowClosed();
+    }
+    
     
     /**
      * Deserializes notes from a given file.
@@ -605,6 +689,15 @@ public class TuneComposer extends Application {
             System.out.println(e.getStackTrace());
         }
         menuBar.update();
+    }
+    
+    private void loadMidi(File file) throws ClassNotFoundException, NoteEndNotFoundException {
+        composition.clearAll();
+        composition.clearSelection();
+        history.clear();
+        MidiAdapter.importMidi(file, composition, instruments);
+        menuBar.update();
+        updateLines();
     }
 
     /**
@@ -668,6 +761,21 @@ public class TuneComposer extends Application {
         }
     }
     
+    @FXML
+    protected void handleInstrumentChange(ActionEvent event){
+        RadioButton instButton = (RadioButton)instrumentgroup.getSelectedToggle();
+        Instrument instrument = (Instrument)instButton.getUserData();
+        Map <NoteBar, Instrument> firstInsts = new HashMap<NoteBar, Instrument>();
+        for(TuneRectangle rect : composition.getSelectedRoots()){
+            for(NoteBar bar : rect.getChildLeaves()){
+                firstInsts.put(bar, bar.getInstrument());
+            }
+            rect.changeInstruments(instrument);
+        }
+        history.addNewCommand(new InstrumentCommand((HashSet<TuneRectangle>) composition.getSelectedRoots(), instrument, firstInsts));
+    }
+    
+    
     /**
      * When the user clicks in the composition pane, add a note.
      * @param event the mouse click event
@@ -689,6 +797,7 @@ public class TuneComposer extends Application {
         }
         menuBar.update();
         event.consume();
+        updateLines();
     }
 
     /**

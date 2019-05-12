@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 package tunecomposer;
+import java.util.HashSet;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 
 
 /**
@@ -31,6 +33,7 @@ public class TuneMenuBar {
     private MenuItem saveButton;
     private MenuItem saveAsButton;
     private MenuItem openButton;
+    private MenuItem instrumentButton;
     
     public TuneMenuBar (
             Composition composition,
@@ -50,7 +53,8 @@ public class TuneMenuBar {
             MenuItem newButton,
             MenuItem saveButton,
             MenuItem saveAsButton,
-            MenuItem openButton) {
+            MenuItem openButton,
+            MenuItem instrumentButton) {
 
         this.composition        = composition;
         this.stopButton         = stopButton;
@@ -70,6 +74,7 @@ public class TuneMenuBar {
         this.saveButton         = saveButton;
         this.saveAsButton       = saveAsButton;
         this.openButton         = openButton;
+        this.instrumentButton   = instrumentButton;
 
         setup();
     }
@@ -92,6 +97,7 @@ public class TuneMenuBar {
         disable(newButton);
         disable(saveButton);
         disable(saveAsButton);
+        disable(instrumentButton);
     }
 
     /**
@@ -106,6 +112,7 @@ public class TuneMenuBar {
         updateCopyCut();
         updateNew();
         updateSave();
+        updateInstrument();
     }
     
     /**
@@ -172,6 +179,22 @@ public class TuneMenuBar {
     private void updateSave() {
         saveButton.setDisable(TuneComposer.history.isSaved());
         saveAsButton.setDisable(TuneComposer.history.isSaved());
+    }
+    
+    /**
+     * updates the change Instrument Button.
+     */
+    private void updateInstrument(){
+        instrumentButton.setDisable(composition.getSelectionSize() == 0);
+//        HashSet<Instrument> instruments = new HashSet<Instrument>(); TODO: maybe update button based on selected RadioButton?
+//        for(TuneRectangle rect : composition.getSelectedRoots()){
+//            for(NoteBar bar : rect.getChildLeaves()){
+//                instruments.add(bar.getInstrument());
+//            }
+//        }
+//        RadioButton instButton = (RadioButton)instrumentgroup.getSelectedToggle();
+//        Instrument instrument = (Instrument)instButton.getUserData();
+//        instrumentButton.setDisable(composition.getSelectionSize() == 0);
     }
     
     /**
