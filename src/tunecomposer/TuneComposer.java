@@ -65,6 +65,7 @@ public class TuneComposer extends Application {
     private Stage primaryStage;
     final Clipboard clipboard = Clipboard.getSystemClipboard();
     private final Instruments instruments = new Instruments();
+    private HashSet<Line> grayLines;
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -176,6 +177,7 @@ public class TuneComposer extends Application {
      * vertically by LINE_SPACING and have CSS class pitchline.
      */
     private void drawLines() {
+        grayLines = new HashSet<>();
         for (int i = 1; i < Constants.NUM_PITCHES; i++) {
             int ypos = Constants.LINE_SPACING * i;
             Line line = new Line();
@@ -185,6 +187,13 @@ public class TuneComposer extends Application {
             line.setEndY(ypos);
             line.getStyleClass().add("pitchline");
             compositionpane.getChildren().add(line);
+            grayLines.add(line);
+        }
+    }
+    
+    private void updateLines(){
+        for(Line line : grayLines){
+            line.setEndX(Note.getLastTick());
         }
     }
 
@@ -648,6 +657,7 @@ public class TuneComposer extends Application {
         System.out.println("loadMidi");
         MidiAdapter.importMidi(file, composition, instruments);
         menuBar.update();
+        updateLines();
     }
 
     /**
