@@ -152,6 +152,7 @@ public class NoteBar extends TuneRectangle {
             composition.moveSelected(dragDeltaX, dragDeltaY);
         }
         me.consume();
+        TuneComposer.updateLines();
     }
     /**
      * Handles a mouse release whether that be a note bar width drag, or
@@ -171,6 +172,7 @@ public class NoteBar extends TuneRectangle {
         }
         TuneComposer.menuBar.update();
         me.consume();
+        TuneComposer.updateLines();
     }
     /**
      * Adds a child to the selection if it is not within a gesture.

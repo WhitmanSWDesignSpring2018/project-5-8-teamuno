@@ -65,7 +65,7 @@ public class TuneComposer extends Application {
     private Stage primaryStage;
     final Clipboard clipboard = Clipboard.getSystemClipboard();
     private final Instruments instruments = new Instruments();
-    private HashSet<Line> grayLines;
+    private static HashSet<Line> grayLines;
 
     @FXML private Pane compositionpane;
     @FXML private Pane instrumentpane;
@@ -191,9 +191,9 @@ public class TuneComposer extends Application {
         }
     }
     
-    private void updateLines(){
+    public static void updateLines(){
         for(Line line : grayLines){
-            line.setEndX(Note.getLastTick());
+            line.setEndX(Math.max(Note.getLastTick(), Constants.WIDTH));
         }
     }
 
@@ -742,6 +742,7 @@ public class TuneComposer extends Application {
         }
         menuBar.update();
         event.consume();
+        updateLines();
     }
 
     /**
