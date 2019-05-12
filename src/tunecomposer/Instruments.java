@@ -24,14 +24,14 @@ public class Instruments {
     
     
     public Instruments(){
-        this.addInstrument(1,  121, "Piano",        Color.SLATEGRAY);
-        this.addInstrument(7,  122, "Harpsichord",  Color.CRIMSON);
-        this.addInstrument(13, 123, "Marimba",      Color.DARKORANGE);
-        this.addInstrument(20, 124, "Church organ", Color.GOLD);
-        this.addInstrument(22, 125, "Accordion",    Color.GREEN);
-        this.addInstrument(25, 126, "Guitar",       Color.BLUE);
-        this.addInstrument(41, 127, "Violin",       Color.DARKVIOLET);
-        this.addInstrument(61, 128, "French horn",  Color.PURPLE);
+        this.addInstrument(1,  1, "Piano",        Color.SLATEGRAY);
+        this.addInstrument(7,  2, "Harpsichord",  Color.CRIMSON);
+        this.addInstrument(13, 3, "Marimba",      Color.DARKORANGE);
+        this.addInstrument(20, 4, "Church organ", Color.GOLD);
+        this.addInstrument(22, 5, "Accordion",    Color.GREEN);
+        this.addInstrument(25, 6, "Guitar",       Color.BLUE);
+        this.addInstrument(41, 7, "Violin",       Color.DARKVIOLET);
+        this.addInstrument(61, 8, "French horn",  Color.PURPLE);
         
     }
     

@@ -42,7 +42,7 @@ public class MidiAdapter {
                 System.out.println("start tick: " + startTick);
                 System.out.println("duration: " + duration);
                 System.out.println("-----------------------");
-                makeNoteBar(key, startTick, duration, composition, instruments);
+                //makeNoteBar(key, startTick, duration, composition, instruments);
             }
         }
     }
