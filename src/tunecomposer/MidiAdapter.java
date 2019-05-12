@@ -19,6 +19,7 @@ public class MidiAdapter {
     private static final int NOTE_OFF = ShortMessage.NOTE_OFF;
 
     public static void importMidi(File midiFile, Composition composition, Instruments instruments) throws NoteEndNotFoundException {
+        System.out.println("importMidi");
         Sequence sequence = makeSequence(midiFile);
         Track[] tracks = sequence.getTracks();
         for (Track t : tracks) {
@@ -36,13 +37,13 @@ public class MidiAdapter {
                 ShortMessage startMessage = (ShortMessage) startEvent.getMessage();
 
                 int key = startMessage.getData1();
-                int startTick = startEvent.getTick();
+                int startTick = (int) startEvent.getTick();
                 long duration = endEvent.getTick() - startEvent.getTick();
                 System.out.println("key: " + key);
                 System.out.println("start tick: " + startTick);
                 System.out.println("duration: " + duration);
                 System.out.println("-----------------------");
-                //makeNoteBar(key, startTick, duration, composition, instruments);
+                makeNoteBar(key, startTick, duration, composition, instruments);
             }
         }
     }

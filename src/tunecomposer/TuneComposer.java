@@ -607,13 +607,9 @@ public class TuneComposer extends Application {
                 return;
             }
         }
-        importChooser.showOpenDialog(primaryStage);
-        currentFile = null;
-        if(currentFile == null) {
-            menuBar.notifyWindowClosed();
-            return;
-        }
+        currentFile = importChooser.showOpenDialog(primaryStage);
         loadMidi(currentFile);
+        currentFile = null;
         menuBar.notifyWindowClosed();
     }
     
@@ -649,6 +645,7 @@ public class TuneComposer extends Application {
         composition.clearAll();
         composition.clearSelection();
         history.clear();
+        System.out.println("loadMidi");
         MidiAdapter.importMidi(file, composition, instruments);
         menuBar.update();
     }
