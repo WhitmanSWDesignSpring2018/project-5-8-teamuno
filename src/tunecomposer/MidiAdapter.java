@@ -36,7 +36,7 @@ public class MidiAdapter {
                 ShortMessage startMessage = (ShortMessage) startEvent.getMessage();
 
                 int key = startMessage.getData1();
-                long startTick = startEvent.getTick();
+                int startTick = startEvent.getTick();
                 long duration = endEvent.getTick() - startEvent.getTick();
                 System.out.println("key: " + key);
                 System.out.println("start tick: " + startTick);
