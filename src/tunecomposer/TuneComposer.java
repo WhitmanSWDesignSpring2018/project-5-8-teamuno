@@ -31,6 +31,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -49,9 +50,12 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 /**
@@ -198,6 +202,10 @@ public class TuneComposer extends Application {
         for(Line line : grayLines){
             line.setEndX(Math.max(Note.getLastTick(), Constants.WIDTH));
         }
+    }
+    
+    private static void updateTempo(int newTempo){
+        MidiAdapter.changeTempo(newTempo);
     }
     
     /**
@@ -623,6 +631,35 @@ public class TuneComposer extends Application {
         currentFile = importChooser.showOpenDialog(primaryStage);
         loadMidi(currentFile);
         currentFile = null;
+        menuBar.notifyWindowClosed();
+    }
+    
+    @FXML
+    protected void handleTempoAction(ActionEvent event){
+        menuBar.notifyWindowOpened();
+        TextInputDialog dialog = new TextInputDialog("5");
+        dialog.setTitle("Import Tempo Dialog");
+        dialog.setContentText("Please enter the Tempo you would like for your Import (0-50):");
+
+        // Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            int newTempo = 5;
+            try{
+            newTempo = Integer.parseInt(result.get());
+            }
+            catch(NumberFormatException e){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("Invalid Input");
+                alert.setContentText("Please input an integer between 0 and 50");
+
+                alert.showAndWait();
+            }
+            updateTempo(newTempo);
+            menuBar.notifyWindowClosed();
+        }
+        
         menuBar.notifyWindowClosed();
     }
     

@@ -17,7 +17,7 @@ public class MidiAdapter {
 
     private static final int NOTE_ON = ShortMessage.NOTE_ON;
     private static final int NOTE_OFF = ShortMessage.NOTE_OFF;
-    private static final int TEMPO_FACTOR = 5;
+    private static int TEMPO_FACTOR = 5;
 
     public static void importMidi(File midiFile, Composition composition, Instruments instruments) throws NoteEndNotFoundException {
         Sequence sequence = makeSequence(midiFile);
@@ -128,5 +128,9 @@ public class MidiAdapter {
             events.add(track.get(i));
         }
         return events;
+    }
+    
+    public static void changeTempo(int newTempo){
+        TEMPO_FACTOR = newTempo;
     }
 }

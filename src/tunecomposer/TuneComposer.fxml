@@ -46,6 +46,10 @@
                         onAction="#handleImportAction" 
                         text="Import Midi" />
               
+              <MenuItem fx:id="tempoButton" 
+                        onAction="#handleTempoAction" 
+                        text="Change Tempo" />
+              
               <SeparatorMenuItem mnemonicParsing="false" />
 
               <MenuItem accelerator="Shortcut+Q" 
