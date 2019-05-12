@@ -5,7 +5,10 @@
  */
 package tunecomposer;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import javafx.scene.paint.Color;
@@ -16,8 +19,8 @@ import javax.sound.midi.ShortMessage;
  */
 public class Instruments {
     
-    private HashSet<Instrument> instruments = new HashSet();
-    private HashSet<Color> usedColors = new HashSet();
+    private final ArrayList<Instrument> instruments = new ArrayList<>();
+    private HashSet<Color> usedColors = new HashSet<>();
     private final static Random r = new Random();
     
     
@@ -34,8 +37,8 @@ public class Instruments {
         
     }
     
-    public Set<Instrument> getInstruments(){
-        return new HashSet<Instrument>(instruments);
+    public List<Instrument> getInstruments(){
+        return new ArrayList<Instrument>(instruments);
     }
             
     private void addInstrument(int midiProgram, int channel, 

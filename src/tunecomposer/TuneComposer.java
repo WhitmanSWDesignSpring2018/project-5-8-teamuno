@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javafx.animation.Interpolator;
@@ -88,6 +91,7 @@ public class TuneComposer extends Application {
  
     private File currentFile;
     private FileChooser fileChooser;
+    private FileChooser importChooser;
     private Line playLine;
     private TranslateTransition playAnimation;
     private Rectangle selectionRect;
@@ -107,6 +111,13 @@ public class TuneComposer extends Application {
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Compositions", "*.tcom")
+        );
+        importChooser = new FileChooser();
+        List<String> toAdd = new ArrayList<>();
+        toAdd.add("*.midi");
+        toAdd.add("*.mid");
+        importChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Compositions", toAdd)
         );
     }
 
@@ -145,7 +156,8 @@ public class TuneComposer extends Application {
      */
     private void setupInstruments() {
         boolean first = true;
-        for (Instrument inst : instruments.getInstruments()) {
+        for (Iterator<Instrument> it = instruments.getInstruments().iterator(); it.hasNext();) {
+            Instrument inst = it.next();
             RadioButton rb = new RadioButton();
             rb.setText(inst.getDisplayName());
             rb.setTextFill(inst.getDisplayColor());
@@ -595,12 +607,13 @@ public class TuneComposer extends Application {
                 return;
             }
         }
-//        currentFile = importFileChooser.showOpenDialog(primaryStage);
-//        if(currentFile == null) {
-//            menuBar.notifyWindowClosed();
-//            return;
-//        }
-//        import(currentFile);
+        importChooser.showOpenDialog(primaryStage);
+        currentFile = null;
+        if(currentFile == null) {
+            menuBar.notifyWindowClosed();
+            return;
+        }
+        loadMidi(currentFile);
         menuBar.notifyWindowClosed();
     }
     
@@ -629,6 +642,13 @@ public class TuneComposer extends Application {
         }catch(IOException e){
             System.out.println(e.getStackTrace());
         }
+        menuBar.update();
+    }
+    
+    private void loadMidi(File file) throws ClassNotFoundException {
+        composition.clearAll();
+        composition.clearSelection();
+        history.clear();
         menuBar.update();
     }
 
