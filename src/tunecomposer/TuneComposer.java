@@ -267,7 +267,7 @@ public class TuneComposer extends Application {
      * 
      * @return CONFIRMATIONYES, CONFIRMATIONNO, or CONFIRMATIONCANCEL
      */
-    private int ConfirmationAlert() {
+    private int confirmationAlert() {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Unsaved Progress");
             alert.setHeaderText("You have not saved your progress.");
@@ -298,7 +298,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleNewAction(ActionEvent event) {
         if(!history.isSaved()) {
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES){
                 handleSaveAction(event);
                 composition.clearAll();
@@ -388,7 +388,7 @@ public class TuneComposer extends Application {
             final byte[] bytes = Base64.getDecoder().decode(clipboard.getString().getBytes());
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes); 
             ObjectInput in = new ObjectInputStream(bis);
-            Set loadedRects = (HashSet<TuneRectangle>) in.readObject();
+            Set<TuneRectangle> loadedRects = (HashSet<TuneRectangle>) in.readObject();
             composition.clearSelection();
             composition.loadRoots(loadedRects);
             history.addNewCommand(new PasteCommand(composition, loadedRects));
@@ -505,7 +505,7 @@ public class TuneComposer extends Application {
     protected void handleExitAction(ActionEvent event) {
         if (!history.isSaved()) {
             menuBar.notifyWindowOpened();
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
                 System.exit(0);
@@ -576,7 +576,7 @@ public class TuneComposer extends Application {
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
         menuBar.notifyWindowOpened();
         if(!history.isSaved()) {
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
             } else if (choice == CONFIRMATIONNO) {
@@ -595,10 +595,10 @@ public class TuneComposer extends Application {
     }
     
     @FXML
-    protected void handleImportAction(ActionEvent event) throws ClassNotFoundException {
+    protected void handleImportAction(ActionEvent event) throws ClassNotFoundException, NoteEndNotFoundException {
         menuBar.notifyWindowOpened();
         if(!history.isSaved()) {
-            int choice = ConfirmationAlert();
+            int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
             } else if (choice == CONFIRMATIONNO) {
@@ -645,10 +645,11 @@ public class TuneComposer extends Application {
         menuBar.update();
     }
     
-    private void loadMidi(File file) throws ClassNotFoundException {
+    private void loadMidi(File file) throws ClassNotFoundException, NoteEndNotFoundException {
         composition.clearAll();
         composition.clearSelection();
         history.clear();
+        MidiAdapter.importMidi(file, composition, instruments);
         menuBar.update();
     }
 
