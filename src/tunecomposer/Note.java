@@ -66,6 +66,10 @@ public class Note implements Serializable {
         ALL_NOTES.remove(this);
     }
     
+    /**
+     * sets the instrument of this note
+     * @param instrument, the note to set to
+     */
     public void setInstrument(tunecomposer.Instrument instrument){
         this.instrument = instrument;
     }

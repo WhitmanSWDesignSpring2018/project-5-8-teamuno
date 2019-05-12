@@ -70,11 +70,19 @@ public class NoteBar extends TuneRectangle {
         setFill(Color.web(note.getInstrument().getDisplayColor().toString()));
     }
     
+    /**
+     * changes the instrument of the note and updates the noteBar
+     * @param instrument, the instrument to change to
+     */
     public void changeInstruments(tunecomposer.Instrument instrument) {
         note.setInstrument(instrument);
         update();
     }
     
+    /**
+     * gets the instrument of the note of this NoteBar
+     * @return, instrument, the instrument of the note that belongs to this NoteBar
+     */
     public tunecomposer.Instrument getInstrument(){
         return note.getInstrument();
     }

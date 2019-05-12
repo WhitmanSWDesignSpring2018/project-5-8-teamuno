@@ -181,6 +181,9 @@ public class TuneMenuBar {
         saveAsButton.setDisable(TuneComposer.history.isSaved());
     }
     
+    /**
+     * updates the change Instrument Button.
+     */
     private void updateInstrument(){
         instrumentButton.setDisable(composition.getSelectionSize() == 0);
 //        HashSet<Instrument> instruments = new HashSet<Instrument>(); TODO: maybe update button based on selected RadioButton?

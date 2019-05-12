@@ -134,6 +134,10 @@ public class Gesture extends TuneRectangle {
         }
     }
     
+    /**
+     * Changes the instruments of all NoteBars in this Gesture
+     * @param instrument, the instrument to change to
+     */
     public void changeInstruments(Instrument instrument){
         for(TuneRectangle child : children){
             child.changeInstruments(instrument);

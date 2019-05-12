@@ -29,7 +29,7 @@ public class InstrumentCommand implements Command {
     }
     
     /**
-     * Deletes the note.
+     * Redoes the change.
      */
     @Override
     public void execute() {
@@ -39,7 +39,7 @@ public class InstrumentCommand implements Command {
     }
 
     /**
-     * Undeletes the note.
+     * Undoes the change.
      */
     @Override
     public void unexecute() {
