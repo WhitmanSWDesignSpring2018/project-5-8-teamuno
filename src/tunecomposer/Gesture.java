@@ -133,6 +133,12 @@ public class Gesture extends TuneRectangle {
             child.updateNoteMoved();
         }
     }
+    
+    public void changeInstruments(Instrument instrument){
+        for(TuneRectangle child : children){
+            child.changeInstruments(instrument);
+        }
+    }
 
     /**
      * Stores the current location of this gesture. Used for dragging.

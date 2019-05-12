@@ -20,7 +20,8 @@ class Constants {
     public static final int DURATION = 100;
     
     public static final int WIDTH = DURATION * 20;
-    public static final int HEIGHT = NUM_PITCHES * LINE_SPACING;    
+    public static final int HEIGHT = NUM_PITCHES * LINE_SPACING;
+    public static final int MIDI_PLAYER_SPEED = 100;    
     
     /**
      * Convert a y coordinate to the nearest pitch.

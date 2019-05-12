@@ -5,11 +5,10 @@
 package tunecomposer;
 import tunecomposer.command.*;
 import java.util.HashSet;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javax.sound.midi.Instrument;
 
 /**
  * Represents a note bar on screen.
@@ -68,7 +67,16 @@ public class NoteBar extends TuneRectangle {
         setY(Constants.LINE_SPACING
              * (Constants.NUM_PITCHES - note.getPitch() - 1));
         setWidth(note.getDuration());
-        setFill(Color.web(note.getInstrument().getDisplayColor().toString())); // this is broken, doesnt like new color format TODO fix it
+        setFill(Color.web(note.getInstrument().getDisplayColor().toString()));
+    }
+    
+    public void changeInstruments(tunecomposer.Instrument instrument) {
+        note.setInstrument(instrument);
+        update();
+    }
+    
+    public tunecomposer.Instrument getInstrument(){
+        return note.getInstrument();
     }
 
     /**

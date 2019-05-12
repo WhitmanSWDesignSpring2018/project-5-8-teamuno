@@ -95,6 +95,11 @@
                           onAction="#handleUngroup" 
                           text="Ungroup" />
                 
+                <MenuItem fx:id="instrumentButton"
+                          accelerator="Shortcut+I" 
+                          onAction="#handleInstrumentChange" 
+                          text="Change Instruments" />
+                
                 <MenuItem fx:id="undoButton"
                           accelerator="Shortcut+Z" 
                           onAction="#handleUndo" 

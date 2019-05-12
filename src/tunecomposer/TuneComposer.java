@@ -17,9 +17,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javafx.animation.Interpolator;
@@ -89,6 +91,7 @@ public class TuneComposer extends Application {
     @FXML private MenuItem saveButton;
     @FXML private MenuItem saveAsButton;
     @FXML private MenuItem openButton;
+    @FXML private MenuItem instrumentButton;
  
     private File currentFile;
     private FileChooser fileChooser;
@@ -196,7 +199,7 @@ public class TuneComposer extends Application {
             line.setEndX(Math.max(Note.getLastTick(), Constants.WIDTH));
         }
     }
-
+    
     /**
      * Create the moving play line.
      */
@@ -250,7 +253,8 @@ public class TuneComposer extends Application {
                 newButton,
                 saveButton,
                 saveAsButton,
-                openButton);
+                openButton,
+                instrumentButton);
     }
 
     /**
@@ -654,7 +658,6 @@ public class TuneComposer extends Application {
         composition.clearAll();
         composition.clearSelection();
         history.clear();
-        System.out.println("loadMidi");
         MidiAdapter.importMidi(file, composition, instruments);
         menuBar.update();
         updateLines();
@@ -720,6 +723,21 @@ public class TuneComposer extends Application {
             }
         }
     }
+    
+    @FXML
+    protected void handleInstrumentChange(ActionEvent event){
+        RadioButton instButton = (RadioButton)instrumentgroup.getSelectedToggle();
+        Instrument instrument = (Instrument)instButton.getUserData();
+        Map <NoteBar, Instrument> firstInsts = new HashMap<NoteBar, Instrument>();
+        for(TuneRectangle rect : composition.getSelectedRoots()){
+            for(NoteBar bar : rect.getChildLeaves()){
+                firstInsts.put(bar, bar.getInstrument());
+            }
+            rect.changeInstruments(instrument);
+        }
+        history.addNewCommand(new InstrumentCommand((HashSet<TuneRectangle>) composition.getSelectedRoots(), instrument, firstInsts));
+    }
+    
     
     /**
      * When the user clicks in the composition pane, add a note.

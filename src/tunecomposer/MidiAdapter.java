@@ -17,17 +17,17 @@ public class MidiAdapter {
 
     private static final int NOTE_ON = ShortMessage.NOTE_ON;
     private static final int NOTE_OFF = ShortMessage.NOTE_OFF;
+    private static final int TEMPO_FACTOR = 5;
 
     public static void importMidi(File midiFile, Composition composition, Instruments instruments) throws NoteEndNotFoundException {
-        System.out.println("importMidi");
         Sequence sequence = makeSequence(midiFile);
         Track[] tracks = sequence.getTracks();
         for (Track t : tracks) {
-            trackToNotes(t, composition, instruments);
+            trackToNotes(t, composition, instruments, sequence);
         }
     }
 
-    private static void trackToNotes(Track track, Composition composition, Instruments instruments) throws NoteEndNotFoundException {
+    private static void trackToNotes(Track track, Composition composition, Instruments instruments, Sequence sequence) throws NoteEndNotFoundException {
         List<MidiEvent> events = eventsFromTrack(track);
         for (int i=0; i<events.size(); i++) {
             MidiEvent startEvent = events.get(i);
@@ -37,22 +37,27 @@ public class MidiAdapter {
                 ShortMessage startMessage = (ShortMessage) startEvent.getMessage();
 
                 int key = startMessage.getData1();
-                int startTick = (int) startEvent.getTick()/5;
-                long duration = endEvent.getTick() - startEvent.getTick()/5;
-                System.out.println("key: " + key);
-                System.out.println("start tick: " + startTick);
-                System.out.println("duration: " + duration);
-                System.out.println("-----------------------");
-                makeNoteBar(key, startTick, duration, composition, instruments);
+                int startTick = (int) startEvent.getTick()/TEMPO_FACTOR;
+                long duration = endEvent.getTick() - startEvent.getTick()/TEMPO_FACTOR;
+                int channel = startMessage.getChannel();
+                int velocity = startMessage.getData2();
+                
+//                System.out.println("key: " + key);
+//                System.out.println("start tick: " + startTick);
+//                System.out.println("duration: " + duration);
+//                System.out.println("channel: " + channel);
+//                System.out.println("velocity: " + velocity);
+//                System.out.println("-----------------------");
+                makeNoteBar(key, startTick, duration, velocity, channel, composition, instruments);
             }
         }
     }
 
-    private static void makeNoteBar(int pitch, int startTick, long duration, Composition composition, Instruments instruments) {
+    private static void makeNoteBar(int pitch, int startTick, long duration, int velocity, int channel, Composition composition, Instruments instruments) {
         // Get 'piano' instrument
         Instrument instrument = instruments.getInstruments().get(0);
 
-        Note note = new Note(pitch, startTick, instrument, duration);
+        Note note = new Note(pitch, instrument, startTick, duration, velocity);
         NoteBar noteBar = new NoteBar(note, composition);
     }
 

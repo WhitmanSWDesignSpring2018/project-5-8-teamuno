@@ -21,7 +21,9 @@ public class Note implements Serializable {
     private int pitch;
     private int startTick;
     private int duration;
-    private final Instrument instrument;
+    private int velocity;
+    private int channel = -1;
+    private Instrument instrument;
 
     /**
      * Creates a new note.
@@ -36,13 +38,15 @@ public class Note implements Serializable {
         this.startTick = startTick;
         this.duration = Constants.DURATION;
         this.instrument = instrument;
+        this.velocity = VOLUME;
     }
     
-    public Note(int pitch, int startTick, Instrument instrument, long duration) {
+    public Note(int pitch, Instrument instrument, int startTick, long duration, int velocity) {
         ALL_NOTES.add(this);
         this.pitch = pitch;
         this.startTick = startTick;
         this.duration = (int) duration;
+        this.velocity = velocity;
         this.instrument = instrument;
     }
 
@@ -60,6 +64,10 @@ public class Note implements Serializable {
     
     public void removeFromAllNotes(){
         ALL_NOTES.remove(this);
+    }
+    
+    public void setInstrument(tunecomposer.Instrument instrument){
+        this.instrument = instrument;
     }
 
     /**
@@ -142,8 +150,11 @@ public class Note implements Serializable {
      * @param player the player to which this note should be added
      */
     public void addToPlayer(MidiPlayer player) {
-        player.addNote(pitch, VOLUME, startTick, duration,
-                       instrument.getChannel(), TRACK);
+        if(channel == -1){
+            channel = instrument.getChannel();
+        }
+        player.addNote(pitch, this.velocity, startTick, duration,
+                       channel, TRACK);
     }
 
     /**

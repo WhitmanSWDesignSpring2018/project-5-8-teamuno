@@ -40,6 +40,9 @@ public abstract class TuneRectangle extends Rectangle implements Serializable {
      * Makes this no longer appear selected.
      */
     abstract public void removeSelectStyle();
+    
+    
+    abstract public void changeInstruments(Instrument instrument);
 
     /**
      * Gets the NoteBars in this tree, possibly including this.
