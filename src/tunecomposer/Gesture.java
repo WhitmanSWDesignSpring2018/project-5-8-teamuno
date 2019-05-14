@@ -39,14 +39,17 @@ public class Gesture extends TuneRectangle {
             TuneComposer.composition.remove(child);
         }
         init(composition);
+        for(TuneRectangle child : children) {
+            TuneComposer.composition.removeFromSelection(child);
+            TuneComposer.composition.removeFromAllRoots(child);
+        }
+        System.out.println(composition.getRoots());
     }
     
     public void init(Composition composition) {
         this.composition = composition;
         for(TuneRectangle child : children) {
-            if(!composition.contains(child)){
-                child.init(composition);
-            }
+            child.init(composition);
         }
         TuneComposer.composition.add(this);
         this.setMouseTransparent(true);

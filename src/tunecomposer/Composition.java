@@ -223,7 +223,13 @@ public class Composition {
         for(NoteBar child : rect.getChildLeaves()){
             child.note.removeFromAllNotes();
         }
-        ((NoteBar) rect).note.removeFromAllNotes();
+        if(rect instanceof NoteBar){
+            ((NoteBar) rect).note.removeFromAllNotes();
+        }
+        allRoots.remove(rect);
+    }
+    
+    public void removeFromAllRoots(TuneRectangle rect) {
         allRoots.remove(rect);
     }
     
