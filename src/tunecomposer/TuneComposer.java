@@ -70,7 +70,6 @@ public class TuneComposer extends Application {
     public static TuneMenuBar menuBar;
     private Stage primaryStage;
     final Clipboard clipboard = Clipboard.getSystemClipboard();
-    private final Instruments instruments = new Instruments();
     private static HashSet<Line> grayLines;
 
     @FXML private Pane compositionpane;
@@ -137,7 +136,7 @@ public class TuneComposer extends Application {
         if (!Note.isEmpty()) {
             player.stop();
             player.clear();
-            instruments.addAll(player);
+            Instrument.addAll(player);
             Note.playAllNotes(player);
             player.play();
 
@@ -164,8 +163,7 @@ public class TuneComposer extends Application {
      */
     private void setupInstruments() {
         boolean first = true;
-        for (Iterator<Instrument> it = instruments.getInstruments().iterator(); it.hasNext();) {
-            Instrument inst = it.next();
+        for (Instrument inst : Instrument.values()) {
             RadioButton rb = new RadioButton();
             rb.setText(inst.getDisplayName());
             rb.setTextFill(inst.getDisplayColor());
@@ -177,7 +175,7 @@ public class TuneComposer extends Application {
                 first = false;
             }
         }
-    }
+}
 
     /**
      * Draws horizontal lines in the background.  The lines are spaced
@@ -706,7 +704,7 @@ public class TuneComposer extends Application {
         composition.clearAll();
         composition.clearSelection();
         history.clear();
-        MidiAdapter.importMidi(file, composition, instruments);
+        MidiAdapter.importMidi(file, composition);
         menuBar.update();
         updateLines();
     }
