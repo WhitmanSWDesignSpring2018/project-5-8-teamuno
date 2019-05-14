@@ -629,6 +629,9 @@ public class TuneComposer extends Application {
             }
         }
         currentFile = importChooser.showOpenDialog(primaryStage);
+        if(currentFile == null){
+            return;
+        }
         loadMidi(currentFile);
         currentFile = null;
         menuBar.notifyWindowClosed();
@@ -649,6 +652,14 @@ public class TuneComposer extends Application {
             newTempo = Integer.parseInt(result.get());
             }
             catch(NumberFormatException e){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("Invalid Input");
+                alert.setContentText("Please input an integer");
+
+                alert.showAndWait();
+            }
+            if(newTempo>50 || newTempo<1){
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");
                 alert.setHeaderText("Invalid Input");
