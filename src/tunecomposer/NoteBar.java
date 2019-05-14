@@ -46,7 +46,7 @@ public class NoteBar extends TuneRectangle {
         composition.add(this);
         ALLNOTEBARS.add(this);
         addToSelection();
-    }
+}
     
     /**
      * Hides this NoteBar from the composition pane.
