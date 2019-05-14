@@ -19,15 +19,15 @@ public class MidiAdapter {
     private static final int NOTE_OFF = ShortMessage.NOTE_OFF;
     private static int TEMPO_FACTOR = 5;
 
-    public static void importMidi(File midiFile, Composition composition, Instruments instruments) throws NoteEndNotFoundException {
+    public static void importMidi(File midiFile, Composition composition) throws NoteEndNotFoundException {
         Sequence sequence = makeSequence(midiFile);
         Track[] tracks = sequence.getTracks();
         for (Track t : tracks) {
-            trackToNotes(t, composition, instruments, sequence);
+            trackToNotes(t, composition, sequence);
         }
     }
 
-    private static void trackToNotes(Track track, Composition composition, Instruments instruments, Sequence sequence) throws NoteEndNotFoundException {
+    private static void trackToNotes(Track track, Composition composition, Sequence sequence) throws NoteEndNotFoundException {
         List<MidiEvent> events = eventsFromTrack(track);
         for (int i=0; i<events.size(); i++) {
             MidiEvent startEvent = events.get(i);
@@ -48,14 +48,14 @@ public class MidiAdapter {
 //                System.out.println("channel: " + channel);
 //                System.out.println("velocity: " + velocity);
 //                System.out.println("-----------------------");
-                makeNoteBar(key, startTick, duration, velocity, channel, composition, instruments);
+                makeNoteBar(key, startTick, duration, velocity, channel, composition);
             }
         }
     }
 
-    private static void makeNoteBar(int pitch, int startTick, long duration, int velocity, int channel, Composition composition, Instruments instruments) {
+    private static void makeNoteBar(int pitch, int startTick, long duration, int velocity, int channel, Composition composition) {
         // Get 'piano' instrument
-        Instrument instrument = instruments.getInstruments().get(0);
+        Instrument instrument = Instrument.PIANO;
 
         Note note = new Note(pitch, instrument, startTick, duration, velocity);
         NoteBar noteBar = new NoteBar(note, composition);

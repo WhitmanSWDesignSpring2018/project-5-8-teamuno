@@ -20,6 +20,8 @@
               <MenuItem fx:id="aboutButton"
                         onAction="#handleAboutAction" 
                         text="About" />
+              
+              <SeparatorMenuItem mnemonicParsing="false" />
 
               <MenuItem fx:id="newButton"
                         accelerator="Shortcut+N" 

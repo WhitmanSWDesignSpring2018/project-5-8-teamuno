@@ -4,9 +4,7 @@
  * and open the template in the editor.
  */
 package tunecomposer;
-import java.util.HashSet;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
 
 
 /**
@@ -160,6 +158,10 @@ public class TuneMenuBar {
         boolean ability = composition.getSelectionSize() <= 0;
         copyButton.setDisable(ability);
         cutButton.setDisable(ability);
+    }
+    
+    private void updatePaste(){
+        //TODO: this
     }
 
     /**

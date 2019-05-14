@@ -220,10 +220,14 @@ public class Composition {
      */
     public void remove(TuneRectangle rect) {
         pane.getChildren().remove(rect);
-        for(NoteBar child : rect.getChildLeaves()){
-            child.note.removeFromAllNotes();
+        if(rect instanceof Gesture){
+            for(NoteBar child : rect.getChildLeaves()){
+                child.note.removeFromAllNotes();
+            }   
         }
-        ((NoteBar) rect).note.removeFromAllNotes();
+        else{
+            ((NoteBar) rect).note.removeFromAllNotes();
+        }
         allRoots.remove(rect);
     }
     
