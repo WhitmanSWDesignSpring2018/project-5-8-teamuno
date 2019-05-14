@@ -316,7 +316,7 @@ public class TuneComposer extends Application {
      */
     @FXML
     protected void handleNewAction(ActionEvent event) {
-        if(!history.isSaved()) {
+        if(!history.isSaved()&& !composition.isEmpty()) {
             int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES){
                 handleSaveAction(event);
@@ -594,7 +594,7 @@ public class TuneComposer extends Application {
     @FXML
     protected void handleOpenAction(ActionEvent event) throws ClassNotFoundException {
         menuBar.notifyWindowOpened();
-        if(!history.isSaved()) {
+        if(!history.isSaved() && !composition.isEmpty()) {
             int choice = confirmationAlert();
             if (choice == CONFIRMATIONYES) {
                 handleSaveAction(event);
