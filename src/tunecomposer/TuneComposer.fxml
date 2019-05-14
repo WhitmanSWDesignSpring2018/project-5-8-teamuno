@@ -106,6 +106,8 @@
                           onAction="#handleInstrumentChange" 
                           text="Change Instruments" />
                 
+                <SeparatorMenuItem mnemonicParsing="false" />
+                
                 <MenuItem fx:id="undoButton"
                           accelerator="Shortcut+Z" 
                           onAction="#handleUndo" 
